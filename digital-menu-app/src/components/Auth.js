@@ -6,7 +6,6 @@ import MainContext from "../context/MainContext";
 
 
 
-
 export default function Auth({ children }) {
 	const [currentUser, setCurrentUser] = useState(null);
 	const [loading, setLoading] = useState(true);
@@ -30,11 +29,11 @@ export default function Auth({ children }) {
 	}
 
 	function updateEmail(email) {
-		return currentUser?.updateEmail(email);
+		return currentUser.updateEmail(email);
 	}
 
 	function updatePassword(password) {
-		return currentUser?.updatePassword(password);
+		return currentUser.updatePassword(password);
 	}
 
 	function updateName(name) {
@@ -46,11 +45,10 @@ export default function Auth({ children }) {
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged((user) => {
 			if (user && name) {
-				
-				 user.multiFactor.user.displayName = name;
+				user.multiFactor.user.displayName = name;
 				updateProfile(auth.currentUser, {
-				 displayName: name,
-			 });
+					displayName: name,
+				});
 			}
 			setCurrentUser(user);
 			setLoading(false);

@@ -3,6 +3,7 @@ import { Card,Button,Alert } from "react-bootstrap";
 import { Link, useNavigate  } from "react-router-dom";
 import  MainContext from "../context/MainContext";
 import { Navigate } from "react-router-dom";
+
 	// The user object has basic properties such as display name, email, etc.
 
 export default function MainPage() {

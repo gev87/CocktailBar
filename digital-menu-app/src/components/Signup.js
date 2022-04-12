@@ -1,19 +1,32 @@
-import React, { useContext, useRef, useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+
+import React,{useContext, useRef, useState} from "react";
+import {useNavigate,Navigate } from "react-router-dom";
+
 //import { Link,useNavigate,Navigate } from "react-router-dom";
 import MainContext from "../context/MainContext";
-import { Button, CssBaseline, Avatar, TextField } from "@material-ui/core";
-import { FormControlLabel, Link, Grid, Box } from "@material-ui/core";
-import { Typography, Container, makeStyles, Checkbox } from "@material-ui/core";
+
+
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Checkbox from "@material-ui/core/Checkbox";
+import Link from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Alert from "@material-ui/lab/Alert";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import { Alert } from "react-bootstrap";
 
 function Copyright() {
 	return (
 		<Typography variant="body2" color="textSecondary" align="center">
 			{"Copyright © "}
-			<Link color="inherit" href="/">
-				Cocktail Menu
+			<Link color="inherit" href="https://mui.com/">
+				Your Website
 			</Link>{" "}
 			{new Date().getFullYear()}
 			{"."}
@@ -39,12 +52,6 @@ const useStyles = makeStyles((theme) => ({
 	submit: {
 		margin: theme.spacing(3, 0, 2),
 	},
-	root: {
-		width: "100%",
-		"& > * + *": {
-			marginTop: theme.spacing(2),
-		},
-	},
 }));
 
 export default function Signup() {
@@ -64,7 +71,8 @@ export default function Signup() {
 			return setError("Passwords do NOT match");
 		}
 		if (passwordRef.current.value.length < 6) {
-			return setError("Password must have at least 6 characters");
+			alert("Password must have at least 6 characters");
+			return setError("Weak password");
 		}
 		try {
 			setError("");
@@ -92,13 +100,7 @@ export default function Signup() {
 				<Typography component="h1" variant="h5">
 					Sign up
 				</Typography>
-				{error && (
-					<div className={classes.root}>
-						<Alert variant="filled" severity="error">
-							{error}
-						</Alert>
-					</div>
-				)}
+				{error && <Alert severity="error">{error}</Alert>}
 				<form className={classes.form} noValidate>
 					<Grid container spacing={2}>
 						<Grid item xs={12}>
@@ -110,7 +112,7 @@ export default function Signup() {
 								required
 								fullWidth
 								id="Name"
-								label="Username"
+								label="Name"
 								autoFocus
 							/>
 						</Grid>
@@ -187,14 +189,6 @@ export default function Signup() {
 							</Link>
 						</Grid>
 					</Grid>
-					<div style={{ paddingLeft: "185px" }}>or</div>
-					<Grid container justifyContent="flex-end">
-						<Grid item>
-							<Link href="/" variant="body2" style={{ paddingRight: "185px" }}>
-								Cancel
-							</Link>
-						</Grid>
-					</Grid>
 				</form>
 			</div>
 			<Box mt={5}>
@@ -203,6 +197,10 @@ export default function Signup() {
 		</Container>
 	);
 }
+
+
+
+
 
 /*function Signup() {
 	const emailRef = useRef();

@@ -15,7 +15,7 @@ import FormControl from "@material-ui/core/FormControl";
 import { green } from "@material-ui/core/colors";
 import { OutlinedInputProps } from "@material-ui/core/OutlinedInput";
 
-const BootstrapInput = withStyles((theme) =>
+const BootstrapInput = withStyles((theme: Theme) =>
 	createStyles({
 		root: {
 			"label + &": {
