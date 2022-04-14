@@ -1,10 +1,10 @@
+import React from "react";
 import Signup from "./components/Signup";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Login from "./components/Login";
 import ForgotPassWord from "./components/ForgotPassword";
 import UpdateProfile from "./components/UpdateProfile";
-import React from "react";
 //import Container from "@material-ui/core/Container";
 import Auth from "./components/Auth";
 import Demo from "./components/Demo";

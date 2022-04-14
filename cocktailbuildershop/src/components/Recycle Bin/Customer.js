@@ -25,7 +25,7 @@ export default function Customer() {
 	const navigate = useNavigate();
 	const classes = useStyles();
 	
-
+console.log(true)
 
 	async function handleLogout() {
 		setError("");

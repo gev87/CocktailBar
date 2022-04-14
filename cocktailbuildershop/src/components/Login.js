@@ -23,6 +23,7 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
 	root: {
+		marginTop: 50,
 		height: "100vh",
 	},
 	root1: {
