@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	image: {
-		// backgroundImage: "url(https://source.unsplash.com/random)", //nkar@ poxel
+		backgroundImage: "url(https://source.unsplash.com/random)", //nkar@ poxel
 		backgroundRepeat: "no-repeat",
 		backgroundColor:
 			theme.palette.type === "light"
