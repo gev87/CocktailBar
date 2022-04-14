@@ -54,7 +54,7 @@ export default function Signup() {
 	const passwordConfirmRef = useRef();
 	const { signup, currentUser } = useContext(MainContext);
 	const [error, setError] = useState("");
-	const [loading, setLoading] = useState(true);
+	// const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
 	const nameRef = useRef();
 
@@ -68,7 +68,7 @@ export default function Signup() {
 		}
 		try {
 			setError("");
-			setLoading(true);
+			// setLoading(true);
 			await signup(
 				emailRef.current.value,
 				passwordRef.current.value,
@@ -78,7 +78,7 @@ export default function Signup() {
 		} catch {
 			setError("Failed to create an account");
 		}
-		setLoading(false);
+		// setLoading(false);
 	}
 
 	return (
@@ -157,7 +157,7 @@ export default function Signup() {
 							<FormControlLabel
 								control={
 									<Checkbox
-										onClick={() => setLoading(!loading)}
+										// onClick={() => setLoading(!loading)}
 										value="allowExtraEmails"
 										color="primary"
 									/>
@@ -167,7 +167,7 @@ export default function Signup() {
 						</Grid>
 					</Grid>
 					<Button
-						disabled={loading}
+						// disabled={loading}
 						type="submit"
 						fullWidth
 						variant="contained"

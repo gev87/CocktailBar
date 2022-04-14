@@ -8,6 +8,7 @@ import UpdateProfile from "./components/UpdateProfile";
 //import Container from "@material-ui/core/Container";
 import Auth from "./components/Auth";
 import Demo from "./components/Demo";
+import ShopingCard from "./components/ShopingCard";
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
 					<Route path="/signup" element={<Signup />} />
 					<Route path="/login" element={<Login />} />
 					<Route path="/forgot-password" element={<ForgotPassWord />} />
+					<Route path="/shoping-card" element={<ShopingCard />} />
 				</Routes>
 			</Auth>
 		</BrowserRouter>
