@@ -14,7 +14,8 @@ import InputBase from "@material-ui/core/InputBase";
 import { Link as ReactLink } from "react-router-dom";
 import MainContext from "../context/MainContext";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import { TEMP } from "../consts/const";
+import { Button } from "@material-ui/core";
+import ItemCard from "./context";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     fontFamily: "Georgia, serif",
     fontSize: "15px",
+
   },
   title2: {
     flexGrow: 1,
@@ -84,6 +86,11 @@ export default function MenuAppBar() {
   const { currentUser, logout } = useContext(MainContext);
   const navigate = useNavigate();
 
+	const {bayItem} = useContext(ItemCard)
+
+	
+
+
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -101,6 +108,7 @@ export default function MenuAppBar() {
       setError("Failed to Log out");
     }
   }
+
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
@@ -119,14 +127,14 @@ export default function MenuAppBar() {
             onClick={() => {
               navigate("/");
             }}
-				style={{
-					cursor: 'pointer'
-				}}
+            style={{
+              cursor: "pointer",
+				
+            }}
           >
             Home
           </Typography>
-
-          <div className={classes.search}>
+          <div className={classes.search} style={{position: 'relative'}}>
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -145,64 +153,70 @@ export default function MenuAppBar() {
             </Typography>
           </div>
           <div>
-            <IconButton
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={open}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose}>
-                {!currentUser ? (
-                  <ReactLink to="/login">Login</ReactLink>
-                ) : (
-                  <ReactLink to="/update-profile">Update Profile</ReactLink>
-                )}
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                {!currentUser ? (
-                  <ReactLink to="/signup">Sing Up</ReactLink>
-                ) : (
-                  <ReactLink onClick={handleLogout} to="/">
-                    Log Out
-                  </ReactLink>
-                )}
-              </MenuItem>
-            </Menu>
+            {!currentUser ? (
+              <>
+                <Button color="inherit" onClick={() => {navigate('/login')}}>Login</Button>
+                <Button color="inherit" onClick={() => {navigate('/signup')}}>Sing in</Button>
+              </>
+            ) : (
+              <>
+                <IconButton
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>
+                      <ReactLink to="/update-profile">Update Profile</ReactLink>
+                  </MenuItem>
+                  <MenuItem onClick={handleClose}>
+                      <ReactLink onClick={handleLogout} to="/">
+                        Log Out
+                      </ReactLink>
+                  </MenuItem>
+                </Menu>
+              </>
+            )}
           </div>
           <div>
             {currentUser ? (
               <>
-				  <h6 style={{
-								  paddingLeft: 7,
-								  margin: 0,
-							  }}
-					>{TEMP.length}</h6>
-				  <ShoppingCartIcon
-							  style={{
-								  paddingBottom: 13,
-								  margin: 0
-							  }}
-							  onClick={() => {
-								  navigate("/shoping-card");
-							  } } /></>
+                <h6
+                  style={{
+                    paddingLeft: 7,
+                    margin: 0,
+                  }}
+                >
+                  {bayItem.length}
+                </h6>
+                <ShoppingCartIcon
+                  style={{
+                    paddingBottom: 13,
+                    margin: 0,
+                  }}
+                  onClick={() => {
+                    navigate("/shoping-card");
+                  }}
+                />
+              </>
             ) : (
               ""
             )}
