@@ -1,20 +1,15 @@
 import React, { useState, useContext } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { alpha, makeStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
+import { useNavigate, Link as ReactLink } from "react-router-dom";
+import { alpha, makeStyles,AppBar,Toolbar } from "@material-ui/core";
+import { IconButton,MenuItem,Menu,InputBase } from "@material-ui/core";
+import { Typography,Button } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import MenuItem from "@material-ui/core/MenuItem";
-import Menu from "@material-ui/core/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import InputBase from "@material-ui/core/InputBase";
-import { Link as ReactLink } from "react-router-dom";
-import MainContext from "../context/MainContext";
+import  MainContext  from "../context/MainContext";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import { TEMP } from "../consts/const";
+import { CartContext } from "../context/CartContext";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     pointerEvents: "none",
     display: "flex",
-    alignItems: "center",
+ 
     justifyContent: "center",
   },
   search: {
@@ -83,6 +78,7 @@ export default function MenuAppBar() {
   const [error, setError] = useState("");
   const { currentUser, logout } = useContext(MainContext);
   const navigate = useNavigate();
+  const { cart } = useContext(CartContext);
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -102,113 +98,124 @@ export default function MenuAppBar() {
     }
   }
   return (
-    <div className={classes.root}>
-      <AppBar position="fixed">
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="menu"
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h6"
-            className={classes.title}
-            onClick={() => {
-              navigate("/");
-            }}
-				style={{
-					cursor: 'pointer'
-				}}
-          >
-            Home
-          </Typography>
+		<div className={classes.root}>
+			<AppBar style={{ backgroundColor: "#781187" }} position="fixed">
+				<Toolbar>
+					<IconButton
+						edge="start"
+						className={classes.menuButton}
+						color="inherit"
+						aria-label="menu"
+					>
+						<MenuIcon />
+					</IconButton>
+					<Typography
+						variant="h6"
+						className={classes.title}
+						onClick={() => {
+							navigate("/");
+						}}
+						style={{
+							cursor: "pointer",
+						}}
+					>
+						Home
+					</Typography>
 
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
-          </div>
-          <div>
-            <Typography variant="h6" className={classes.title2}>
-              {`Hello : ${currentUser ? currentUser.displayName : "Guest"}`}
-            </Typography>
-          </div>
-          <div>
-            <IconButton
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={open}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose}>
-                {!currentUser ? (
-                  <ReactLink to="/login">Login</ReactLink>
-                ) : (
-                  <ReactLink to="/update-profile">Update Profile</ReactLink>
-                )}
-              </MenuItem>
-              <MenuItem onClick={handleClose}>
-                {!currentUser ? (
-                  <ReactLink to="/signup">Sing Up</ReactLink>
-                ) : (
-                  <ReactLink onClick={handleLogout} to="/">
-                    Log Out
-                  </ReactLink>
-                )}
-              </MenuItem>
-            </Menu>
-          </div>
-          <div>
-            {currentUser ? (
-              <>
-				  <h6 style={{
-								  paddingLeft: 7,
-								  margin: 0,
-							  }}
-					>{TEMP.length}</h6>
-				  <ShoppingCartIcon
-							  style={{
-								  paddingBottom: 13,
-								  margin: 0
-							  }}
-							  onClick={() => {
-								  navigate("/shoping-card");
-							  } } /></>
-            ) : (
-              ""
-            )}
-          </div>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+					<div className={classes.search}>
+						<div className={classes.searchIcon}>
+							<SearchIcon />
+						</div>
+						<InputBase
+							placeholder="Search…"
+							classes={{
+								root: classes.inputRoot,
+								input: classes.inputInput,
+							}}
+							inputProps={{ "aria-label": "search" }}
+						/>
+					</div>
+					<div>
+						<Typography variant="h6" className={classes.title2}>
+							{`Hello : ${currentUser ? currentUser.displayName : "Guest"}`}
+						</Typography>
+					</div>
+					<div>
+						<IconButton
+							aria-label="account of current user"
+							aria-controls="menu-appbar"
+							aria-haspopup="true"
+							onClick={handleMenu}
+							color="inherit"
+						>
+							<AccountCircle />
+						</IconButton>
+						<Menu
+							id="menu-appbar"
+							anchorEl={anchorEl}
+							anchorOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							keepMounted
+							transformOrigin={{
+								vertical: "top",
+								horizontal: "right",
+							}}
+							open={open}
+							onClose={handleClose}
+						>
+							<MenuItem onClick={handleClose}>
+								{!currentUser ? (
+									<ReactLink to="/login">Login</ReactLink>
+								) : (
+									<ReactLink to="/update-profile">Update Profile</ReactLink>
+								)}
+							</MenuItem>
+							<MenuItem onClick={handleClose}>
+								{!currentUser ? (
+									<ReactLink to="/signup">Sing Up</ReactLink>
+								) : (
+									<ReactLink onClick={handleLogout} to="/">
+										Log Out
+									</ReactLink>
+								)}
+							</MenuItem>
+						</Menu>
+					</div>
+					<div>
+						{currentUser ? (
+              <Button 
+								onClick={() => {
+									navigate("/shoping-card");
+								}}
+							>
+								<h2
+									style={{
+										paddingBottom: 10,
+										paddingLeft: 7,
+										margin: 0,
+										color: "green",
+									}}
+								>
+									{cart.reduce((current, elem) => current + elem.qty, 0)}
+								</h2>
+
+								<ShoppingCartIcon
+									fontSize="large"
+									style={{
+										color: "green",
+										paddingBottom: 10,
+										margin: 0,
+									}}
+								></ShoppingCartIcon>
+							</Button>
+						) : (
+							""
+						)}
+					</div>
+				</Toolbar>
+			</AppBar>
+		</div>
+	);
 }
