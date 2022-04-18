@@ -6,15 +6,11 @@ import ImageListItemBar from "@material-ui/core/ImageListItemBar";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-<<<<<<< HEAD
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext"
 import { Table } from "@material-ui/core";
 
 
-=======
-import ItemCard from "./context";
->>>>>>> 8ddb2a2277661e5cae44dffbcedea912a7411155
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -63,7 +59,6 @@ export default function TitlebarImageList() {
   const {bayItem, setBayItem} = useContext(ItemCard)
   console.log(bayItem)
   return (
-<<<<<<< HEAD
 		<div className={classes.root}>
 			<ImageList rowHeight={200} gap={4} cols={6}>
 				{itemData.map((item) => (
@@ -84,22 +79,6 @@ export default function TitlebarImageList() {
 								>
 									<AddShoppingCartIcon color="primary" />
 								</IconButton>
-=======
-    <div className={classes.root}>
-      <ImageList rowHeight={200} gap={5} cols={6}>
-        {itemData.map((item) => (
-          <ImageListItem key={item.idDrink}>
-            <img src={item.strDrinkThumb} alt={item.strDrink} />
-            <ImageListItemBar
-              title={item.strDrink}
-              subtitle={<span>Category: {item.strCategory}</span>}
-              actionIcon={
-                <IconButton
-                  aria-label={`info about ${item.strIngredient1}`}
-                  className={classes.icon}
-                  onClick={() => 
-								setBayItem([...bayItem, item])
->>>>>>> 8ddb2a2277661e5cae44dffbcedea912a7411155
 							}
 						/>
 					</ImageListItem>
