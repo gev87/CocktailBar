@@ -6,7 +6,6 @@ import ImageListItemBar from "@material-ui/core/ImageListItemBar";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import { useContext } from "react";
 import { CartContext } from "../context/CartContext"
 import { Table } from "@material-ui/core";
 
@@ -38,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 export default function TitlebarImageList() {
   const classes = useStyles();
   const [itemData,setItemData] = useState([]);
-  const [ cart,setCart,onAdd ] = useContext(CartContext);
+	const { onAdd } = useContext(CartContext);
    
   
 
