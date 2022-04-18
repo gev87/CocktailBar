@@ -51,12 +51,7 @@ export default function TitlebarImageList() {
   },[]);
   
 
-  
-  
-  
 
-  const {bayItem, setBayItem} = useContext(ItemCard)
-  console.log(bayItem)
   return (
 		<div className={classes.root}>
 			<ImageList rowHeight={200} gap={4} cols={6}>

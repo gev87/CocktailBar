@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 export default function RecipeReviewCard() {
 	const classes = useStyles();
 	// const [expanded, setExpanded] = useState(false);
-	const { cart,onAdd,onRemove } = useContext(CartContext);
+	const { cart, onAdd, onRemove } = useContext(CartContext);
 	let price = 19;
 
 	// const handleExpandClick = () => {
