@@ -23,7 +23,7 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		marginTop: 50,
+		
 		height: "100vh",
 	},
 	root1: {
@@ -92,7 +92,7 @@ export default function Login() {
 			className={classes.root}
 		>
 			<CssBaseline />
-			<Grid item xs={false} sm={4} md={7} className={classes.image} ><Demo/></Grid>
+			<Grid item xs={false} sm={4} md={7} className={classes.image} />
 			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
 				<div className={classes.paper}>
 					<Avatar className={classes.avatar}>

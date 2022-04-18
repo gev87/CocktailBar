@@ -1,22 +1,122 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import Card from '@material-ui/core/Card';
-// import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-// import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-// import MoreVertIcon from '@material-ui/icons/MoreVert';
-import ImageList from '@material-ui/core/ImageList';
+import React, { useState, useEffect, useContext } from "react";
+import { makeStyles,ImageListItem,Grid,Paper } from "@material-ui/core";
+import { Button, ImageList, ButtonBase } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import { CartContext } from "../context/CartContext";
 
+
+const useStyles = makeStyles((theme) => ({
+	root: {
+		flexGrow: 1,
+		backgroundColor: "rgb(245 245 245)",
+	},
+	paper: {
+		padding: theme.spacing(2),
+		margin: "auto",
+		maxWidth: 250,
+	},
+	image: {
+		width: 250,
+		height: 250,
+	},
+	img: {
+		margin: "auto",
+		display: "block",
+		maxWidth: "85%",
+		maxHeight: "85%",
+		borderRadius: "10%",
+	},
+}));
+
+export default function RecipeReviewCard() {
+	const classes = useStyles();
+	// const [expanded, setExpanded] = useState(false);
+	const [data, setData] = useState([]);
+	const { onAdd } = useContext(CartContext);
+
+	useEffect(() => {
+		fetch(
+			"https://thecocktaildb.com/api/json/v1/1/search.php?s=margarita")
+				.then((result) => result.json())
+			.then((item) => {
+				setData(item.drinks);
+			});
+	},[]);
+	
+
+	// const handleExpandClick = () => {
+	// 	setExpanded(!expanded);
+	// };
+
+	return (
+		<div className={classes.root}>
+			<ImageList rowHeight="auto" gap={20} cols={3}>
+				{data.map((item) => (
+					<ImageListItem key={item.idDrink}>
+						<Paper className={classes.paper} elevation={10}>
+							<Grid item>
+								<ButtonBase
+									style={{ borderRadius: "10%" }}
+									onMouseEnter={(event) =>
+										(event.target.style.background = "#f50057")
+									}
+									onMouseLeave={(event) =>
+										(event.target.style.background = "white")
+									}
+									className={classes.image}
+								>
+									<img
+										className={classes.img}
+										alt="complex"
+										src={item.strDrinkThumb}
+									/>
+								</ButtonBase>
+							</Grid>
+							<Grid item xs={12} sm container>
+								<Grid item xs container direction="column" spacing={2}>
+									<Grid item xs>
+										<Typography color="secondary" variant="h6" gutterBottom>
+											{item.strDrink}
+										</Typography>
+										<Typography variant="body2" gutterBottom>
+											{item.strCategory}
+										</Typography>
+										{/* <Typography variant="body2" color="textSecondary">
+											ID: 1030114
+										</Typography> */}
+									</Grid>
+									{/* <Grid item>
+										<Typography variant="body2" style={{ cursor: "pointer" }}>
+											Remove
+										</Typography>
+									</Grid> */}
+								</Grid>
+								<Grid item>
+									<Typography variant="button">$19.00;</Typography>
+								</Grid>
+								<Grid item></Grid>
+							</Grid>
+							<Button
+								onClick={() => onAdd(item)}
+								variant="contained"
+								color="secondary"
+							>
+								Add to{" "}
+								<ShoppingCartIcon
+									style={{ paddingLeft: "10px", color: "green" }}
+								/>
+							</Button>
+						</Paper>
+						<br />
+					</ImageListItem>
+				))}
+			</ImageList>
+		</div>
+	);
+}
+
+/*
 const useStyles = makeStyles((theme) => ({
 	root: {
 		marginTop: 10,
@@ -54,10 +154,11 @@ const useStyles = makeStyles((theme) => ({
 export default function RecipeReviewCard() {
 	const classes = useStyles();
 	const [expanded, setExpanded] = useState(false);
-	const [data, setData] = useState([])
+	const [data,setData] = useState([]);
+	 const [cart, setCart, onAdd] = useContext(CartContext);
 
 	useEffect(() => {
-		fetch("https://thecocktaildb.com/api/json/v1/1/search.php?f=a")
+		fetch("https://thecocktaildb.com/api/json/v1/1/search.php?s=margarita")
 			.then((result) => result.json())
 			.then((item) => {
 				setData(item.drinks);
@@ -72,15 +173,10 @@ export default function RecipeReviewCard() {
 
 	return (
 		<div className={classes.root}>
-			<ImageList
-				gap={30}
-				rowHeight='auto'
-				cols={5}
-			>
-				{data.map((item) => (
-					<Card key={item.idDrink}
-					>
-						{/* <CardHeader
+			{data.map((item) => (
+				<ImageList key={item.idDrink} gap={50} rowHeight="auto" cols={4}>
+					<Card >
+						{ <CardHeader
 							avatar={
 								<Avatar aria-label="recipe" className={classes.avatar}>
 									R
@@ -93,7 +189,7 @@ export default function RecipeReviewCard() {
 							}
 							title={item.strDrink}
 							subheader="September 14, 2016"
-						/> */}
+						/> }
 						<CardMedia
 							className={classes.media}
 							image={item.strDrinkThumb}
@@ -118,24 +214,23 @@ export default function RecipeReviewCard() {
 								onClick={handleExpandClick}
 								aria-expanded={expanded}
 								aria-label="show more"
-								position='absolute'
+								position="absolute"
 							>
 								<ExpandMoreIcon />
 							</IconButton>
-						</CardActions >
-						<Collapse in={expanded} timeout='auto'>
+						</CardActions>
+						<Collapse in={expanded} timeout="auto">
 							<CardContent>
 								<Typography paragraph>Method:</Typography>
 								<Typography paragraph>
-									Heat 1/2 cup of the broth in a pot until simmering, add saffron and set aside for 10
-									minutes.
+									Heat 1/2 cup of the broth in a pot until simmering, add
+									saffron and set aside for 10 minutes.
 								</Typography>
 							</CardContent>
 						</Collapse>
 					</Card>
-				))}
-			</ImageList>
+				</ImageList>
+			))}
 		</div>
 	);
-}
-
+}*/

@@ -6,24 +6,41 @@ import ImageListItemBar from "@material-ui/core/ImageListItemBar";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import ItemCard from "./context";
+import { CartContext } from "../context/CartContext"
+import { Table } from "@material-ui/core";
+
+
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    overflow: "hidden",
-    backgroundColor: theme.palette.background.paper,
-  },
-  icon: {
-    color: "rgba(255, 255, 255, 0.54)",
-  },
+	root: {
+		display: "flex",
+		flexWrap: "wrap",
+		justifyContent: "space-around",
+		overflow: "hidden",
+		backgroundColor: theme.palette.background.paper,
+	},
+	icon: {
+		color: "rgba(255, 255, 255, 0.54)",
+	},
+	image: {
+		width: 200,
+		height: 200,
+	},
+	img: {
+		margin: "auto",
+		display: "block",
+		maxWidth: "100%",
+		maxHeight: "100%",
+	},
 }));
 
 export default function TitlebarImageList() {
   const classes = useStyles();
-  const [itemData, setItemData] = useState([]);
+  const [itemData,setItemData] = useState([]);
+	const { onAdd } = useContext(CartContext);
+   
+  
+
 
   useEffect(() => {
     fetch("https://thecocktaildb.com/api/json/v1/1/search.php?s=margarita")
@@ -31,34 +48,36 @@ export default function TitlebarImageList() {
       .then((data) => {
         setItemData(data.drinks);
       });
-  }, []);
+  },[]);
+  
 
-  const {bayItem, setBayItem} = useContext(ItemCard)
-  console.log(bayItem)
+
   return (
-    <div className={classes.root}>
-      <ImageList rowHeight={200} gap={5} cols={6}>
-        {itemData.map((item) => (
-          <ImageListItem key={item.idDrink}>
-            <img src={item.strDrinkThumb} alt={item.strDrink} />
-            <ImageListItemBar
-              title={item.strDrink}
-              subtitle={<span>Category: {item.strCategory}</span>}
-              actionIcon={
-                <IconButton
-                  aria-label={`info about ${item.strIngredient1}`}
-                  className={classes.icon}
-                  onClick={() => 
-								setBayItem([...bayItem, item])
+		<div className={classes.root}>
+			<ImageList rowHeight={200} gap={4} cols={6}>
+				{itemData.map((item) => (
+					<ImageListItem key={item.idDrink}>
+						<img
+							src={item.strDrinkThumb}
+							alt={item.strDrink}
+							className={classes.img}
+						/>
+						<ImageListItemBar
+							title={item.strDrink}
+							subtitle={<span>Category: {item.strCategory}</span>}
+							actionIcon={
+								<IconButton
+									aria-label={`info about ${item.strIngredient1}`}
+									className={classes.icon}
+									onClick={() => onAdd(item)}
+								>
+									<AddShoppingCartIcon color="primary" />
+								</IconButton>
 							}
-                >
-                  <AddShoppingCartIcon />
-                </IconButton>
-              }
-            />
-          </ImageListItem>
-        ))}
-      </ImageList>
-    </div>
-  );
+						/>
+					</ImageListItem>
+				))}
+			</ImageList>
+		</div>
+	);
 }

@@ -4,5 +4,7 @@ import "firebase/compat/auth";
 
 const MainContext = createContext();
 
+
+
 export default MainContext;
 
