@@ -86,9 +86,8 @@ export default function CocktailCards() {
 							color="textSecondary"
 							paragraph
 						>
-							Something short and leading about the collection below—its
-							contents, the creator, etc. Make it short and sweet, but not too
-							short so folks don&apos;t simply skip over it entirely.
+							What is the best way to maintain a balanced diet? A cocktail in
+                            each hand. So if you are on a diet , just order two cocktails instead of one.
 						</Typography>
 					</Container>
 				</div>

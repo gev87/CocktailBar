@@ -9,8 +9,8 @@ export default function Demo() {
 	return (
 		<>
 			<NavBar />
-			<CocktailCards />
 			<CustomSwiper/>
+			<CocktailCards />
 			<Footer/>
 			{/* { {currentUser ? <Customer /> : <div><Link to="/login">Log in</Link>{"  or  "} 	<Link to="/signup">Sign up</Link> </div>} } */}
 		</>
