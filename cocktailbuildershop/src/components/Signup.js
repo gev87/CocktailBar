@@ -54,7 +54,7 @@ export default function Signup() {
 	const passwordConfirmRef = useRef();
 	const { signup, currentUser } = useContext(MainContext);
 	const [error, setError] = useState("");
-	// const [loading, setLoading] = useState(true);
+	 const [show, setShow] = useState("password");
 	const navigate = useNavigate();
 	const nameRef = useRef();
 
@@ -135,7 +135,7 @@ export default function Signup() {
 								fullWidth
 								name="password"
 								label="Password"
-								type="password"
+								type={show}
 								id="password"
 								autoComplete="current-password"
 							/>
@@ -149,7 +149,7 @@ export default function Signup() {
 									fullWidth
 									name="password"
 									label="Password Confirmation"
-									type="password"
+									type={show}
 									id="password-confirm"
 									autoComplete="current-password"
 								/>
@@ -157,17 +157,17 @@ export default function Signup() {
 							<FormControlLabel
 								control={
 									<Checkbox
-										// onClick={() => setLoading(!loading)}
-										value="allowExtraEmails"
+										onClick={() =>
+											setShow(show === "password" ? "text" : "password")
+										}
 										color="primary"
 									/>
 								}
-								label="I am over 18 years old."
+								label="Show passwords"
 							/>
 						</Grid>
 					</Grid>
 					<Button
-						// disabled={loading}
 						type="submit"
 						fullWidth
 						variant="contained"

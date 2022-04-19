@@ -5,6 +5,7 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { CartContext } from "../context/CartContext";
 import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
 import NavBar from "./NavBar";
+import Basket from "./Basket"
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -33,7 +34,7 @@ export default function RecipeReviewCard() {
 	const classes = useStyles();
 	// const [expanded, setExpanded] = useState(false);
 	const { cart, onAdd, onRemove } = useContext(CartContext);
-	let price = 19;
+	let price = 19 ;
 
 	// const handleExpandClick = () => {
 	// 	setExpanded(!expanded);
@@ -41,6 +42,7 @@ export default function RecipeReviewCard() {
 
 	return (
 		<div className={classes.root}>
+			<Basket/>
 			<NavBar />
 			<ImageList rowHeight="auto" gap={20} cols={3}>
 				{cart.map((item) => (
@@ -115,10 +117,11 @@ export default function RecipeReviewCard() {
 									style={{ color: "yellow" }}
 								>
 									{" "}
+									-
 									<RemoveShoppingCartIcon
 										style={{ paddingLeft: "10px", color: "yellow" }}
 									/>
-									-
+									
 								</Button>
 							</Typography>
 						</Paper>

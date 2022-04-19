@@ -1,14 +1,13 @@
-import React, { useContext } from "react";
 import Signup from "./components/Signup";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { CartContext, CartProvider } from "./context/CartContext";
+import { CartProvider } from "./context/CartContext";
 import Login from "./components/Login";
 import ForgotPassWord from "./components/ForgotPassword";
 import UpdateProfile from "./components/UpdateProfile";
 //import Container from "@material-ui/core/Container";
 import Auth from "./components/Auth";
 import Demo from "./components/Demo";
-import ShopingCard from "./components/ShopingCard";
+import Basket from "./components/Basket";
 
 
 
@@ -27,7 +26,7 @@ function App() {
 						<Route path="/signup" element={<Signup />} />
 						<Route path="/login" element={<Login />} />
 						<Route path="/forgot-password" element={<ForgotPassWord />} />
-						<Route path="/shoping-card" element={<ShopingCard />} />
+						<Route path="/shoping-card" element={<Basket />} />
 					</Routes>
 				</CartProvider>
 			</Auth>
