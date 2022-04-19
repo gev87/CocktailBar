@@ -1,16 +1,13 @@
 import React from "react";
-import { useContext } from "react";
 // import { Link, Navigate } from "react-router-dom";
-import MainContext from "../context/MainContext";
 import NavBar from "./NavBar";
-import CardContent from './CardContent';
+import CocktailCards from "./CocktailCards";
 
 export default function Demo() {
-	const { currentUser } = useContext(MainContext)
 	return (
 		<>
 			<NavBar />
-			<CardContent />
+			<CocktailCards />
 			Home page
 			{/* { {currentUser ? <Customer /> : <div><Link to="/login">Log in</Link>{"  or  "} 	<Link to="/signup">Sign up</Link> </div>} } */}
 		</>

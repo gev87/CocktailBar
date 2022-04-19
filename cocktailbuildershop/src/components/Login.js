@@ -6,7 +6,6 @@ import { makeStyles, Avatar, Button, CssBaseline } from "@material-ui/core";
 import { Link, Paper, Box, Grid, Typography } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { Alert } from "@material-ui/lab";
-import Demo from "./Demo";
 
 function Copyright() {
 	return (
@@ -20,10 +19,15 @@ function Copyright() {
 		</Typography>
 	);
 }
-
+const pictureArray = [
+	"url(https://thumbs.dreamstime.com/z/funny-cocktail-dog-holding-martini-glass-29959182.jpg)",
+	"url(/images/login.jpg)",
+	"url(https://images.pexels.com/photos/602750/pexels-photo-602750.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)",
+];
+const randomIndex = Math.floor(Math.random() * pictureArray.length);
+const selectedPicture = pictureArray[randomIndex];
 const useStyles = makeStyles((theme) => ({
 	root: {
-		
 		height: "100vh",
 	},
 	root1: {
@@ -33,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 	image: {
-		backgroundImage: "url(https://source.unsplash.com/random)", //nkar@ poxel
+		backgroundImage: selectedPicture,
 		backgroundRepeat: "no-repeat",
 		backgroundColor:
 			theme.palette.type === "light"

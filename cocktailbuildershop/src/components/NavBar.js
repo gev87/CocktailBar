@@ -7,8 +7,9 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import  MainContext  from "../context/MainContext";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { CartContext } from "../context/CartContext";
+import ShoppingCartOutlinedIcon from "@material-ui/icons/ShoppingCartOutlined";
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -80,15 +81,6 @@ export default function MenuAppBar() {
   const { currentUser, logout } = useContext(MainContext);
   const navigate = useNavigate();
   const { cart } = useContext(CartContext);
-
-
-
-	
-
-
-
-
-	
 
 
   const handleMenu = (event) => {
@@ -197,30 +189,30 @@ export default function MenuAppBar() {
 					</div>
 					<div>
 						{currentUser ? (
-              <Button 
+							<Button
 								onClick={() => {
 									navigate("/shoping-card");
 								}}
 							>
-								<h2
+								<h4
 									style={{
 										paddingBottom: 10,
 										paddingLeft: 7,
 										margin: 0,
-										color: "green",
+										color: "#6be909",
 									}}
 								>
 									{cart.reduce((current, elem) => current + elem.qty, 0)}
-								</h2>
+								</h4>
 
-								<ShoppingCartIcon
-									fontSize="large"
+								<ShoppingCartOutlinedIcon
+									fontSize="medium"
 									style={{
-										color: "green",
+										color: "#6be909",
 										paddingBottom: 10,
 										margin: 0,
 									}}
-								></ShoppingCartIcon>
+								></ShoppingCartOutlinedIcon>
 							</Button>
 						) : (
 							""
