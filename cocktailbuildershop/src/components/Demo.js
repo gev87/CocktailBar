@@ -3,13 +3,15 @@ import React from "react";
 import NavBar from "./NavBar";
 import CocktailCards from "./CocktailCards";
 import CustomSwiper from './CustomSwiper'
+import Footer from "./Footer";
 
 export default function Demo() {
 	return (
 		<>
 			<NavBar />
-			{/* <CocktailCards /> */}
+			<CocktailCards />
 			<CustomSwiper/>
+			<Footer/>
 			{/* { {currentUser ? <Customer /> : <div><Link to="/login">Log in</Link>{"  or  "} 	<Link to="/signup">Sign up</Link> </div>} } */}
 		</>
 	);
