@@ -77,7 +77,7 @@ export default function MenuAppBar() {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
-	const [error, setError] = useState("");
+	const [,setError] = useState("");
 	const { currentUser, logout } = useContext(MainContext);
 	const navigate = useNavigate();
 	const { cart } = useContext(CartContext);
@@ -93,6 +93,8 @@ export default function MenuAppBar() {
 
 	async function handleLogout() {
 		setError("");
+		
+	
 		try {
 			await logout();
 			navigate("/");

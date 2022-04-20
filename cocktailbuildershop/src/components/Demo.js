@@ -5,13 +5,14 @@ import CocktailCards from "./CocktailCards";
 import CustomSwiper from './CustomSwiper'
 import Footer from "./Footer";
 
+
 export default function Demo() {
 	return (
 		<>
 			<NavBar />
-			<CustomSwiper/>
+			<CustomSwiper />
 			<CocktailCards />
-			<Footer/>
+			<Footer />
 			{/* { {currentUser ? <Customer /> : <div><Link to="/login">Log in</Link>{"  or  "} 	<Link to="/signup">Sign up</Link> </div>} } */}
 		</>
 	);
