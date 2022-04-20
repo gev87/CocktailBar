@@ -1,21 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
-import AppBar from "@material-ui/core/AppBar";
-import Button from "@material-ui/core/Button";
-import CameraIcon from "@material-ui/icons/PhotoCamera";
-import Card from "@material-ui/core/Card";
-import CardActions from "@material-ui/core/CardActions";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Grid from "@material-ui/core/Grid";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Link from "@material-ui/core/Link";
+import React, { useContext } from "react";
+import { Button,Card,CardActions,CardContent } from "@material-ui/core";
+import { CardMedia,Grid,Typography,makeStyles } from "@material-ui/core";
+import { Container,Link,Icon } from "@material-ui/core";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import NavBar from "./NavBar";
+import Footer from "./Footer";
+
+
 
 function Copyright() {
 	return (
@@ -62,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-//const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function Basket() {
 	const classes = useStyles();
@@ -116,6 +107,22 @@ export default function Basket() {
 									</CardContent>
 									<CardActions>
 										<Button
+											onClick={() => onRemove(card)}
+											size="small"
+											color="secondary"
+											variant="outlined"
+										>
+											{/* <Typography style={{ color: "#f50057" }}>-</Typography> */}
+											<ShoppingCartIcon style={{ color: "#f50057" }} />
+											<Icon size="small" variant="secondary">
+												remove_circle
+											</Icon>
+										</Button>
+										<Typography style={{ color: "green" }}>
+											{" " + card.qty + " "}
+										</Typography>
+
+										<Button
 											onClick={() => onAdd(card)}
 											size="small"
 											color="primary"
@@ -124,21 +131,12 @@ export default function Basket() {
 											<ShoppingCartIcon
 												style={{ paddingLeft: "10px", color: "#6be909" }}
 											/>
-											<Typography style={{ color: "#6be909" }}>+</Typography>
+											<Icon size="small" style={{ color: "#6be909" }}>
+												add_circle
+											</Icon>
+											{/* <Typography style={{ color: "#6be909" }}>+</Typography> */}
 										</Button>
 
-										<Typography style={{ color: "green" }}>
-											{" " + card.qty + " "}
-										</Typography>
-										<Button
-											onClick={() => onRemove(card)}
-											size="small"
-											color="secondary"
-											variant="outlined"
-										>
-											<Typography style={{ color: "#f50057" }}>-</Typography>
-											<ShoppingCartIcon style={{ color: "#f50057" }} />
-										</Button>
 										<Grid item>
 											<Typography variant="button">
 												${(card.qty * price).toFixed(2)}
@@ -151,22 +149,10 @@ export default function Basket() {
 					</Grid>
 				</Container>
 			</main>
-			{/* Footer */}
-			<footer className={classes.footer}>
-				{/* <Typography variant="h6" align="center" gutterBottom>
-					Footer
-				</Typography>
-				<Typography
-					variant="subtitle1"
-					align="center"
-					color="textSecondary"
-					component="p"
-				>
-					Something here to give the footer a purpose!
-				</Typography> */}
-				<Copyright />
-			</footer>
-			{/* End footer */}
+		
+			
+				<Footer />
+		
 		</React.Fragment>
 	);
 }

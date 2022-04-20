@@ -71,7 +71,7 @@ export default function Login() {
 	const passwordRef = useRef();
 	const { login, currentUser } = useContext(MainContext);
 	const [error, setError] = useState("");
-	const [loading, setLoading] = useState(false);
+	const [setLoading] = useState(false);
 	const navigate = useNavigate();
 	const [show, setShow] = useState("password");
 

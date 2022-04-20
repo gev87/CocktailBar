@@ -1,22 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Button, Card, CardActions, CardContent } from "@material-ui/core";
 import { CardMedia, Grid, Typography } from "@material-ui/core";
-import { makeStyles, Container, Link } from "@material-ui/core";
+import { makeStyles, Container} from "@material-ui/core";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-
-function Copyright() {
-	return (
-		<Typography variant="body2" color="textSecondary" align="center">
-			{"Copyright © "}
-			<Link color="inherit" href="/">
-				Cocktail Menu
-			</Link>{" "}
-			{new Date().getFullYear()}
-			{"."}
-		</Typography>
-	);
-}
+import Pages from "./Pages";
 
 const useStyles = makeStyles((theme) => ({
 	icon: {
@@ -25,9 +13,6 @@ const useStyles = makeStyles((theme) => ({
 	heroContent: {
 		backgroundColor: theme.palette.background.paper,
 		padding: theme.spacing(8, 0, 6),
-	},
-	heroButtons: {
-		marginTop: theme.spacing(4),
 	},
 	cardGrid: {
 		paddingTop: theme.spacing(8),
@@ -43,32 +28,44 @@ const useStyles = makeStyles((theme) => ({
 	},
 	cardContent: {
 		flexGrow: 1,
-	},
+	}
 }));
-
-//const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function CocktailCards() {
 	const classes = useStyles();
-
 	const [data, setData] = useState([]);
 	const { onAdd } = useContext(CartContext);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [itemsPerPage,setItemsPerPage] = useState(33);
 
 	useEffect(() => {
-		fetch("https://thecocktaildb.com/api/json/v1/1/search.php?s=margarita")
-			.then((result) => result.json())
-			.then((item) => {
-				setData(item.drinks);
-			});
-	}, []);
+		let each = [];
+		let letters = "abcdefghijklmnopqrstuvwxyz0123456789";
+		let urls = [];
+		for (let letter of letters) {
+			urls.push(
+				"https://thecocktaildb.com/api/json/v1/1/search.php?f=" + letter
+			);
+		}
+		let requests = urls.map((url) => fetch(url));
+		Promise.all(requests)
+			.then((responses) => Promise.all(responses.map((item) => item.json())))
+			.then((items) =>
+				items.forEach((item) => {
+					if (item.drinks !== null) each = each.concat(item.drinks);
+					setData(each);
+				})
+			);
+	},[]);
+
+	const indexOfLastItem = currentPage * itemsPerPage;
+	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+	const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+	const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
 	return (
 		<React.Fragment>
-			{/* <p>
-				<img src="url(/images/login.jpg)" />
-			</p>
-			 */}
 			<main>
-				{/* Hero unit */}
 				<div className={classes.heroContent}>
 					<Container maxWidth="sm">
 						<Typography
@@ -87,13 +84,14 @@ export default function CocktailCards() {
 							paragraph
 						>
 							What is the best way to maintain a balanced diet? A cocktail in
-                            each hand. So if you are on a diet , just order two cocktails instead of one.
+							each hand. So if you are on a diet , just order two cocktails
+							instead of one.
 						</Typography>
 					</Container>
 				</div>
 				<Container className={classes.cardGrid} maxWidth="md">
 					<Grid container spacing={4}>
-						{data.map((card) => (
+						{currentItems.map((card) => (
 							<Grid item key={card.idDrink} xs={12} sm={6} md={4}>
 								<Card className={classes.card}>
 									<CardMedia
@@ -130,6 +128,14 @@ export default function CocktailCards() {
 							</Grid>
 						))}
 					</Grid>
+					<br />
+					<div>
+						<Pages
+							itemsPerPage={itemsPerPage}
+							totalItems={data.length}
+							paginate={paginate}
+						/>
+					</div>
 				</Container>
 			</main>
 		</React.Fragment>
