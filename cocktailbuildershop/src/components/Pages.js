@@ -1,7 +1,5 @@
-import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@material-ui/core";
 import { Button } from "@mui/material";
-
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -11,6 +9,7 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 }));
+
 
 const Pages = ({ itemsPerPage, totalItems, paginate }) => {
 	const pageNumbers = [];

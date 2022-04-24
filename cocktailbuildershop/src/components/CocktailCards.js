@@ -5,6 +5,9 @@ import { makeStyles, Container} from "@material-ui/core";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import Pages from "./Pages";
+import PRICES from "../Prices";
+
+
 
 const useStyles = makeStyles((theme) => ({
 	icon: {
@@ -34,9 +37,9 @@ const useStyles = makeStyles((theme) => ({
 export default function CocktailCards() {
 	const classes = useStyles();
 	const [data, setData] = useState([]);
-	const { onAdd } = useContext(CartContext);
+	const { onAdd,onDouble } = useContext(CartContext);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [itemsPerPage,setItemsPerPage] = useState(33);
+	const [itemsPerPage] = useState(12);
 
 	useEffect(() => {
 		let each = [];
@@ -50,13 +53,46 @@ export default function CocktailCards() {
 		let requests = urls.map((url) => fetch(url));
 		Promise.all(requests)
 			.then((responses) => Promise.all(responses.map((item) => item.json())))
-			.then((items) =>
+			.then((items) => {
 				items.forEach((item) => {
 					if (item.drinks !== null) each = each.concat(item.drinks);
-					setData(each);
 				})
-			);
+				for (let cocktail of each) {
+					let ingPrice1 = PRICES.hasOwnProperty(cocktail.strIngredient1)
+						? PRICES[cocktail.strIngredient1]
+						: 3;
+					let ingPrice2 = PRICES.hasOwnProperty(cocktail.strIngredient2)
+						? PRICES[cocktail.strIngredient2]
+						: 3;
+					let ingPrice3 = PRICES.hasOwnProperty(cocktail.strIngredient3)
+						? PRICES[cocktail.strIngredient3]
+						: cocktail.strIngredient3 === null
+						? 0
+						: 3;
+					let ingPrice4 = PRICES.hasOwnProperty(cocktail.strIngredient4)
+						? PRICES[cocktail.strIngredient4]
+						: cocktail.strIngredient4 === null
+						? 0
+							: 3;
+					cocktail.price = ingPrice1 + ingPrice2 + ingPrice3 + ingPrice4;
+				}
+				setData(each);
+			});
 	},[]);
+	
+
+	// let i = 1;
+	// for (let elem of data) {	
+	// 	console.log(i,elem.strIngredient1,elem.strIngredient2,elem.strIngredient3,elem.strIngredient4);
+	// 	console.log(i,
+	// 		elem.strMeasure1,
+	// 		elem.strMeasure2,
+	// 		elem.strMeasure3,
+	// 		elem.strMeasure4
+	// 	);
+	// 	i++
+	// }
+
 
 	const indexOfLastItem = currentPage * itemsPerPage;
 	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -64,7 +100,7 @@ export default function CocktailCards() {
 	const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
 	return (
-		<React.Fragment>
+		<>
 			<main>
 				<div className={classes.heroContent}>
 					<Container maxWidth="sm">
@@ -103,8 +139,23 @@ export default function CocktailCards() {
 										<Typography gutterBottom variant="h5" component="h2">
 											{card.strDrink}
 										</Typography>
+
 										<Typography>{card.strCategory}</Typography>
 									</CardContent>
+									{card.strAlcoholic === "Alcoholic" && (
+										<Button
+											onClick={() => onDouble(card)}
+											color="primary"
+											variant="outlined"
+											style={{ marginLeft: "10px", marginRight: "10px" }}
+										>
+											{"Double <<" +
+												card.strIngredient1 +
+												">>  /+$" +
+												PRICES[card.strIngredient1]}
+											.00
+										</Button>
+									)}
 									<CardActions>
 										<Button
 											onClick={() => onAdd(card)}
@@ -117,11 +168,11 @@ export default function CocktailCards() {
 												style={{ paddingLeft: "10px", color: "#6be909" }}
 											/>
 										</Button>
-										<Button size="small" color="primary">
-											Edit
+										<Button variant="outlined" size="small" color="primary">
+											Order Now
 										</Button>
 										<Grid item>
-											<Typography variant="button">$19.00</Typography>{" "}
+											<Typography variant="button">${card.price}.00</Typography>{" "}
 										</Grid>
 									</CardActions>
 								</Card>
@@ -138,7 +189,7 @@ export default function CocktailCards() {
 					</div>
 				</Container>
 			</main>
-		</React.Fragment>
+		</>
 	);
 }
 

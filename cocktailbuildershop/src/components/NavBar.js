@@ -2,37 +2,50 @@ import React, { useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
 import { alpha, makeStyles, AppBar, Toolbar } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
-import { Typography, Button } from "@material-ui/core";
+import { Typography, Button, Badge } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import HomeIcon from "@material-ui/icons/Home";
+
+
 
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
 		marginTop: 70,
-		color: 'red',
+		color: "red",
 	},
+	
 	menuButton: {
+		color: "black",
 		marginRight: theme.spacing(2),
+		"&:hover": {
+			color: "white",
+		},
 	},
 	title: {
 		flexGrow: 1,
-		color: "white",
+		color: "black",
 		fontFamily: "Georgia, serif",
-		fontSize: "15px",
-
+		fontSize: "17px",
+		"&:hover": {
+			color: "white",
+		},
 	},
 	title2: {
 		flexGrow: 1,
-		color: "white",
+		color: "#6be909",
 		fontSize: "15px",
 		fontFamily: "Georgia, serif",
 		marginRight: 10,
+		"&:hover": {
+			color: "white",
+		},
 	},
 	searchIcon: {
 		padding: theme.spacing(0, 2),
@@ -47,8 +60,10 @@ const useStyles = makeStyles((theme) => ({
 		position: "relative",
 		borderRadius: theme.shape.borderRadius,
 		backgroundColor: alpha(theme.palette.common.white, 0.15),
+		color: "black",
 		"&:hover": {
 			backgroundColor: alpha(theme.palette.common.white, 0.25),
+			color: "white",
 		},
 		marginRight: theme.spacing(2),
 		marginLeft: 0,
@@ -105,7 +120,7 @@ export default function MenuAppBar() {
 
 	return (
 		<div className={classes.root}>
-			<AppBar style={{ backgroundColor: "#781187" }} position="fixed">
+			<AppBar style={{ backgroundColor: "#4052b5", color: "white" }}>
 				<Toolbar>
 					<IconButton
 						edge="start"
@@ -115,18 +130,24 @@ export default function MenuAppBar() {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography
-						variant="h6"
+					<IconButton
 						className={classes.title}
 						onClick={() => {
 							navigate("/");
 						}}
-						style={{
-							cursor: "pointer",
+					>
+						<HomeIcon />
+						Home
+					</IconButton>
+					<IconButton
+						className={classes.title}
+						onClick={() => {
+							navigate("/cocktail-builder");
 						}}
 					>
-						Home
-					</Typography>
+						<img alt ="icon" style={{ width: "60px",borderRadius:"30%" }} src="/images/icon2.jpg" /> Cocktail
+						Builder
+					</IconButton>
 
 					<div className={classes.search}>
 						<div className={classes.searchIcon}>
@@ -145,16 +166,38 @@ export default function MenuAppBar() {
 						<Typography variant="h6" className={classes.title2}>
 							{`Hello : ${currentUser ? currentUser.displayName : "Guest"}`}
 						</Typography>
+
+						{currentUser ? (
+							<Typography variant="h6" className={classes.title2}>
+								{" "}
+								{"Email : " + currentUser.email}
+							</Typography>
+						) : null}
 					</div>
 					<div>
 						{!currentUser ? (
 							<>
-								<Button color="inherit" onClick={() => { navigate('/login') }}>Login</Button>
-								<Button color="inherit" onClick={() => { navigate('/signup') }}>Sing in</Button>
+								<Button
+									color="inherit"
+									onClick={() => {
+										navigate("/login");
+									}}
+								>
+									Login
+								</Button>
+								<Button
+									color="inherit"
+									onClick={() => {
+										navigate("/signup");
+									}}
+								>
+									Sign up
+								</Button>
 							</>
 						) : (
 							<>
 								<IconButton
+									className={classes.title}
 									aria-label="account of current user"
 									aria-controls="menu-appbar"
 									aria-haspopup="true"
@@ -179,10 +222,19 @@ export default function MenuAppBar() {
 									onClose={handleClose}
 								>
 									<MenuItem onClick={handleClose}>
-										<ReactLink to="/update-profile">Update Profile</ReactLink>
+										<ReactLink
+											style={{ color: "#4052b5" }}
+											to="/update-profile"
+										>
+											Update Profile
+										</ReactLink>
 									</MenuItem>
 									<MenuItem onClick={handleClose}>
-										<ReactLink onClick={handleLogout} to="/">
+										<ReactLink
+											style={{ color: "#4052b5" }}
+											onClick={handleLogout}
+											to="/"
+										>
 											Log Out
 										</ReactLink>
 									</MenuItem>
@@ -192,24 +244,22 @@ export default function MenuAppBar() {
 					</div>
 					<div>
 						{currentUser ? (
-							<>
-								<h6
-									style={{
-										paddingLeft: 7,
-										margin: 0,
-									}}
+							<IconButton className={classes.title2}>
+								<Badge
+									overlap="rectangular"
+									badgeContent={cart.reduce(
+										(current, elem) => current + elem.qty,
+										0
+									)}
+									color="secondary"
 								>
-									{cart.reduce((current, elem) => current + elem.qty, 0)}
-								</h6>
-								<ShoppingCartIcon
-									style={{
-										paddingBottom: 13,
-									}}
-									onClick={() => {
-										navigate("/shoping-card");
-									}}
-								/>
-							</>
+									<ShoppingCartIcon
+										onClick={() => {
+											navigate("/shoping-card");
+										}}
+									/>
+								</Badge>
+							</IconButton>
 						) : (
 							""
 						)}

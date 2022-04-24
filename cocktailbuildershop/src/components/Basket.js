@@ -1,26 +1,11 @@
 import React, { useContext } from "react";
-import { Button,Card,CardActions,CardContent } from "@material-ui/core";
-import { CardMedia,Grid,Typography,makeStyles } from "@material-ui/core";
-import { Container,Link,Icon } from "@material-ui/core";
+import { Button, Card, CardActions, CardContent } from "@material-ui/core";
+import { CardMedia, Grid, Typography, makeStyles } from "@material-ui/core";
+import { Container, Icon } from "@material-ui/core";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
-
-
-
-function Copyright() {
-	return (
-		<Typography variant="body2" color="textSecondary" align="center">
-			{"Copyright © "}
-			<Link color="inherit" href="/">
-				Cocktail Menu
-			</Link>{" "}
-			{new Date().getFullYear()}
-			{"."}
-		</Typography>
-	);
-}
 
 const useStyles = makeStyles((theme) => ({
 	icon: {
@@ -54,11 +39,9 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-
 export default function Basket() {
 	const classes = useStyles();
 	const { cart, onAdd, onRemove } = useContext(CartContext);
-	let price = 19;
 
 	return (
 		<React.Fragment>
@@ -83,10 +66,12 @@ export default function Basket() {
 							color="textSecondary"
 							paragraph
 						>
-							Something short and leading about the collection below—its
-							contents, the creator, etc. Make it short and sweet, but not too
-							short so folks don&apos;t simply skip over it entirely.
+							What is the difference between a blonde and a shopping cart?
+							Sometimes, the shopping cart has a mind of its own.
 						</Typography>
+						{cart.length === 0 ? (
+							<img src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg" />
+						) : null}
 					</Container>
 				</div>
 				<Container className={classes.cardGrid} maxWidth="md">
@@ -100,11 +85,37 @@ export default function Basket() {
 										title={card.strDrink}
 									/>
 									<CardContent className={classes.cardContent}>
-										<Typography gutterBottom variant="h5" component="h2">
-											{card.strDrink}
-										</Typography>
+										{card.strDrink.split(" ")[
+											card.strDrink.split(" ").length - 1
+										] === "DOUBLE" ? (
+											<Typography
+												color="secondary"
+												gutterBottom
+												variant="h5"
+												component="h2"
+											>
+												{card.strDrink}{" "}
+												<Typography>
+													with extra {card.strIngredient1}
+												</Typography>
+											</Typography>
+										) : (
+											<Typography gutterBottom variant="h5" component="h2">
+												{card.strDrink}
+											</Typography>
+										)}
 										<Typography>{card.strCategory}</Typography>
 									</CardContent>
+									{/* {card.strAlcoholic === "Alcoholic" && (
+										<Button
+											onClick ={()=>makeDouble(card)}
+											color="primary"
+											variant="outlined"
+											style={{ marginLeft: "10px", marginRight: "10px" }}
+										>
+											Double {" <<" + card.strIngredient1 + ">>"}
+										</Button>
+									)} */}
 									<CardActions>
 										<Button
 											onClick={() => onRemove(card)}
@@ -139,7 +150,7 @@ export default function Basket() {
 
 										<Grid item>
 											<Typography variant="button">
-												${(card.qty * price).toFixed(2)}
+												${(card.qty * card.price).toFixed(2)}
 											</Typography>
 										</Grid>
 									</CardActions>
@@ -149,10 +160,8 @@ export default function Basket() {
 					</Grid>
 				</Container>
 			</main>
-		
-			
-				<Footer />
-		
+
+			<Footer />
 		</React.Fragment>
 	);
 }
