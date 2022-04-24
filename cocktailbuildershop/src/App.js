@@ -1,17 +1,17 @@
 import Signup from "./components/Signup";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { CartProvider } from "./context/CartContext";
+import Auth from "./components/Auth"
 import Login from "./components/Login";
 import ForgotPassWord from "./components/ForgotPassword";
 import UpdateProfile from "./components/UpdateProfile";
 //import Container from "@material-ui/core/Container";
-import Auth from "./components/Auth";
+import { CartProvider } from "./context/CartContext";
 import Demo from "./components/Demo";
 import Basket from "./components/Basket";
-
-
+import CocktailBuilder from "./components/CocktailBuilder";
 
 function App() {
+	
 
 	return (
 		/*<Container
@@ -28,11 +28,11 @@ function App() {
 						<Route path="/login" element={<Login />} />
 						<Route path="/forgot-password" element={<ForgotPassWord />} />
 						<Route path="/shoping-card" element={<Basket />} />
+						<Route path ="/cocktail-builder" element = {<CocktailBuilder/>}/>
 					</Routes>
 				</CartProvider>
-			</Auth>
-		</BrowserRouter>
-		/*</Container>*/
+		</Auth>
+			</BrowserRouter>
 	);
 }
 
