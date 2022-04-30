@@ -1,5 +1,5 @@
 import { createContext,useState } from "react";
-import PRICES from "../Prices"
+import PRICES from "../consts/PRICES"
 
 export const CartContext = createContext();
 
@@ -7,7 +7,6 @@ export const CartProvider = (props) => {
 	const [cart,setCart] = useState([]);
 	
 	const onAdd = (item) => {
-		console.log(item)
 		const exist = cart.find((x) => x.idDrink === item.idDrink);
 		if (exist) {
 			setCart(

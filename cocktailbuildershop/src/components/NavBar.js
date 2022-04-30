@@ -1,8 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
-import { alpha, makeStyles, AppBar, Toolbar } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Button, Badge } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
-import { Typography, Button, Badge } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
@@ -10,93 +9,17 @@ import MainContext from "../context/MainContext";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import HomeIcon from "@material-ui/icons/Home";
+import THEMES from "../consts/THEMES";
 
 
-
-
-const useStyles = makeStyles((theme) => ({
-	root: {
-		flexGrow: 1,
-		marginTop: 70,
-		color: "red",
-	},
-	
-	menuButton: {
-		color: "black",
-		marginRight: theme.spacing(2),
-		"&:hover": {
-			color: "white",
-		},
-	},
-	title: {
-		flexGrow: 1,
-		color: "black",
-		fontFamily: "Georgia, serif",
-		fontSize: "17px",
-		"&:hover": {
-			color: "white",
-		},
-	},
-	title2: {
-		flexGrow: 1,
-		color: "#6be909",
-		fontSize: "15px",
-		fontFamily: "Georgia, serif",
-		marginRight: 10,
-		"&:hover": {
-			color: "white",
-		},
-	},
-	searchIcon: {
-		padding: theme.spacing(0, 2),
-		height: "100%",
-		position: "absolute",
-		pointerEvents: "none",
-		display: "flex",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	search: {
-		position: "relative",
-		borderRadius: theme.shape.borderRadius,
-		backgroundColor: alpha(theme.palette.common.white, 0.15),
-		color: "black",
-		"&:hover": {
-			backgroundColor: alpha(theme.palette.common.white, 0.25),
-			color: "white",
-		},
-		marginRight: theme.spacing(2),
-		marginLeft: 0,
-		width: "100%",
-		[theme.breakpoints.up("sm")]: {
-			marginLeft: theme.spacing(3),
-			width: "auto",
-		},
-	},
-	inputRoot: {
-		color: "inherit",
-	},
-	inputInput: {
-		padding: theme.spacing(1, 1, 1, 0),
-		// vertical padding + font size from searchIcon
-		paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-		transition: theme.transitions.create("width"),
-		width: "100%",
-		[theme.breakpoints.up("md")]: {
-			width: "20ch",
-		},
-	},
-}));
-
-export default function MenuAppBar() {
-	const classes = useStyles();
+export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }) {
+	const classes = THEMES();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
-	const [,setError] = useState("");
+	const [, setError] = useState("");
 	const { currentUser, logout } = useContext(MainContext);
 	const navigate = useNavigate();
 	const { cart } = useContext(CartContext);
-
 
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -108,8 +31,7 @@ export default function MenuAppBar() {
 
 	async function handleLogout() {
 		setError("");
-		
-	
+
 		try {
 			await logout();
 			navigate("/");
@@ -119,7 +41,7 @@ export default function MenuAppBar() {
 	}
 
 	return (
-		<div className={classes.root}>
+		<div className={classes.rootnav}>
 			<AppBar style={{ backgroundColor: "#4052b5", color: "white" }}>
 				<Toolbar>
 					<IconButton
@@ -142,11 +64,44 @@ export default function MenuAppBar() {
 					<IconButton
 						className={classes.title}
 						onClick={() => {
+							navigate("/");
+							popularCocktailsSwitch();
+						}}
+					>
+						<img
+							alt="icon"
+							style={{ width: "45px", borderRadius: "30%" }}
+							src="/images/icon.png"
+						/>{" "}
+						Popular Cocktails
+					</IconButton>
+					<IconButton
+						className={classes.title}
+						onClick={() => {
+							navigate("/");
+							popularIngsSwitch();
+						}}
+					>
+						<img
+							alt="icon"
+							style={{ width: "60px", borderRadius: "30%" }}
+							src="https://thecocktaildb.com/images/ingredients/Baileys irish cream.png"
+						/>{" "}
+						Popular Ingredients
+					</IconButton>
+					<IconButton
+						style={{ background: "#4052b5" }}
+						className={classes.title}
+						onClick={() => {
 							navigate("/cocktail-builder");
 						}}
 					>
-						<img alt ="icon" style={{ width: "60px",borderRadius:"30%" }} src="/images/icon2.jpg" /> Cocktail
-						Builder
+						<img
+							alt="icon"
+							style={{ width: "60px", borderRadius: "30%" }}
+							src="/images/icon2.jpg"
+						/>{" "}
+						Cocktail Builder
 					</IconButton>
 
 					<div className={classes.search}>
@@ -163,12 +118,12 @@ export default function MenuAppBar() {
 						/>
 					</div>
 					<div>
-						<Typography variant="h6" className={classes.title2}>
+						<Typography variant="h6" className={classes.title}>
 							{`Hello : ${currentUser ? currentUser.displayName : "Guest"}`}
 						</Typography>
 
 						{currentUser ? (
-							<Typography variant="h6" className={classes.title2}>
+							<Typography variant="h6" className={classes.title}>
 								{" "}
 								{"Email : " + currentUser.email}
 							</Typography>
@@ -178,6 +133,7 @@ export default function MenuAppBar() {
 						{!currentUser ? (
 							<>
 								<Button
+									className={classes.title}
 									color="inherit"
 									onClick={() => {
 										navigate("/login");
@@ -186,6 +142,7 @@ export default function MenuAppBar() {
 									Login
 								</Button>
 								<Button
+									className={classes.title}
 									color="inherit"
 									onClick={() => {
 										navigate("/signup");
@@ -244,7 +201,7 @@ export default function MenuAppBar() {
 					</div>
 					<div>
 						{currentUser ? (
-							<IconButton className={classes.title2}>
+							<IconButton className={classes.title}>
 								<Badge
 									overlap="rectangular"
 									badgeContent={cart.reduce(

@@ -1,26 +1,16 @@
-import { makeStyles } from "@material-ui/core";
+import THEMES from "../consts/THEMES";
 import { Button } from "@mui/material";
-
-const useStyles = makeStyles((theme) => ({
-	root: {
-		display:"block",
-		"& > *": {
-			marginTop: theme.spacing(2),
-		},
-	},
-}));
-
 
 const Pages = ({ itemsPerPage, totalItems, paginate }) => {
 	const pageNumbers = [];
-	const classes = useStyles();
+	const classes = THEMES();
 
 	for (let i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
 		pageNumbers.push(i);
 	}
 	return (
 		<nav>
-			<div className={classes.root}>
+			<div className={classes.rootpages}>
 				{pageNumbers.map((number) => (
 					<Button
 						key={number}

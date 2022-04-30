@@ -1,54 +1,16 @@
 import React, { useContext, useRef, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
-//import { Link,useNavigate,Navigate } from "react-router-dom";
 import MainContext from "../context/MainContext";
 import { Button, CssBaseline, Avatar, TextField } from "@material-ui/core";
 import { FormControlLabel, Link, Grid, Box } from "@material-ui/core";
-import { Typography, Container, makeStyles, Checkbox } from "@material-ui/core";
+import { Typography, Container, Checkbox } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Alert from "@material-ui/lab/Alert";
-
-function Copyright() {
-	return (
-		<Typography variant="body2" color="textSecondary" align="center">
-			{"Copyright © "}
-			<Link color="inherit" href="/">
-				Cocktail Menu
-			</Link>{" "}
-			{new Date().getFullYear()}
-			{"."}
-		</Typography>
-	);
-}
-
-const useStyles = makeStyles((theme) => ({
-	paper: {
-		marginTop: theme.spacing(8),
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
-	},
-	avatar: {
-		margin: theme.spacing(1),
-		backgroundColor: theme.palette.secondary.main,
-	},
-	form: {
-		width: "100%", // Fix IE 11 issue.
-		marginTop: theme.spacing(3),
-	},
-	submit: {
-		margin: theme.spacing(3, 0, 2),
-	},
-	root: {
-		width: "100%",
-		"& > * + *": {
-			marginTop: theme.spacing(2),
-		},
-	},
-}));
+import Footer from "./Footer";
+import THEMES from "../consts/THEMES";
 
 export default function Signup() {
-	const classes = useStyles();
+	const classes = THEMES();
 	const emailRef = useRef();
 	const passwordRef = useRef();
 	const passwordConfirmRef = useRef();
@@ -81,14 +43,13 @@ export default function Signup() {
 		// setLoading(false);
 	}
 
-	return (
+	return (currentUser ?<Navigate to="/" />:
 		<Container onSubmit={handleSubmit} component="main" maxWidth="xs">
 			<CssBaseline />
 			<div className={classes.paper}>
-				<Avatar className={classes.avatar}>
+				<Avatar className={classes.avatarred}>
 					<LockOutlinedIcon />
 				</Avatar>
-				{currentUser && <Navigate to="/" />}
 				<Typography component="h1" variant="h5">
 					Sign up
 				</Typography>
@@ -198,7 +159,7 @@ export default function Signup() {
 				</form>
 			</div>
 			<Box mt={5}>
-				<Copyright />
+				<Footer />
 			</Box>
 		</Container>
 	);
