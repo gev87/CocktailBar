@@ -1,52 +1,20 @@
 import React, { useContext } from "react";
-import { Button, Card, CardActions, CardContent } from "@material-ui/core";
-import { CardMedia, Grid, Typography, makeStyles } from "@material-ui/core";
-import { Container, Icon } from "@material-ui/core";
+import { Button,Container,  CardActions, CardContent } from "@material-ui/core";
+import { CardMedia, Grid, Typography, Card, Icon } from "@material-ui/core";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
+import THEMES from "../consts/THEMES";
 
-const useStyles = makeStyles((theme) => ({
-	icon: {
-		marginRight: theme.spacing(2),
-	},
-	heroContent: {
-		backgroundColor: theme.palette.background.paper,
-		padding: theme.spacing(8, 0, 6),
-	},
-	heroButtons: {
-		marginTop: theme.spacing(4),
-	},
-	cardGrid: {
-		paddingTop: theme.spacing(8),
-		paddingBottom: theme.spacing(8),
-	},
-	card: {
-		height: "100%",
-		display: "flex",
-		flexDirection: "column",
-	},
-	cardMedia: {
-		paddingTop: "95%", // 16:9
-	},
-	cardContent: {
-		flexGrow: 1,
-	},
-	footer: {
-		backgroundColor: theme.palette.background.paper,
-		padding: theme.spacing(6),
-	},
-}));
 
 export default function Basket() {
-	const classes = useStyles();
+	const classes = THEMES();
 	const { cart, onAdd, onRemove } = useContext(CartContext);
 
 	return (
 		<React.Fragment>
 			<NavBar />
-			{/* <img src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg" /> */}
 			<main>
 				{/* Hero unit */}
 				<div className={classes.heroContent}>
@@ -70,7 +38,7 @@ export default function Basket() {
 							Sometimes, the shopping cart has a mind of its own.
 						</Typography>
 						{cart.length === 0 ? (
-							<img src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg" />
+							<img alt = "cart" src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg" />
 						) : null}
 					</Container>
 				</div>
@@ -106,16 +74,6 @@ export default function Basket() {
 										)}
 										<Typography>{card.strCategory}</Typography>
 									</CardContent>
-									{/* {card.strAlcoholic === "Alcoholic" && (
-										<Button
-											onClick ={()=>makeDouble(card)}
-											color="primary"
-											variant="outlined"
-											style={{ marginLeft: "10px", marginRight: "10px" }}
-										>
-											Double {" <<" + card.strIngredient1 + ">>"}
-										</Button>
-									)} */}
 									<CardActions>
 										<Button
 											onClick={() => onRemove(card)}
@@ -160,7 +118,6 @@ export default function Basket() {
 					</Grid>
 				</Container>
 			</main>
-
 			<Footer />
 		</React.Fragment>
 	);
