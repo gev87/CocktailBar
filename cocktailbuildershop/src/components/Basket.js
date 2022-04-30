@@ -1,112 +1,154 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Card, CardActions, CardContent } from "@material-ui/core";
 import { CardMedia, Grid, Typography, makeStyles } from "@material-ui/core";
 import { Container, Icon } from "@material-ui/core";
-import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
+import {
+  readOnValue,
+  writeAsync,
+  updateAsync,
+  removeAsync,
+} from "../firebase/crudoperations";
+import MainContext from "../context/MainContext";
 
 const useStyles = makeStyles((theme) => ({
-	icon: {
-		marginRight: theme.spacing(2),
-	},
-	heroContent: {
-		backgroundColor: theme.palette.background.paper,
-		padding: theme.spacing(8, 0, 6),
-	},
-	heroButtons: {
-		marginTop: theme.spacing(4),
-	},
-	cardGrid: {
-		paddingTop: theme.spacing(8),
-		paddingBottom: theme.spacing(8),
-	},
-	card: {
-		height: "100%",
-		display: "flex",
-		flexDirection: "column",
-	},
-	cardMedia: {
-		paddingTop: "95%", // 16:9
-	},
-	cardContent: {
-		flexGrow: 1,
-	},
-	footer: {
-		backgroundColor: theme.palette.background.paper,
-		padding: theme.spacing(6),
-	},
+  icon: {
+    marginRight: theme.spacing(2),
+  },
+  heroContent: {
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(8, 0, 6),
+  },
+  heroButtons: {
+    marginTop: theme.spacing(4),
+  },
+  cardGrid: {
+    paddingTop: theme.spacing(8),
+    paddingBottom: theme.spacing(8),
+  },
+  card: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+  },
+  cardMedia: {
+    paddingTop: "95%", // 16:9
+  },
+  cardContent: {
+    flexGrow: 1,
+  },
+  footer: {
+    backgroundColor: theme.palette.background.paper,
+    padding: theme.spacing(6),
+  },
 }));
 
 export default function Basket() {
-	const classes = useStyles();
-	const { cart, onAdd, onRemove } = useContext(CartContext);
+  const classes = useStyles();
+  const { currentUser } = useContext(MainContext);
+  const [cart, setCart] = useState([]);
 
-	return (
-		<React.Fragment>
-			<NavBar />
-			{/* <img src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg" /> */}
-			<main>
-				{/* Hero unit */}
-				<div className={classes.heroContent}>
-					<Container maxWidth="sm">
-						<Typography
-							component="h1"
-							variant="h2"
-							align="center"
-							color="textPrimary"
-							gutterBottom
-						>
-							Cocktail Basket
-						</Typography>
-						<Typography
-							variant="h5"
-							align="center"
-							color="textSecondary"
-							paragraph
-						>
-							What is the difference between a blonde and a shopping cart?
-							Sometimes, the shopping cart has a mind of its own.
-						</Typography>
-						{cart.length === 0 ? (
-							<img src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg" />
-						) : null}
-					</Container>
-				</div>
-				<Container className={classes.cardGrid} maxWidth="md">
-					<Grid container spacing={4}>
-						{cart.map((card) => (
-							<Grid item key={card.idDrink} xs={12} sm={6} md={4}>
-								<Card className={classes.card}>
-									<CardMedia
-										className={classes.cardMedia}
-										image={card.strDrinkThumb}
-										title={card.strDrink}
-									/>
-									<CardContent className={classes.cardContent}>
-										{card.strDrink.split(" ")[
-											card.strDrink.split(" ").length - 1
-										] === "DOUBLE" ? (
-											<Typography
-												color="secondary"
-												gutterBottom
-												variant="h5"
-												component="h2"
-											>
-												{card.strDrink}{" "}
-												<Typography>
-													with extra {card.strIngredient1}
-												</Typography>
-											</Typography>
-										) : (
-											<Typography gutterBottom variant="h5" component="h2">
-												{card.strDrink}
-											</Typography>
-										)}
-										<Typography>{card.strCategory}</Typography>
-									</CardContent>
-									{/* {card.strAlcoholic === "Alcoholic" && (
+  useEffect(() => {
+    const value =
+      currentUser &&
+      readOnValue(`users/${currentUser.uid}/orders`, (item) => item);
+    setCart(value && Object.entries(value));
+  });
+
+  const addItemToCart = (card, func) => {
+    const item = cart.find(
+      (e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
+    );
+    !item
+      ? writeAsync(`users/${currentUser.uid}/orders`, {
+          order: func ? func(card) : card,
+          quantity: 1,
+        })
+      : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+          quantity: ++item[1].quantity,
+        });
+  };
+
+  const removeItemFromCart = (card, func) => {
+    const item = cart.find(
+      (e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
+    );
+    item[1].quantity <= 1
+      ? removeAsync(`users/${currentUser.uid}/orders/${item[0]}`)
+      : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+          quantity: --item[1].quantity,
+        });
+  };
+
+  return (
+    <React.Fragment>
+      <NavBar />
+      {/* <img src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg" /> */}
+      <main>
+        {/* Hero unit */}
+        <div className={classes.heroContent}>
+          <Container maxWidth="sm">
+            <Typography
+              component="h1"
+              variant="h2"
+              align="center"
+              color="textPrimary"
+              gutterBottom
+            >
+              Cocktail Basket
+            </Typography>
+            <Typography
+              variant="h5"
+              align="center"
+              color="textSecondary"
+              paragraph
+            >
+              What is the difference between a blonde and a shopping cart?
+              Sometimes, the shopping cart has a mind of its own.
+            </Typography>
+            {cart.length === 0 ? (
+              <img src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg" />
+            ) : null}
+          </Container>
+        </div>
+        <Container className={classes.cardGrid} maxWidth="md">
+          <Grid container spacing={4}>
+            {cart.map((it) => {
+              let card = it[1].order;
+              let qty = it[1].quantity;
+              return (
+                <Grid item key={it[0]} xs={12} sm={6} md={4}>
+                  <Card className={classes.card}>
+                    <CardMedia
+                      className={classes.cardMedia}
+                      image={card.strDrinkThumb}
+                      title={card.strDrink}
+                    />
+                    <CardContent className={classes.cardContent}>
+                      {card.strDrink.split(" ")[
+                        card.strDrink.split(" ").length - 1
+                      ] === "DOUBLE" ? (
+                        <Typography
+                          color="secondary"
+                          gutterBottom
+                          variant="h5"
+                          component="h2"
+                        >
+                          {card.strDrink}{" "}
+                          <Typography>
+                            with extra {card.strIngredient1}
+                          </Typography>
+                        </Typography>
+                      ) : (
+                        <Typography gutterBottom variant="h5" component="h2">
+                          {card.strDrink}
+                        </Typography>
+                      )}
+                      <Typography>{card.strCategory}</Typography>
+                    </CardContent>
+                    {/* {card.strAlcoholic === "Alcoholic" && (
 										<Button
 											onClick ={()=>makeDouble(card)}
 											color="primary"
@@ -116,54 +158,54 @@ export default function Basket() {
 											Double {" <<" + card.strIngredient1 + ">>"}
 										</Button>
 									)} */}
-									<CardActions>
-										<Button
-											onClick={() => onRemove(card)}
-											size="small"
-											color="secondary"
-											variant="outlined"
-										>
-											{/* <Typography style={{ color: "#f50057" }}>-</Typography> */}
-											<ShoppingCartIcon style={{ color: "#f50057" }} />
-											<Icon size="small" variant="secondary">
-												remove_circle
-											</Icon>
-										</Button>
-										<Typography style={{ color: "green" }}>
-											{" " + card.qty + " "}
-										</Typography>
+                    <CardActions>
+                      <Button
+                        onClick={() => removeItemFromCart(card)}
+                        size="small"
+                        color="secondary"
+                        variant="outlined"
+                      >
+                        {/* <Typography style={{ color: "#f50057" }}>-</Typography> */}
+                        <ShoppingCartIcon style={{ color: "#f50057" }} />
+                        <Icon size="small" variant="secondary">
+                          remove_circle
+                        </Icon>
+                      </Button>
+                      <Typography style={{ color: "green" }}>
+                        {" " + qty + " "}
+                      </Typography>
+                      <Button
+                        onClick={() => addItemToCart(card)}
+                        size="small"
+                        color="primary"
+                        variant="outlined"
+                      >
+                        <ShoppingCartIcon
+                          style={{ paddingLeft: "10px", color: "#6be909" }}
+                        />
+                        <Icon size="small" style={{ color: "#6be909" }}>
+                          add_circle
+                        </Icon>
+                        {/* <Typography style={{ color: "#6be909" }}>+</Typography> */}
+                      </Button>
+                      <Grid item>
+                        <Typography variant="button">
+                          ${(card.qty * card.price).toFixed(2)}
+                        </Typography>
+                      </Grid>
+                      .
+                    </CardActions>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Container>
+      </main>
 
-										<Button
-											onClick={() => onAdd(card)}
-											size="small"
-											color="primary"
-											variant="outlined"
-										>
-											<ShoppingCartIcon
-												style={{ paddingLeft: "10px", color: "#6be909" }}
-											/>
-											<Icon size="small" style={{ color: "#6be909" }}>
-												add_circle
-											</Icon>
-											{/* <Typography style={{ color: "#6be909" }}>+</Typography> */}
-										</Button>
-
-										<Grid item>
-											<Typography variant="button">
-												${(card.qty * card.price).toFixed(2)}
-											</Typography>
-										</Grid>
-									</CardActions>
-								</Card>
-							</Grid>
-						))}
-					</Grid>
-				</Container>
-			</main>
-
-			<Footer />
-		</React.Fragment>
-	);
+      <Footer />
+    </React.Fragment>
+  );
 }
 
 // import React, { useState, useEffect, useContext } from "react";
