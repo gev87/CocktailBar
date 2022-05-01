@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Badge, makeStyles, alpha } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
@@ -8,9 +8,12 @@ import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import MenuDrawer from "./MenuDrawer";
 import HomeIcon from "@material-ui/icons/Home";
 import THEMES from "../consts/THEMES";
-import MenuDrawer from "./MenuDrawer";
+import { readOnValue } from "../firebase/crudoperations";
+
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -81,7 +84,6 @@ const useStyles = makeStyles((theme) => ({
 export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }) {
 	// const classes = THEMES();
 	const classes = useStyles();
-	// const classes = THEMES();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 	const [, setError] = useState("");
@@ -89,6 +91,22 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }
 	const navigate = useNavigate();
 	const { cart } = useContext(CartContext);
 	const [openMenu, setOpenMenu] = useState(false);
+	const [itemQty, setitemQty] = useState(0);
+
+	useEffect(() => {
+		const qty =
+			currentUser &&
+			readOnValue(
+				`users/${currentUser.uid}/orders`,
+				(value) =>
+					value &&
+					Object.entries(value).reduce(
+						(prev, curr) => prev + curr[1].quantity,
+						0
+					)
+			);
+		setitemQty(qty);
+	});
 
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -274,10 +292,7 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }
 							<IconButton className={classes.title}>
 								<Badge
 									overlap="rectangular"
-									badgeContent={cart.reduce(
-										(current, elem) => current + elem.qty,
-										0
-									)}
+									badgeContent={itemQty > 0 ? itemQty : null}
 									color="secondary"
 								>
 									<ShoppingCartIcon
