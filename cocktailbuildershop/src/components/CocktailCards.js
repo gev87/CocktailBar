@@ -9,6 +9,7 @@ import THEMES from "../consts/THEMES";
 import CustomSwiper from "./CustomSwiper";
 import MainContext from "../context/MainContext";
 import NavBar from "./NavBar"
+import NONALCOHOLIC from "../consts/NONALCOHOLIC";
 
 
 
@@ -33,7 +34,7 @@ export default function CocktailCards() {
 	
 	useEffect(()=>{
     let each = [];
-    let letters = "abcdefghijklmnopqrstuvwxyz0123456789";
+		let letters = "abcdefghijklmnopqrstuvwxyz0123456789";
     let urls = [];
     for (let letter of letters) {
         urls.push(
@@ -47,7 +48,6 @@ export default function CocktailCards() {
 				items.forEach((item) => {
 					if (item.drinks !== null) each = each.concat(item.drinks);
 				});
-			
 				for (let cocktail of each) {
 					let ingPrice1 = PRICES.hasOwnProperty(cocktail.strIngredient1)
 						? PRICES[cocktail.strIngredient1]
@@ -65,7 +65,23 @@ export default function CocktailCards() {
 						: cocktail.strIngredient4 === null
 							? 0
 							: 3;
-					cocktail.price = ingPrice1 + ingPrice2 + ingPrice3 + ingPrice4;
+					let ingPrice5 = PRICES.hasOwnProperty(cocktail.strIngredient5)
+						? PRICES[cocktail.strIngredient5]
+						: cocktail.strIngredient5 === null
+						? 0
+							: 3;
+					let ingPrice6 = PRICES.hasOwnProperty(cocktail.strIngredient6)
+						? PRICES[cocktail.strIngredient6]
+						: cocktail.strIngredient6 === null
+						? 0
+						: 3;
+					cocktail.price =
+						ingPrice1 +
+						ingPrice2 +
+						ingPrice3 +
+						ingPrice4 +
+						ingPrice5 +
+						ingPrice6;
 				}
 				setPopularCocktails([
 					each[66],
@@ -83,6 +99,7 @@ export default function CocktailCards() {
 				]);
 				setData(each);
 			});
+		
 	},[])
 	
 	useEffect(() => {
@@ -138,8 +155,8 @@ export default function CocktailCards() {
 				{popularIngs && (
 					<CustomSwiper filterByIngredient={(i) => filterByIngredient(i)} />
 				)}
-				<div style={{ backgroundColor: "#4052b5",color: "black" }}>
-					<br/>
+				<div style={{ backgroundColor: "#4052b5", color: "black" }}>
+					<br />
 					<Typography variant="h4" align="center" paragraph>
 						{header}
 					</Typography>
@@ -169,18 +186,40 @@ export default function CocktailCards() {
 											>
 												{ing
 													? "Double <<" + ing + ">>  /+$" + PRICES[ing] + ".00"
-													: ["Water", "Sugar", "Coffee"].includes(
-															card.strIngredient1
-													  )
+													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient1)
 													? "Double <<" +
-													  card.strIngredient +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient2] +
-													  ".00"
-													: "Double <<" +
 													  card.strIngredient1 +
 													  ">>  /+$" +
 													  PRICES[card.strIngredient1] +
+													  ".00"
+													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient2)
+													? "Double <<" +
+													  card.strIngredient2 +
+													  ">>  /+$" +
+													  PRICES[card.strIngredient2] +
+													  ".00"
+													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient3)
+													? "Double <<" +
+													  card.strIngredient3 +
+													  ">>  /+$" +
+													  PRICES[card.strIngredient3] +
+													  ".00"
+													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient4)
+													? "Double <<" +
+													  card.strIngredient4 +
+													  ">>  /+$" +
+													  PRICES[card.strIngredient4] +
+													  ".00"
+													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient5)
+													? "Double <<" +
+													  card.strIngredient5 +
+													  ">>  /+$" +
+													  PRICES[card.strIngredient5] +
+													  ".00"
+													: "Double <<" +
+													  card.strIngredient6 +
+													  ">>  /+$" +
+													  PRICES[card.strIngredient6] +
 													  ".00"}
 											</Button>
 										)}
