@@ -1,228 +1,244 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Button, Badge } from "@material-ui/core";
+import { AppBar, Toolbar } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
+import { Typography, Button, Badge } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
-import { CartContext } from "../context/CartContext";
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import HomeIcon from "@material-ui/icons/Home";
+import { readOnValue } from "../firebase/crudoperations";
 import THEMES from "../consts/THEMES";
 
+export default function MenuAppBar({
+  popularIngsSwitch,
+  popularCocktailsSwitch,
+}) {
+  const classes = THEMES();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [itemQty, setitemQty] = useState(0);
 
-export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }) {
-	const classes = THEMES();
-	const [anchorEl, setAnchorEl] = useState(null);
-	const open = Boolean(anchorEl);
-	const [, setError] = useState("");
-	const { currentUser, logout } = useContext(MainContext);
-	const navigate = useNavigate();
-	const { cart } = useContext(CartContext);
+  const open = Boolean(anchorEl);
+  const [, setError] = useState("");
+  const { currentUser, logout } = useContext(MainContext);
+  const navigate = useNavigate();
 
-	const handleMenu = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
+  useEffect(() => {
+    const qty =
+      currentUser &&
+      readOnValue(
+        `users/${currentUser.uid}/orders`,
+        (value) =>
+          value &&
+          Object.entries(value).reduce(
+            (prev, curr) => prev + curr[1].quantity,
+            0
+          )
+      );
+    setitemQty(qty);
+  });
 
-	const handleClose = () => {
-		setAnchorEl(null);
-	};
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-	async function handleLogout() {
-		setError("");
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-		try {
-			await logout();
-			navigate("/");
-		} catch {
-			setError("Failed to Log out");
-		}
-	}
+  async function handleLogout() {
+    setError("");
 
-	return (
-		<div className={classes.rootnav}>
-			<AppBar style={{ backgroundColor: "#4052b5", color: "white" }}>
-				<Toolbar>
-					<IconButton
-						edge="start"
-						className={classes.menuButton}
-						color="inherit"
-						aria-label="menu"
-					>
-						<MenuIcon />
-					</IconButton>
-					<IconButton
-						className={classes.title}
-						onClick={() => {
-							navigate("/");
-						}}
-					>
-						<HomeIcon />
-						Home
-					</IconButton>
-					<IconButton
-						className={classes.title}
-						onClick={() => {
-							navigate("/");
-							popularCocktailsSwitch();
-						}}
-					>
-						<img
-							alt="icon"
-							style={{ width: "45px", borderRadius: "30%" }}
-							src="/images/icon.png"
-						/>{" "}
-						Popular Cocktails
-					</IconButton>
-					<IconButton
-						className={classes.title}
-						onClick={() => {
-							navigate("/");
-							popularIngsSwitch();
-						}}
-					>
-						<img
-							alt="icon"
-							style={{ width: "60px", borderRadius: "30%" }}
-							src="https://thecocktaildb.com/images/ingredients/Baileys irish cream.png"
-						/>{" "}
-						Popular Ingredients
-					</IconButton>
-					<IconButton
-						style={{ background: "#4052b5" }}
-						className={classes.title}
-						onClick={() => {
-							navigate("/cocktail-builder");
-						}}
-					>
-						<img
-							alt="icon"
-							style={{ width: "60px", borderRadius: "30%" }}
-							src="/images/icon2.jpg"
-						/>{" "}
-						Cocktail Builder
-					</IconButton>
+    try {
+      await logout();
+      navigate("/");
+    } catch {
+      setError("Failed to Log out");
+    }
+  }
 
-					<div className={classes.search}>
-						<div className={classes.searchIcon}>
-							<SearchIcon />
-						</div>
-						<InputBase
-							placeholder="Search…"
-							classes={{
-								root: classes.inputRoot,
-								input: classes.inputInput,
-							}}
-							inputProps={{ "aria-label": "search" }}
-						/>
-					</div>
-					<div>
-						<Typography variant="h6" className={classes.title}>
-							{`Hello : ${currentUser ? currentUser.displayName : "Guest"}`}
-						</Typography>
+  return (
+    <div className={classes.rootnav}>
+      <AppBar style={{ backgroundColor: "#4052b5", color: "white" }}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+          >
+            <MenuIcon />
+          </IconButton>
+          <IconButton
+            className={classes.title}
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            <HomeIcon />
+            Home
+          </IconButton>
+          <IconButton
+            className={classes.title}
+            onClick={() => {
+              navigate("/");
+              popularCocktailsSwitch();
+            }}
+          >
+            <img
+              alt="icon"
+              style={{ width: "45px", borderRadius: "30%" }}
+              src="/images/icon.png"
+            />{" "}
+            Popular Cocktails
+          </IconButton>
+          <IconButton
+            className={classes.title}
+            onClick={() => {
+              navigate("/");
+              popularIngsSwitch();
+            }}
+          >
+            <img
+              alt="icon"
+              style={{ width: "60px", borderRadius: "30%" }}
+              src="https://thecocktaildb.com/images/ingredients/Baileys irish cream.png"
+            />{" "}
+            Popular Ingredients
+          </IconButton>
+          <IconButton
+            style={{ background: "#4052b5" }}
+            className={classes.title}
+            onClick={() => {
+              navigate("/cocktail-builder");
+            }}
+          >
+            <img
+              alt="icon"
+              style={{ width: "60px", borderRadius: "30%" }}
+              src="/images/icon2.jpg"
+            />{" "}
+            Cocktail Builder
+          </IconButton>
 
-						{currentUser ? (
-							<Typography variant="h6" className={classes.title}>
-								{" "}
-								{"Email : " + currentUser.email}
-							</Typography>
-						) : null}
-					</div>
-					<div>
-						{!currentUser ? (
-							<>
-								<Button
-									className={classes.title}
-									color="inherit"
-									onClick={() => {
-										navigate("/login");
-									}}
-								>
-									Login
-								</Button>
-								<Button
-									className={classes.title}
-									color="inherit"
-									onClick={() => {
-										navigate("/signup");
-									}}
-								>
-									Sign up
-								</Button>
-							</>
-						) : (
-							<>
-								<IconButton
-									className={classes.title}
-									aria-label="account of current user"
-									aria-controls="menu-appbar"
-									aria-haspopup="true"
-									onClick={handleMenu}
-									color="inherit"
-								>
-									<AccountCircle />
-								</IconButton>
-								<Menu
-									id="menu-appbar"
-									anchorEl={anchorEl}
-									anchorOrigin={{
-										vertical: "top",
-										horizontal: "right",
-									}}
-									keepMounted
-									transformOrigin={{
-										vertical: "top",
-										horizontal: "right",
-									}}
-									open={open}
-									onClose={handleClose}
-								>
-									<MenuItem onClick={handleClose}>
-										<ReactLink
-											style={{ color: "#4052b5" }}
-											to="/update-profile"
-										>
-											Update Profile
-										</ReactLink>
-									</MenuItem>
-									<MenuItem onClick={handleClose}>
-										<ReactLink
-											style={{ color: "#4052b5" }}
-											onClick={handleLogout}
-											to="/"
-										>
-											Log Out
-										</ReactLink>
-									</MenuItem>
-								</Menu>
-							</>
-						)}
-					</div>
-					<div>
-						{currentUser ? (
-							<IconButton className={classes.title}>
-								<Badge
-									overlap="rectangular"
-									badgeContent={cart.reduce(
-										(current, elem) => current + elem.qty,
-										0
-									)}
-									color="secondary"
-								>
-									<ShoppingCartIcon
-										onClick={() => {
-											navigate("/shoping-card");
-										}}
-									/>
-								</Badge>
-							</IconButton>
-						) : (
-							""
-						)}
-					</div>
-				</Toolbar>
-			</AppBar>
-		</div>
-	);
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ "aria-label": "search" }}
+            />
+          </div>
+          <div>
+            <Typography variant="h6" className={classes.title}>
+              {`Hello : ${currentUser ? currentUser.displayName : "Guest"}`}
+            </Typography>
+
+            {currentUser ? (
+              <Typography variant="h6" className={classes.title}>
+                {" "}
+                {"Email : " + currentUser.email}
+              </Typography>
+            ) : null}
+          </div>
+          <div>
+            {!currentUser ? (
+              <>
+                <Button
+                  className={classes.title}
+                  color="inherit"
+                  onClick={() => {
+                    navigate("/login");
+                  }}
+                >
+                  Login
+                </Button>
+                <Button
+                  className={classes.title}
+                  color="inherit"
+                  onClick={() => {
+                    navigate("/signup");
+                  }}
+                >
+                  Sign up
+                </Button>
+              </>
+            ) : (
+              <>
+                <IconButton
+                  className={classes.title}
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <ReactLink
+                      style={{ color: "#4052b5" }}
+                      to="/update-profile"
+                    >
+                      Update Profile
+                    </ReactLink>
+                  </MenuItem>
+                  <MenuItem onClick={handleClose}>
+                    <ReactLink
+                      style={{ color: "#4052b5" }}
+                      onClick={handleLogout}
+                      to="/"
+                    >
+                      Log Out
+                    </ReactLink>
+                  </MenuItem>
+                </Menu>
+              </>
+            )}
+          </div>
+          <div>
+            {currentUser ? (
+              <IconButton className={classes.title}>
+                <Badge
+                  overlap="rectangular"
+                  badgeContent={itemQty > 0 ? itemQty : null}
+                  color="secondary"
+                >
+                  <ShoppingCartIcon
+                    onClick={() => {
+                      navigate("/shoping-card");
+                    }}
+                  />
+                </Badge>
+              </IconButton>
+            ) : (
+              ""
+            )}
+          </div>
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import auth from "../fire";
+import { auth } from "../firebase/setup";
 import "firebase/compat/auth";
 import { updateProfile } from "firebase/auth";
 import MainContext from "../context/MainContext";
+import { write } from "../firebase/crudoperations";
 
 export default function Auth({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -11,7 +12,16 @@ export default function Auth({ children }) {
 
   function signup(email, password, displayName) {
     if (displayName.length > 0) setName(displayName);
-    return auth.createUserWithEmailAndPassword(email, password, displayName);
+    auth
+      .createUserWithEmailAndPassword(email, password, displayName)
+      .then((userCredential) => {
+        const userId = userCredential.user.uid;
+        const payload = {
+          name: userCredential.user.displayName,
+          orders: {},
+        };
+        write(`users/${userId}`, payload);
+      });
   }
 
   function login(email, password) {
