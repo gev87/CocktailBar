@@ -7,18 +7,18 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
-import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import HomeIcon from "@material-ui/icons/Home";
 import { readOnValue } from "../firebase/crudoperations";
 import THEMES from "../consts/THEMES";
+
 export default function MenuAppBar({
   popularIngsSwitch,
   popularCocktailsSwitch,
 }) {
   const classes = THEMES();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [itemQty, setitemQty] = useState(null);
+  const [itemQty, setitemQty] = useState();
 
   const open = Boolean(anchorEl);
   const [, setError] = useState("");
@@ -37,7 +37,7 @@ export default function MenuAppBar({
             0
           )
       );
-    setitemQty(qty === 0 ? null : qty);
+    qty > 0 && setitemQty(qty);
   });
 
   const handleMenu = (event) => {
@@ -223,7 +223,7 @@ export default function MenuAppBar({
               <IconButton className={classes.title}>
                 <Badge
                   overlap="rectangular"
-                  //badgeContent={itemQty}
+                  badgeContent={itemQty}
                   color="secondary"
                 >
                   <ShoppingCartIcon

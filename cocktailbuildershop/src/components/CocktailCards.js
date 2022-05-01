@@ -24,38 +24,6 @@ export default function CocktailCards() {
   const [popularIngs, setPopularIngs] = useState(true);
   const [popularCocktails, setPopularCocktails] = useState(true);
 
-  const addItemToCart = (card, func) => {
-    currentUser &&
-      readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
-        (value) => {
-          const item =
-            value &&
-            Object.entries(value).find(
-              (e) =>
-                e[1].order.idDrink ===
-                (func ? func(card).idDrink : card.idDrink)
-            );
-          !item
-            ? writeAsync(`users/${currentUser.uid}/orders`, {
-                order: func ? func(card) : card,
-                quantity: 1,
-              })
-            : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
-                quantity: ++item[1].quantity,
-              });
-        }
-      );
-  };
-
-  const onDouble = (item) => {
-    return {
-      ...item,
-      idDrink: item.idDrink + "double",
-      strDrink: item.strDrink + " DOUBLE",
-      price: item.price + PRICES[item.strIngredient1],
-    };
-  };
-
   useEffect(() => {
     let each = [];
     let letters = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -130,6 +98,38 @@ export default function CocktailCards() {
       setShow(popularCocktails);
     }
   }, [data, popularCocktails]);
+
+  const addItemToCart = (card, func) => {
+    currentUser &&
+      readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+        (value) => {
+          const item =
+            value &&
+            Object.entries(value).find(
+              (e) =>
+                e[1].order.idDrink ===
+                (func ? func(card).idDrink : card.idDrink)
+            );
+          !item
+            ? writeAsync(`users/${currentUser.uid}/orders`, {
+                order: func ? func(card) : card,
+                quantity: 1,
+              })
+            : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+                quantity: ++item[1].quantity,
+              });
+        }
+      );
+  };
+
+  const onDouble = (item) => {
+    return {
+      ...item,
+      idDrink: item.idDrink + "double",
+      strDrink: item.strDrink + " DOUBLE",
+      price: item.price + PRICES[item.strIngredient1],
+    };
+  };
 
   function filterByIngredient(i) {
     setIng(i);

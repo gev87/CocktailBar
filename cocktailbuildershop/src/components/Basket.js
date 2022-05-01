@@ -22,7 +22,7 @@ export default function Basket() {
     const value =
       currentUser &&
       readOnValue(`users/${currentUser.uid}/orders`, (item) => item);
-    setCart(value && Object.entries(value));
+    setCart(Object.entries(value));
   });
 
   const addItemToCart = (card, func) => {
