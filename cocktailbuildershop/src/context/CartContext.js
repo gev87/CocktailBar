@@ -5,6 +5,7 @@ export const CartContext = createContext();
 
 export const CartProvider = (props) => {
 	const [cart,setCart] = useState([]);
+	const [filteredApi, setFilteredApi] = useState([])
 		
 
 	const onAdd = (item) => {
@@ -35,7 +36,7 @@ export const CartProvider = (props) => {
 	
 
 	return (
-		<CartContext.Provider value={{ cart, setCart, onAdd, onRemove }}>
+		<CartContext.Provider value={{ cart, setCart, onAdd, onRemove, filteredApi, setFilteredApi }}>
 			{props.children}
 		</CartContext.Provider>
 	);

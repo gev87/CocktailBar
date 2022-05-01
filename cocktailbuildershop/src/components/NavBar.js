@@ -9,6 +9,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import MenuDrawer from "./MenuDrawer";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -73,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function MenuAppBar() {
+export default function NavBar() {
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
@@ -81,6 +82,7 @@ export default function MenuAppBar() {
 	const { currentUser, logout } = useContext(MainContext);
 	const navigate = useNavigate();
 	const { cart } = useContext(CartContext);
+	const [openMenu, setOpenMenu] = useState(false);
 
 
 	const handleMenu = (event) => {
@@ -110,6 +112,7 @@ export default function MenuAppBar() {
 						className={classes.menuButton}
 						color="inherit"
 						aria-label="menu"
+						onClick={() => setOpenMenu(true)}
 					>
 						<MenuIcon />
 					</IconButton>
@@ -214,6 +217,10 @@ export default function MenuAppBar() {
 					</div>
 				</Toolbar>
 			</AppBar>
+			<MenuDrawer
+				open={openMenu}
+				close={() => setOpenMenu(false)}
+			/>
 		</div>
 	);
 }
