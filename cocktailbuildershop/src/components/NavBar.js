@@ -18,7 +18,7 @@ export default function MenuAppBar({
 }) {
   const classes = THEMES();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [itemQty, setitemQty] = useState();
+  const [itemQty, setitemQty] = useState(0);
 
   const open = Boolean(anchorEl);
   const [, setError] = useState("");
@@ -37,7 +37,7 @@ export default function MenuAppBar({
             0
           )
       );
-    qty > 0 && setitemQty(qty);
+    setitemQty(qty);
   });
 
   const handleMenu = (event) => {
@@ -223,7 +223,7 @@ export default function MenuAppBar({
               <IconButton className={classes.title}>
                 <Badge
                   overlap="rectangular"
-                  badgeContent={itemQty}
+                  badgeContent={itemQty > 0 ? itemQty : null}
                   color="secondary"
                 >
                   <ShoppingCartIcon
