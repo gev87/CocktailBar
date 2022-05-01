@@ -8,147 +8,154 @@ import CustomSwiper from "./CustomSwiper";
 import MainContext from "../context/MainContext";
 import NavBar from "./NavBar";
 import NONALCOHOLIC from "../consts/NONALCOHOLIC";
+import ImgDialog from "./ImgDialog";
+import {CartContext} from '../context/CartContext'
 import {
-  writeAsync,
-  readOnceGet,
-  updateAsync,
+	writeAsync,
+	readOnceGet,
+	updateAsync,
 } from "../firebase/crudoperations";
 
 export default function CocktailCards() {
-  const classes = THEMES();
-  const [data, setData] = useState([]);
-  const { currentUser } = useContext(MainContext);
-  const [show, setShow] = useState([]);
-  const [ing, setIng] = useState();
-  const [header, setHeader] = useState("MOST POPULAR COCKTAILS");
-  const [popularIngs, setPopularIngs] = useState(true);
-  const [popularCocktails, setPopularCocktails] = useState(true);
+	const classes = THEMES();
+	const [data, setData] = useState([]);
+	const { currentUser } = useContext(MainContext);
+	const [show, setShow] = useState([]);
+	const [ing, setIng] = useState();
+	const [header, setHeader] = useState("MOST POPULAR COCKTAILS");
+	const [popularIngs, setPopularIngs] = useState(true);
+	const [popularCocktails, setPopularCocktails] = useState(true);
+	const { filteredApi, setFilteredApi } = useContext(CartContext);
+	const [selectItem, setSelectItem] = useState("");
+	const [openDlg1Dialog, setDialog1Open] = useState(false);
 
-  useEffect(() => {
-    let each = [];
-    let letters = "abcdefghijklmnopqrstuvwxyz0123456789";
-    let urls = [];
-    for (let letter of letters) {
-      urls.push(
-        "https://thecocktaildb.com/api/json/v1/1/search.php?f=" + letter
-      );
-    }
-    let requests = urls.map((url) => fetch(url));
-    Promise.all(requests)
-      .then((responses) => Promise.all(responses.map((item) => item.json())))
-      .then((items) => {
-        items.forEach((item) => {
-          if (item.drinks !== null) each = each.concat(item.drinks);
-        });
-        for (let cocktail of each) {
-          let ingPrice1 = PRICES.hasOwnProperty(cocktail.strIngredient1)
-            ? PRICES[cocktail.strIngredient1]
-            : 3;
-          let ingPrice2 = PRICES.hasOwnProperty(cocktail.strIngredient2)
-            ? PRICES[cocktail.strIngredient2]
-            : 3;
-          let ingPrice3 = PRICES.hasOwnProperty(cocktail.strIngredient3)
-            ? PRICES[cocktail.strIngredient3]
-            : cocktail.strIngredient3 === null
-            ? 0
-            : 3;
-          let ingPrice4 = PRICES.hasOwnProperty(cocktail.strIngredient4)
-            ? PRICES[cocktail.strIngredient4]
-            : cocktail.strIngredient4 === null
-            ? 0
-            : 3;
-          let ingPrice5 = PRICES.hasOwnProperty(cocktail.strIngredient5)
-            ? PRICES[cocktail.strIngredient5]
-            : cocktail.strIngredient5 === null
-            ? 0
-            : 3;
-          let ingPrice6 = PRICES.hasOwnProperty(cocktail.strIngredient6)
-            ? PRICES[cocktail.strIngredient6]
-            : cocktail.strIngredient6 === null
-            ? 0
-            : 3;
-          cocktail.price =
-            ingPrice1 +
-            ingPrice2 +
-            ingPrice3 +
-            ingPrice4 +
-            ingPrice5 +
-            ingPrice6;
-        }
-        setPopularCocktails([
-          each[66],
-          each[84],
-          each[275],
-          each[228],
-          each[51],
-          each[47],
-          each[256],
-          each[268],
-          each[237],
-          each[96],
-          each[405],
-          each[236],
-        ]);
-        setData(each);
-      });
-  }, []);
+	useEffect(() => {
+		let each = [];
+		let letters = "abcdefghijklmnopqrstuvwxyz0123456789";
+		let urls = [];
+		for (let letter of letters) {
+			urls.push(
+				"https://thecocktaildb.com/api/json/v1/1/search.php?f=" + letter
+			);
+		}
+		let requests = urls.map((url) => fetch(url));
+		Promise.all(requests)
+			.then((responses) => Promise.all(responses.map((item) => item.json())))
+			.then((items) => {
+				items.forEach((item) => {
+					if (item.drinks !== null) each = each.concat(item.drinks);
+				});
+				for (let cocktail of each) {
+					let ingPrice1 = PRICES.hasOwnProperty(cocktail.strIngredient1)
+						? PRICES[cocktail.strIngredient1]
+						: 3;
+					let ingPrice2 = PRICES.hasOwnProperty(cocktail.strIngredient2)
+						? PRICES[cocktail.strIngredient2]
+						: 3;
+					let ingPrice3 = PRICES.hasOwnProperty(cocktail.strIngredient3)
+						? PRICES[cocktail.strIngredient3]
+						: cocktail.strIngredient3 === null
+							? 0
+							: 3;
+					let ingPrice4 = PRICES.hasOwnProperty(cocktail.strIngredient4)
+						? PRICES[cocktail.strIngredient4]
+						: cocktail.strIngredient4 === null
+							? 0
+							: 3;
+					let ingPrice5 = PRICES.hasOwnProperty(cocktail.strIngredient5)
+						? PRICES[cocktail.strIngredient5]
+						: cocktail.strIngredient5 === null
+							? 0
+							: 3;
+					let ingPrice6 = PRICES.hasOwnProperty(cocktail.strIngredient6)
+						? PRICES[cocktail.strIngredient6]
+						: cocktail.strIngredient6 === null
+							? 0
+							: 3;
+					cocktail.price =
+						ingPrice1 +
+						ingPrice2 +
+						ingPrice3 +
+						ingPrice4 +
+						ingPrice5 +
+						ingPrice6;
+				}
+				setPopularCocktails([
+					each[66],
+					each[84],
+					each[275],
+					each[228],
+					each[51],
+					each[47],
+					each[256],
+					each[268],
+					each[237],
+					each[96],
+					each[405],
+					each[236],
+				]);
+				setData(each);
+			});
+	}, []);
 
-  useEffect(() => {
-    if (data.length) {
-      setShow(popularCocktails);
-    }
-  }, [data, popularCocktails]);
+	useEffect(() => {
+		if (filteredApi.length) {
+			setShow(filteredApi)
+		} else if (data.length) {
+			setShow(popularCocktails);
+		}
+	}, [data, popularCocktails, filteredApi]);
 
-  const addItemToCart = (card, func) => {
-    currentUser &&
-      readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
-        (value) => {
-          const item =
-            value &&
-            Object.entries(value).find(
-              (e) =>
-                e[1].order.idDrink ===
-                (func ? func(card).idDrink : card.idDrink)
-            );
-          !item
-            ? writeAsync(`users/${currentUser.uid}/orders`, {
-                order: func ? func(card) : card,
-                quantity: 1,
-              })
-            : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
-                quantity: ++item[1].quantity,
-              });
-        }
-      );
-  };
+	const addItemToCart = (card, func) => {
+		currentUser &&
+			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+				(value) => {
+					const item =
+						value &&
+						Object.entries(value).find(
+							(e) =>
+								e[1].order.idDrink ===
+								(func ? func(card).idDrink : card.idDrink)
+						);
+					!item
+						? writeAsync(`users/${currentUser.uid}/orders`, {
+							order: func ? func(card) : card,
+							quantity: 1,
+						})
+						: updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+							quantity: ++item[1].quantity,
+						});
+				}
+			);
+	};
 
-  const onDouble = (item) => {
-    return {
-      ...item,
-      idDrink: item.idDrink + "double",
-      strDrink: item.strDrink + " DOUBLE",
-      price: item.price + PRICES[item.strIngredient1],
-    };
-  };
+	const onDouble = (item) => {
+		return {
+			...item,
+			idDrink: item.idDrink + "double",
+			strDrink: item.strDrink + " DOUBLE",
+			price: item.price + PRICES[item.strIngredient1],
+		};
+	};
 
-  function filterByIngredient(i) {
-    setIng(i);
-    setHeader("Cocktails Maid of " + i);
-    let filtereddata = [];
-    for (let cocktail of data) {
-      if (
-        [
-          cocktail.strIngredient1,
-          cocktail.strIngredient2,
-          cocktail.strIngredient3,
-          cocktail.strIngredient4,
-        ].includes(i)
-      ) {
-        filtereddata = filtereddata.concat(cocktail);
-      }
-    }
-    setShow(filtereddata);
-  }
+	function filterByIngredient(i) {
+		setIng(i);
+		setHeader("Cocktails Maid of " + i);
+		let filtereddata = [];
+		for (let cocktail of data) {
+			if (
+				[
+					cocktail.strIngredient1,
+					cocktail.strIngredient2,
+					cocktail.strIngredient3,
+					cocktail.strIngredient4,
+				].includes(i)
+			) {
+				filtereddata = filtereddata.concat(cocktail);
+			}
+		}
+		setShow(filtereddata);
+	}
 
   function popularIngsSwitch() {
     popularIngs ? setPopularIngs(false) : setPopularIngs(true);
@@ -186,6 +193,7 @@ export default function CocktailCards() {
                       className={classes.cardMedia}
                       image={card.strDrinkThumb}
                       title={card.strDrink}
+							 onClick={() => {setSelectItem(card); setDialog1Open(true)}}
                     />
                     <CardContent className={classes.cardContent}>
                       <Typography gutterBottom variant="h5" component="h2">
@@ -274,6 +282,11 @@ export default function CocktailCards() {
               ))}
             </Grid>
           </Container>
+			 <ImgDialog
+						open={openDlg1Dialog}
+						close={() => setDialog1Open(false)}
+						data={selectItem}
+					/>
         </div>
       </main>
     </>
