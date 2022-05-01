@@ -118,6 +118,7 @@ export default function Basket() {
             {cart.map((it) => {
               let card = it[1].order;
               let qty = it[1].quantity;
+              let price = it[1].price;
               return (
                 <Grid item key={it[0]} xs={12} sm={6} md={4}>
                   <Card className={classes.card}>
@@ -190,7 +191,7 @@ export default function Basket() {
                       </Button>
                       <Grid item>
                         <Typography variant="button">
-                          ${(card.qty * card.price).toFixed(2)}
+                          ${(qty * card.price).toFixed(2)}
                         </Typography>
                       </Grid>
                       .
