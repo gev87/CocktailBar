@@ -1,55 +1,18 @@
 import React, { useContext, useRef, useState } from "react";
-//import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import MainContext from "../context/MainContext";
-//import { Link,useNavigate,Navigate } from "react-router-dom";
 import { Button, CssBaseline, Avatar, TextField } from "@material-ui/core";
 import { FormControlLabel, Link, Grid, Box } from "@material-ui/core";
-import { Typography, Container, makeStyles, Checkbox } from "@material-ui/core";
+import { Typography, Container, Checkbox } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Alert from "@material-ui/lab/Alert";
+import Footer from "./Footer";
+import THEMES from "../consts/THEMES";
 
-function Copyright() {
-	return (
-		<Typography variant="body2" color="textSecondary" align="center">
-			{"Copyright © "}
-			<Link color="inherit" href="/">
-				Cocktail Menu
-			</Link>{" "}
-			{new Date().getFullYear()}
-			{"."}
-		</Typography>
-	);
-}
 
-const useStyles = makeStyles((theme) => ({
-	paper: {
-		marginTop: theme.spacing(8),
-		display: "flex",
-		flexDirection: "column",
-		alignItems: "center",
-	},
-	avatar: {
-		margin: theme.spacing(1),
-		backgroundColor: theme.palette.secondary.main,
-	},
-	form: {
-		width: "100%", // Fix IE 11 issue.
-		marginTop: theme.spacing(3),
-	},
-	submit: {
-		margin: theme.spacing(3, 0, 2),
-	},
-	root: {
-		width: "100%",
-		"& > * + *": {
-			marginTop: theme.spacing(2),
-		},
-	},
-}));
 
 export default function UpdateProfile() {
-	const classes = useStyles();
+	const classes = THEMES();
 	const emailRef = useRef();
 	const passwordRef = useRef();
 	const passwordConfirmRef = useRef();
@@ -104,7 +67,7 @@ export default function UpdateProfile() {
 		<Container onSubmit={handleSubmit} component="main" maxWidth="xs">
 			<CssBaseline />
 			<div className={classes.paper}>
-				<Avatar className={classes.avatar}>
+				<Avatar className={classes.avatarblue}>
 					<LockOutlinedIcon />
 				</Avatar>
 				<Typography component="h1" variant="h5">
@@ -201,11 +164,7 @@ export default function UpdateProfile() {
 
 					<Grid container justifyContent="flex-end">
 						<Grid item>
-							<Link
-								href="/"
-								variant="body2"
-								style={{ paddingRight: "185px" }}
-							>
+							<Link href="/" variant="body2" style={{ paddingRight: "185px" }}>
 								Cancel
 							</Link>
 						</Grid>
@@ -213,7 +172,7 @@ export default function UpdateProfile() {
 				</form>
 			</div>
 			<Box mt={5}>
-				<Copyright />
+				<Footer />
 			</Box>
 		</Container>
 	);
