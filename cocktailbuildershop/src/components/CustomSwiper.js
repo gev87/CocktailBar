@@ -1,64 +1,86 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useMemo} from "react";
 // Import Swiper React components
-import { Swiper, SwiperSlide } from "swiper/react";
-
+import { Swiper,SwiperSlide } from "swiper/react";
+import { Typography } from "@material-ui/core";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
-
 import "../styles.css";
-
+import "swiper/css/navigation";
 // import required modules
-import { EffectCoverflow, Pagination } from "swiper";
+import { EffectCoverflow, Pagination,Navigation } from "swiper";
 
-export default function CustomSwiper() {
-	const latter = ['s']
-	const [itemData, setItemData] = useState([]);
+export default function CustomSwiper({filterByIngredient}) {
+	const ingredients = useMemo(
+		() => [
+			"Baileys irish cream",
+			"Vodka",
+			"Gin",
+			"Rum",
+			"Whiskey",
+			"Absolut Vodka",
+			"White Rum",
+			"Tequila",
+			"Scotch",
+			"Amaretto",
+			"Absolut Citron",
+			"Apricot brandy",
+			"Campari",
+			"Malibu rum",
+		],
+		[]
+	);
 
 
-	useEffect(() => {
-		const asd = []
-		for (let elem of latter) {
-			fetch(`https://thecocktaildb.com/api/json/v1/1/search.php?s=${elem}`)
-				.then((result) => result.json())
-				.then((data) => {
-					data.drinks ? asd.push(...data.drinks) : asd.push(...data.drinks.drinks)
-					if (elem === 's') {
-						setItemData(asd)
-					}
-				});
-		}
-	}, []);
 	return (
-		<>
+		<div style={{ backgroundColor: "black", color: "#4052b5" }}>
+			<Typography variant="h5" align="center" paragraph>
+				POPULAR INGREDIENTS
+			</Typography>
+
 			<Swiper
+				style={{ backgroundColor: "#4052b5" }}
 				loop={true}
+				// zoom={true}
 				effect={"coverflow"}
 				grabCursor={true}
 				centeredSlides={true}
 				centeredSlidesBounds={true}
-				slidesPerView={4}
+				slidesPerView={5}
 				spaceBetween={50}
-				scrollbar= {{
-					el: '.swiper-scrollbar',
-					draggable: true,}}
+				scrollbar={{
+					el: ".swiper-scrollbar",
+					draggable: true,
+				}}
 				coverflowEffect={{
 					rotate: 0,
 					stretch: 0,
-					depth: 100,
+					depth: 200,
 					modifier: 1,
 					slideShadows: true,
 				}}
-				//   pagination={true}
-				modules={[EffectCoverflow, Pagination]}
+				pagination={{
+					clickable: true,
+				}}
+				navigation={true}
+				
+				modules={[EffectCoverflow, Pagination, Navigation]}
 				className="mySwiper"
 			>
-				{itemData.map((item) => {
-					return <SwiperSlide key={item.idDrink}><img src={item.strDrinkThumb} /></SwiperSlide>
+				{ingredients.map((ingredient, index) => {
+					return (
+					
+						<SwiperSlide key={ingredient + index}>
+								<img
+									onClick={() => filterByIngredient(ingredient)}
+									alt="background"
+									src={`https://thecocktaildb.com/images/ingredients/${ingredient}.png`}
+							/>
+							</SwiperSlide>
+					);
 				})}
-				
-			</Swiper>
-		</>
+				</Swiper>
+		</div>
 	);
 }

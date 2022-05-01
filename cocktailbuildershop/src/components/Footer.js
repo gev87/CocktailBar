@@ -1,12 +1,5 @@
-import { Link, makeStyles, Typography } from "@material-ui/core";
-
-
-const useStyles = makeStyles((theme) => ({
-	footer: {
-		backgroundColor: theme.palette.background.paper,
-		padding: theme.spacing(6),
-	},
-}));
+import { Link, Typography } from "@material-ui/core";
+import THEMES from "../consts/THEMES";
 
 function Copyright() {
 	return (
@@ -23,21 +16,10 @@ function Copyright() {
 
 
 export default function Footer() {
-	const classes = useStyles();
+	const classes = THEMES();
 	return (
 		<div>
 				<footer className={classes.footer}>
-				{/* <Typography variant="h6" align="center" gutterBottom>
-					Footer
-				</Typography>
-				<Typography
-					variant="subtitle1"
-					align="center"
-					color="textSecondary"
-					component="p"
-				>
-					Something here to give the footer a purpose!
-				</Typography> */}
 				<Copyright />
 			</footer>
 		</div>
