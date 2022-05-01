@@ -8,11 +8,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import MenuDrawer from "./MenuDrawer";
 import HomeIcon from "@material-ui/icons/Home";
 import THEMES from "../consts/THEMES";
-
-
+import MenuDrawer from "./MenuDrawer";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -83,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }) {
 	// const classes = THEMES();
 	const classes = useStyles();
+	// const classes = THEMES();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 	const [, setError] = useState("");

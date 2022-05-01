@@ -80,7 +80,7 @@ export default function CustomSwiper({filterByIngredient}) {
 							</SwiperSlide>
 					);
 				})}
-				</Swiper>
+			</Swiper>
 		</div>
 	);
 }

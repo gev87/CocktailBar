@@ -4,7 +4,7 @@ import PRICES from "../consts/PRICES"
 export const CartContext = createContext();
 
 export const CartProvider = (props) => {
-	const [cart, setCart] = useState([]);
+	const [cart,setCart] = useState([]);
 	const [filteredApi, setFilteredApi] = useState([])
 
 	const onAdd = (item) => {

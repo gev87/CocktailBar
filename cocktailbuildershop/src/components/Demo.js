@@ -5,7 +5,6 @@ import Footer from "./Footer";
 import ListImage from './ListImage'
 
 export default function Demo() {
-
 	return (
 		<>
 			{/* <CustomSwiper/> */}
