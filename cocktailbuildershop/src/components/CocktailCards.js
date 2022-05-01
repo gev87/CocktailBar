@@ -10,6 +10,7 @@ import CustomSwiper from "./CustomSwiper";
 import MainContext from "../context/MainContext";
 import NavBar from "./NavBar"
 import NONALCOHOLIC from "../consts/NONALCOHOLIC";
+import ImgDialog from "./ImgDialog";
 
 
 
@@ -24,24 +25,28 @@ export default function CocktailCards() {
 	const { onAdd, onDouble } = useContext(CartContext);
 	// const [currentPage, setCurrentPage] = useState(1);
 	// const [itemsPerPage] = useState(48);
-	const [show,setShow] = useState([]);
-	const [ing,setIng] = useState();
+	const [show, setShow] = useState([]);
+	const [ing, setIng] = useState();
 	const { currentUser } = useContext(MainContext)
-	const [header,setHeader] = useState("MOST POPULAR COCKTAILS");
-	const [popularIngs,setPopularIngs] = useState(true);
+	const [header, setHeader] = useState("MOST POPULAR COCKTAILS");
+	const [popularIngs, setPopularIngs] = useState(true);
 	const [popularCocktails, setPopularCocktails] = useState(true);
+	const { filteredApi, setFilteredApi } = useContext(CartContext);
+	const [selectItem, setSelectItem] = useState("");
+	const [openDlg1Dialog, setDialog1Open] = useState(false);
 
-	
-	useEffect(()=>{
-    let each = [];
+
+	useEffect(() => {
+		let each = [];
 		let letters = "abcdefghijklmnopqrstuvwxyz0123456789";
-    let urls = [];
-    for (let letter of letters) {
-        urls.push(
-            "https://thecocktaildb.com/api/json/v1/1/search.php?f=" + letter
-        );
-    }
-    let requests = urls.map((url) => fetch(url));
+		let urls = [];
+		for (let letter of letters) {
+			urls.push(
+				"https://thecocktaildb.com/api/json/v1/1/search.php?f=" + letter
+			);
+		}
+
+		let requests = urls.map((url) => fetch(url));
 		Promise.all(requests)
 			.then((responses) => Promise.all(responses.map((item) => item.json())))
 			.then((items) => {
@@ -68,13 +73,13 @@ export default function CocktailCards() {
 					let ingPrice5 = PRICES.hasOwnProperty(cocktail.strIngredient5)
 						? PRICES[cocktail.strIngredient5]
 						: cocktail.strIngredient5 === null
-						? 0
+							? 0
 							: 3;
 					let ingPrice6 = PRICES.hasOwnProperty(cocktail.strIngredient6)
 						? PRICES[cocktail.strIngredient6]
 						: cocktail.strIngredient6 === null
-						? 0
-						: 3;
+							? 0
+							: 3;
 					cocktail.price =
 						ingPrice1 +
 						ingPrice2 +
@@ -99,19 +104,22 @@ export default function CocktailCards() {
 				]);
 				setData(each);
 			});
-		
-	},[])
-	
+
+	}, [])
+
 	useEffect(() => {
-		if (data.length) {
+		if (filteredApi.length) {
+			setShow(filteredApi)
+		} else if (data.length) {
 			setShow(popularCocktails);
 		}
-	}, [data, popularCocktails]);
+	}, [data, popularCocktails, filteredApi]);
+
 
 
 	function filterByIngredient(i) {
 		setIng(i);
-		setHeader("Cocktails Maid of "+i)
+		setHeader("Cocktails Maid of " + i)
 		let filtereddata = [];
 		for (let cocktail of data) {
 			if (
@@ -127,7 +135,7 @@ export default function CocktailCards() {
 		}
 		setShow(filtereddata);
 	}
-	
+
 	function popularIngsSwitch() {
 		popularIngs ? setPopularIngs(false) : setPopularIngs(true);
 	}
@@ -150,7 +158,7 @@ export default function CocktailCards() {
 					popularCocktailsSwitch={popularCocktailsSwitch}
 				/>
 				<div style={{ backgroundColor: "#4052b5" }}>
-					<img alt="background" src="/images/cocktailbackground.jpg" />
+					<img alt="background" src="/images/cocktailbackground.jpg"/>
 				</div>
 				{popularIngs && (
 					<CustomSwiper filterByIngredient={(i) => filterByIngredient(i)} />
@@ -169,6 +177,7 @@ export default function CocktailCards() {
 											className={classes.cardMedia}
 											image={card.strDrinkThumb}
 											title={card.strDrink}
+											onClick={() => {setSelectItem(card); setDialog1Open(true)}}
 										/>
 										<CardContent className={classes.cardContent}>
 											<Typography gutterBottom variant="h5" component="h2">
@@ -187,40 +196,40 @@ export default function CocktailCards() {
 												{ing
 													? "Double <<" + ing + ">>  /+$" + PRICES[ing] + ".00"
 													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient1)
-													? "Double <<" +
-													  card.strIngredient1 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient1] +
-													  ".00"
-													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient2)
-													? "Double <<" +
-													  card.strIngredient2 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient2] +
-													  ".00"
-													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient3)
-													? "Double <<" +
-													  card.strIngredient3 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient3] +
-													  ".00"
-													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient4)
-													? "Double <<" +
-													  card.strIngredient4 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient4] +
-													  ".00"
-													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient5)
-													? "Double <<" +
-													  card.strIngredient5 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient5] +
-													  ".00"
-													: "Double <<" +
-													  card.strIngredient6 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient6] +
-													  ".00"}
+														? "Double <<" +
+														card.strIngredient1 +
+														">>  /+$" +
+														PRICES[card.strIngredient1] +
+														".00"
+														: !NONALCOHOLIC.hasOwnProperty(card.strIngredient2)
+															? "Double <<" +
+															card.strIngredient2 +
+															">>  /+$" +
+															PRICES[card.strIngredient2] +
+															".00"
+															: !NONALCOHOLIC.hasOwnProperty(card.strIngredient3)
+																? "Double <<" +
+																card.strIngredient3 +
+																">>  /+$" +
+																PRICES[card.strIngredient3] +
+																".00"
+																: !NONALCOHOLIC.hasOwnProperty(card.strIngredient4)
+																	? "Double <<" +
+																	card.strIngredient4 +
+																	">>  /+$" +
+																	PRICES[card.strIngredient4] +
+																	".00"
+																	: !NONALCOHOLIC.hasOwnProperty(card.strIngredient5)
+																		? "Double <<" +
+																		card.strIngredient5 +
+																		">>  /+$" +
+																		PRICES[card.strIngredient5] +
+																		".00"
+																		: "Double <<" +
+																		card.strIngredient6 +
+																		">>  /+$" +
+																		PRICES[card.strIngredient6] +
+																		".00"}
 											</Button>
 										)}
 										<CardActions>
@@ -265,6 +274,11 @@ export default function CocktailCards() {
 						/>
 					</div> */}
 					</Container>
+					<ImgDialog
+						open={openDlg1Dialog}
+						close={() => setDialog1Open(false)}
+						data={selectItem}
+					/>
 				</div>
 			</main>
 		</>
