@@ -1,17 +1,17 @@
 import React, { useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
-import { alpha, makeStyles, AppBar, Toolbar } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Button, Badge } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
-import { Typography, Button } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
 import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+
 import MenuDrawer from "./MenuDrawer";
 
-
+//////////
 const useStyles = makeStyles((theme) => ({
 	root: {
 		flexGrow: 1,
@@ -73,17 +73,24 @@ const useStyles = makeStyles((theme) => ({
 		},
 	},
 }));
-
+/////////////////////
 export default function NavBar() {
 	const classes = useStyles();
+
+import HomeIcon from "@material-ui/icons/Home";
+import THEMES from "../consts/THEMES";
+
+
+export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }) {
+	const classes = THEMES();
+
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
-	const [error, setError] = useState("");
+	const [, setError] = useState("");
 	const { currentUser, logout } = useContext(MainContext);
 	const navigate = useNavigate();
 	const { cart } = useContext(CartContext);
 	const [openMenu, setOpenMenu] = useState(false);
-
 
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -95,6 +102,7 @@ export default function NavBar() {
 
 	async function handleLogout() {
 		setError("");
+
 		try {
 			await logout();
 			navigate("/");
@@ -104,8 +112,8 @@ export default function NavBar() {
 	}
 
 	return (
-		<div className={classes.root}>
-			<AppBar style={{ backgroundColor: "#781187" }} position="fixed">
+		<div className={classes.rootnav}>
+			<AppBar style={{ backgroundColor: "#4052b5", color: "white" }}>
 				<Toolbar>
 					<IconButton
 						edge="start"
@@ -116,18 +124,57 @@ export default function NavBar() {
 					>
 						<MenuIcon />
 					</IconButton>
-					<Typography
-						variant="h6"
+					<IconButton
 						className={classes.title}
 						onClick={() => {
 							navigate("/");
 						}}
-						style={{
-							cursor: "pointer",
+					>
+						<HomeIcon />
+						Home
+					</IconButton>
+					<IconButton
+						className={classes.title}
+						onClick={() => {
+							navigate("/");
+							popularCocktailsSwitch();
 						}}
 					>
-						Home
-					</Typography>
+						<img
+							alt="icon"
+							style={{ width: "45px", borderRadius: "30%" }}
+							src="/images/icon.png"
+						/>{" "}
+						Popular Cocktails
+					</IconButton>
+					<IconButton
+						className={classes.title}
+						onClick={() => {
+							navigate("/");
+							popularIngsSwitch();
+						}}
+					>
+						<img
+							alt="icon"
+							style={{ width: "60px", borderRadius: "30%" }}
+							src="https://thecocktaildb.com/images/ingredients/Baileys irish cream.png"
+						/>{" "}
+						Popular Ingredients
+					</IconButton>
+					<IconButton
+						style={{ background: "#4052b5" }}
+						className={classes.title}
+						onClick={() => {
+							navigate("/cocktail-builder");
+						}}
+					>
+						<img
+							alt="icon"
+							style={{ width: "60px", borderRadius: "30%" }}
+							src="/images/icon2.jpg"
+						/>{" "}
+						Cocktail Builder
+					</IconButton>
 
 					<div className={classes.search}>
 						<div className={classes.searchIcon}>
@@ -143,19 +190,43 @@ export default function NavBar() {
 						/>
 					</div>
 					<div>
-						<Typography variant="h6" className={classes.title2}>
+						<Typography variant="h6" className={classes.title}>
 							{`Hello : ${currentUser ? currentUser.displayName : "Guest"}`}
 						</Typography>
+
+						{currentUser ? (
+							<Typography variant="h6" className={classes.title}>
+								{" "}
+								{"Email : " + currentUser.email}
+							</Typography>
+						) : null}
 					</div>
 					<div>
 						{!currentUser ? (
 							<>
-								<Button color="inherit" onClick={() => { navigate('/login') }}>Login</Button>
-								<Button color="inherit" onClick={() => { navigate('/signup') }}>Sing in</Button>
+								<Button
+									className={classes.title}
+									color="inherit"
+									onClick={() => {
+										navigate("/login");
+									}}
+								>
+									Login
+								</Button>
+								<Button
+									className={classes.title}
+									color="inherit"
+									onClick={() => {
+										navigate("/signup");
+									}}
+								>
+									Sign up
+								</Button>
 							</>
 						) : (
 							<>
 								<IconButton
+									className={classes.title}
 									aria-label="account of current user"
 									aria-controls="menu-appbar"
 									aria-haspopup="true"
@@ -180,10 +251,19 @@ export default function NavBar() {
 									onClose={handleClose}
 								>
 									<MenuItem onClick={handleClose}>
-										<ReactLink to="/update-profile">Update Profile</ReactLink>
+										<ReactLink
+											style={{ color: "#4052b5" }}
+											to="/update-profile"
+										>
+											Update Profile
+										</ReactLink>
 									</MenuItem>
 									<MenuItem onClick={handleClose}>
-										<ReactLink onClick={handleLogout} to="/">
+										<ReactLink
+											style={{ color: "#4052b5" }}
+											onClick={handleLogout}
+											to="/"
+										>
 											Log Out
 										</ReactLink>
 									</MenuItem>
@@ -193,24 +273,22 @@ export default function NavBar() {
 					</div>
 					<div>
 						{currentUser ? (
-							<>
-								<h6
-									style={{
-										paddingLeft: 7,
-										margin: 0,
-									}}
+							<IconButton className={classes.title}>
+								<Badge
+									overlap="rectangular"
+									badgeContent={cart.reduce(
+										(current, elem) => current + elem.qty,
+										0
+									)}
+									color="secondary"
 								>
-									{cart.reduce((current, elem) => current + elem.qty, 0)}
-								</h6>
-								<ShoppingCartIcon
-									style={{
-										paddingBottom: 13,
-									}}
-									onClick={() => {
-										navigate("/shoping-card");
-									}}
-								/>
-							</>
+									<ShoppingCartIcon
+										onClick={() => {
+											navigate("/shoping-card");
+										}}
+									/>
+								</Badge>
+							</IconButton>
 						) : (
 							""
 						)}
