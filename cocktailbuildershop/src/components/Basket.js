@@ -54,7 +54,6 @@ export default function Basket() {
     <React.Fragment>
       <NavBar />
       <main>
-        {/* Hero unit */}
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
             <Typography
@@ -125,7 +124,6 @@ export default function Basket() {
                         color="secondary"
                         variant="outlined"
                       >
-                        {/* <Typography style={{ color: "#f50057" }}>-</Typography> */}
                         <ShoppingCartIcon style={{ color: "#f50057" }} />
                         <Icon size="small" variant="secondary">
                           remove_circle
@@ -146,7 +144,6 @@ export default function Basket() {
                         <Icon size="small" style={{ color: "#6be909" }}>
                           add_circle
                         </Icon>
-                        {/* <Typography style={{ color: "#6be909" }}>+</Typography> */}
                       </Button>
                       <Grid item>
                         <Typography variant="button">

@@ -3,7 +3,7 @@ import { auth } from "../firebase/setup";
 import "firebase/compat/auth";
 import { updateProfile } from "firebase/auth";
 import MainContext from "../context/MainContext";
-import { write, update } from "../firebase/crudoperations";
+import { write } from "../firebase/crudoperations";
 
 export default function Auth({ children }) {
   const [currentUser, setCurrentUser] = useState(null);

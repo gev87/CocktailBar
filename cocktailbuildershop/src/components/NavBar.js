@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
-import { alpha, makeStyles, AppBar, Toolbar } from "@material-ui/core";
+import { AppBar, Toolbar } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
 import { Typography, Button, Badge } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -24,7 +24,6 @@ export default function MenuAppBar({
   const [, setError] = useState("");
   const { currentUser, logout } = useContext(MainContext);
   const navigate = useNavigate();
-  const { cart } = useContext(CartContext);
 
   useEffect(() => {
     const qty =

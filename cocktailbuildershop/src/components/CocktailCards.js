@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Button, Card, CardActions, CardContent } from "@material-ui/core";
 import { CardMedia, Grid, Typography, Container } from "@material-ui/core";
-import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
-import Pages from "./Pages";
 import PRICES from "../consts/PRICES";
 import THEMES from "../consts/THEMES";
 import CustomSwiper from "./CustomSwiper";
@@ -20,8 +18,6 @@ export default function CocktailCards() {
   const classes = THEMES();
   const [data, setData] = useState([]);
   const { currentUser } = useContext(MainContext);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(12);
   const [show, setShow] = useState([]);
   const [ing, setIng] = useState();
   const [header, setHeader] = useState("MOST POPULAR COCKTAILS");
@@ -163,11 +159,6 @@ export default function CocktailCards() {
     setShow(popularCocktails);
   }
 
-  // const indexOfLastItem = currentPage * itemsPerPage;
-  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // const currentItems = show.slice(indexOfFirstItem, indexOfLastItem);
-  // const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   return (
     <>
       <main>
@@ -282,14 +273,6 @@ export default function CocktailCards() {
                 </Grid>
               ))}
             </Grid>
-            {/* <br />
-				<div>
-					<Pages
-						itemsPerPage={itemsPerPage}
-						totalItems={show.length}
-						paginate={paginate}
-					/>
-				</div> */}
           </Container>
         </div>
       </main>

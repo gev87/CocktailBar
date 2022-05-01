@@ -4,18 +4,13 @@ import Auth from "./components/Auth";
 import Login from "./components/Login";
 import ForgotPassWord from "./components/ForgotPassword";
 import UpdateProfile from "./components/UpdateProfile";
-//import Container from "@material-ui/core/Container";
 import { CartProvider } from "./context/CartContext";
 import Demo from "./components/Demo";
 import Basket from "./components/Basket";
 import CocktailBuilder from "./components/CocktailBuilder";
-import { write, update } from "./firebase/crudoperations";
 
 function App() {
   return (
-    /*<Container
-			style={{ padding: "30px", backgroundColor: "#cfe8fc", width: "500px" }}
-		>*/
     <BrowserRouter>
       <Auth>
         <CartProvider>
