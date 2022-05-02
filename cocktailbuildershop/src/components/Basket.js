@@ -23,7 +23,7 @@ export default function Basket() {
       currentUser &&
       readOnValue(`users/${currentUser.uid}/orders`, (item) => item);
     setCart(Object.entries(value));
-  });
+  },[currentUser]);
 
   const addItemToCart = (card, func) => {
     const item = cart.find(

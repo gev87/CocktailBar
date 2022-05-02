@@ -15,6 +15,7 @@ import {
 	readOnceGet,
 	updateAsync,
 } from "../firebase/crudoperations";
+import { ContactlessOutlined } from "@material-ui/icons";
 
 export default function CocktailCards() {
 	const classes = THEMES();
@@ -27,7 +28,30 @@ export default function CocktailCards() {
 	const [popularCocktails, setPopularCocktails] = useState(true);
 	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const [selectItem, setSelectItem] = useState("");
-	const [openDlg1Dialog, setDialog1Open] = useState(false);
+	const [openDlg1Dialog,setDialog1Open] = useState(false);
+	
+		const addItemToCart = (card, func) => {
+			currentUser &&
+				readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+					(value) => {
+						const item =
+							value &&
+							Object.entries(value).find(
+								(e) =>
+									e[1].order.idDrink ===
+									(func ? func(card).idDrink : card.idDrink)
+							);
+						!item
+							? writeAsync(`users/${currentUser.uid}/orders`, {
+									order: func ? func(card) : card,
+									quantity: 1,
+							  })
+							: updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+									quantity: ++item[1].quantity,
+							  });
+					}
+				);
+		};
 
 	useEffect(() => {
 		let each = [];
@@ -55,23 +79,23 @@ export default function CocktailCards() {
 					let ingPrice3 = PRICES.hasOwnProperty(cocktail.strIngredient3)
 						? PRICES[cocktail.strIngredient3]
 						: cocktail.strIngredient3 === null
-							? 0
-							: 3;
+						? 0
+						: 3;
 					let ingPrice4 = PRICES.hasOwnProperty(cocktail.strIngredient4)
 						? PRICES[cocktail.strIngredient4]
 						: cocktail.strIngredient4 === null
-							? 0
-							: 3;
+						? 0
+						: 3;
 					let ingPrice5 = PRICES.hasOwnProperty(cocktail.strIngredient5)
 						? PRICES[cocktail.strIngredient5]
 						: cocktail.strIngredient5 === null
-							? 0
-							: 3;
+						? 0
+						: 3;
 					let ingPrice6 = PRICES.hasOwnProperty(cocktail.strIngredient6)
 						? PRICES[cocktail.strIngredient6]
 						: cocktail.strIngredient6 === null
-							? 0
-							: 3;
+						? 0
+						: 3;
 					cocktail.price =
 						ingPrice1 +
 						ingPrice2 +
@@ -95,8 +119,9 @@ export default function CocktailCards() {
 					each[236],
 				]);
 				setData(each);
+				console.log(10)
 			});
-	}, []);
+	}, [addItemToCart]);
 
 	useEffect(() => {
 		if (filteredApi.length) {
@@ -106,28 +131,7 @@ export default function CocktailCards() {
 		}
 	}, [data, popularCocktails, filteredApi]);
 
-	const addItemToCart = (card, func) => {
-		currentUser &&
-			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
-				(value) => {
-					const item =
-						value &&
-						Object.entries(value).find(
-							(e) =>
-								e[1].order.idDrink ===
-								(func ? func(card).idDrink : card.idDrink)
-						);
-					!item
-						? writeAsync(`users/${currentUser.uid}/orders`, {
-							order: func ? func(card) : card,
-							quantity: 1,
-						})
-						: updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
-							quantity: ++item[1].quantity,
-						});
-				}
-			);
-	};
+
 
 	const onDouble = (item) => {
 		return {
