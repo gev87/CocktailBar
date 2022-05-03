@@ -236,7 +236,7 @@ export default function MenuDrawer({ open, close }) {
 		}
 		return temp
 	}
-	console.log(f())
+
 
 	return (
 		<div className={classes.root}>

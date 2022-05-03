@@ -6,24 +6,21 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
-import { CartContext } from "../context/CartContext";
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import MenuDrawer from "./MenuDrawer";
 import HomeIcon from "@material-ui/icons/Home";
 import THEMES from "../consts/THEMES";
 import { readOnValue } from "../firebase/crudoperations";
 
-
-export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }) {
+export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, basketQty }) {
 	const classes = THEMES();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 	const [, setError] = useState("");
 	const { currentUser, logout } = useContext(MainContext);
 	const navigate = useNavigate();
-	const { cart } = useContext(CartContext);
 	const [openMenu, setOpenMenu] = useState(false);
-	const [itemQty, setitemQty] = useState(0);
+	const [, setBasketQty] = useState();
 
 	useEffect(() => {
 		const qty =
@@ -37,9 +34,23 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }
 						0
 					)
 			);
-		setitemQty(qty);
+		setBasketQty(qty);
 	},[currentUser]);
-
+	// useEffect(() => {
+	// 	const qty =
+	// 		currentUser &&
+	// 		readOnValue(
+	// 			`users/${currentUser.uid}/orders`,
+	// 			(value) =>
+	// 				value &&
+	// 				Object.entries(value).reduce(
+	// 					(prev, curr) => prev + curr[1].quantity,
+	// 					0
+	// 				)
+	// 		);
+	// 	setBasketQty(qty);
+	// }, [currentUser]);
+	
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -221,17 +232,18 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }
 					</div>
 					<div>
 						{currentUser ? (
-							<IconButton className={classes.title}>
+							<IconButton
+								className={classes.title}
+								onClick={() => {
+									navigate("/shoping-card");
+								}}
+							>
 								<Badge
 									overlap="rectangular"
-									badgeContent={itemQty > 0 ? itemQty : null}
+									badgeContent={basketQty}
 									color="secondary"
 								>
-									<ShoppingCartIcon
-										onClick={() => {
-											navigate("/shoping-card");
-										}}
-									/>
+									<ShoppingCartIcon />
 								</Badge>
 							</IconButton>
 						) : (
@@ -240,10 +252,7 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }
 					</div>
 				</Toolbar>
 			</AppBar>
-			<MenuDrawer
-				open={openMenu}
-				close={() => setOpenMenu(false)}
-			/>
+			<MenuDrawer open={openMenu} close={() => setOpenMenu(false)} />
 		</div>
 	);
 }
