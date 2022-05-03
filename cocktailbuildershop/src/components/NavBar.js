@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
 
 
 
-export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }) {
+export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, fetchData }) {
 	// const classes = THEMES();
 	const classes = useStyles();
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -309,6 +309,7 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch }
 				</Toolbar>
 			</AppBar>
 			<MenuDrawer
+				itemData={fetchData}
 				open={openMenu}
 				close={() => setOpenMenu(false)}
 			/>

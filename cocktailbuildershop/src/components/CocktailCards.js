@@ -170,6 +170,7 @@ export default function CocktailCards() {
     <>
       <main>
         <NavBar
+		  	fetchData={data}
           popularIngsSwitch={popularIngsSwitch}
           popularCocktailsSwitch={popularCocktailsSwitch}
         />
