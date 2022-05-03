@@ -33,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function MenuDrawer({ open, close, itemData}) {
 	const classes = useStyles();
-	// const [itemData, setItemData] = useState([]);
 	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const objForMap = {
 		alcoholic: ["Alcoholic", "Non alcoholic", "Optional alcohol"],
@@ -43,28 +42,11 @@ export default function MenuDrawer({ open, close, itemData}) {
 	const [checkedValue, setCheckedValue] = useState([]);
 	const transitionDuration = 1000;
 
-	// useEffect(() => {
-	// 	const temp = [];
-	// 	for (let elem of latter) {
-	// 		fetch(`https://thecocktaildb.com/api/json/v1/1/search.php?f=${elem}`)
-	// 			.then((result) => result.json())
-	// 			.then((data) => {
-	// 				data.drinks
-	// 					? temp.push(...data.drinks)
-	// 					: temp.push(...data.drinks.drinks);
-	// 				if (elem === "c") {
-	// 					setItemData(temp);
-	// 				}
-	// 			});
-	// 	}
-	// }, []);
-
-
 	useEffect(() => {
 		const result = [];
 		let youtube = 'YoutubeVideo'
-		console.log(youtube)
 		for (const objElem of itemData) {
+			console.log(objElem)
 			if (checkedValue.includes('YoutubeVideo')) {
 				youtube = objElem.strVideo
 			}
@@ -192,8 +174,6 @@ export default function MenuDrawer({ open, close, itemData}) {
 		setFilteredApi(result);
 	}, [checkedValue]);
 
-	// console.log(checkedValue, filteredApi)
-
 
 	const handleChange = (event) => {
 		if (!checkedValue.includes(event.target.name)) {
@@ -311,68 +291,68 @@ export default function MenuDrawer({ open, close, itemData}) {
 		</div>
 	)
 
-	// function f() {
-	// 	let temp = []
-	// 	for (let item of itemData) {
-	// 		if (item.strIngredient1) {
-	// 			if (!temp.includes(item.strIngredient1)) {
-	// 				temp.push(item.strIngredient1)
-	// 			}
-	// 		}
-	// 		if (item.strIngredient2) {
-	// 			if (!temp.includes(item.strIngredient2)) {
-	// 				temp.push(item.strIngredient2)
-	// 			}
-	// 		}
-	// 		if (item.strIngredient3) {
-	// 			if (!temp.includes(item.strIngredient3)) {
-	// 				temp.push(item.strIngredient3)
-	// 			}
-	// 		}
-	// 		if (item.strIngredient4) {
-	// 			if (!temp.includes(item.strIngredient4)) {
-	// 				temp.push(item.strIngredient4)
-	// 			}
-	// 		}
-	// 		if (item.strIngredient5) {
-	// 			if (!temp.includes(item.strIngredient5)) {
-	// 				temp.push(item.strIngredient5)
-	// 			}
-	// 		}
-	// 		if (item.strIngredient6) {
-	// 			if (!temp.includes(item.strIngredient6)) {
-	// 				temp.push(item.strIngredient6)
-	// 			}
-	// 		}
-	// 		if (item.strIngredient7) {
-	// 			if (!temp.includes(item.strIngredient7)) {
-	// 				temp.push(item.strIngredient7)
-	// 			}
-	// 		}
-	// 		if (item.strIngredient8) {
-	// 			if (!temp.includes(item.strIngredient8)) {
-	// 				temp.push(item.strIngredient8)
-	// 			}
-	// 		}
-	// 		if (item.strIngredient9) {
-	// 			if (!temp.includes(item.strIngredient9)) {
-	// 				temp.push(item.strIngredient9)
-	// 			}
-	// 		}
-	// 		if (item.strIngredient10) {
-	// 			if (!!temp.includes(item.strIngredient10)) {
-	// 				temp.push(item.strIngredient10)
-	// 			}
-	// 		}
-	// 		if (item.strIngredient11 ) {
-	// 			if (!temp.includes(item.strIngredient11 )) {
-	// 				temp.push(item.strIngredient11 )
-	// 			}
-	// 		}
-	// 	}
-	// 	return temp
-	// }
-	// console.log(f())
+	function f() {
+		let temp = []
+		for (let item of itemData) {
+			if (item.strIngredient1) {
+				if (!temp.includes(item.strIngredient1)) {
+					temp.push(item.strIngredient1)
+				}
+			}
+			if (item.strIngredient2) {
+				if (!temp.includes(item.strIngredient2)) {
+					temp.push(item.strIngredient2)
+				}
+			}
+			if (item.strIngredient3) {
+				if (!temp.includes(item.strIngredient3)) {
+					temp.push(item.strIngredient3)
+				}
+			}
+			if (item.strIngredient4) {
+				if (!temp.includes(item.strIngredient4)) {
+					temp.push(item.strIngredient4)
+				}
+			}
+			if (item.strIngredient5) {
+				if (!temp.includes(item.strIngredient5)) {
+					temp.push(item.strIngredient5)
+				}
+			}
+			if (item.strIngredient6) {
+				if (!temp.includes(item.strIngredient6)) {
+					temp.push(item.strIngredient6)
+				}
+			}
+			if (item.strIngredient7) {
+				if (!temp.includes(item.strIngredient7)) {
+					temp.push(item.strIngredient7)
+				}
+			}
+			if (item.strIngredient8) {
+				if (!temp.includes(item.strIngredient8)) {
+					temp.push(item.strIngredient8)
+				}
+			}
+			if (item.strIngredient9) {
+				if (!temp.includes(item.strIngredient9)) {
+					temp.push(item.strIngredient9)
+				}
+			}
+			if (item.strIngredient10) {
+				if (!!temp.includes(item.strIngredient10)) {
+					temp.push(item.strIngredient10)
+				}
+			}
+			if (item.strIngredient11 ) {
+				if (!temp.includes(item.strIngredient11 )) {
+					temp.push(item.strIngredient11 )
+				}
+			}
+		}
+		return temp
+	}
+
 
 	return (
 		<div className={classes.root}>

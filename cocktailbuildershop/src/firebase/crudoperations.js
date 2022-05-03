@@ -14,7 +14,7 @@ export const readOnValue = (
   callBackSuccess,
   callBackError,
   args = {}
-) => {
+)=>{
   let result = {};
   const reference = ref(db, path);
   onValue(reference, (snapshot) => {
