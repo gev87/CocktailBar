@@ -12,7 +12,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import THEMES from "../consts/THEMES";
 import { readOnValue } from "../firebase/crudoperations";
 
-export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, basketQty }) {
+export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, basketQty, fetchData, showDrawer = true }) {
 	const classes = THEMES();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
@@ -21,6 +21,7 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 	const navigate = useNavigate();
 	const [openMenu, setOpenMenu] = useState(false);
 	const [, setBasketQty] = useState();
+	// const [showDrawer, setShowDrawer] = useState(true)
 
 	useEffect(() => {
 		const qty =
@@ -252,7 +253,12 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 					</div>
 				</Toolbar>
 			</AppBar>
-			<MenuDrawer open={openMenu} close={() => setOpenMenu(false)} />
+			{showDrawer && (<MenuDrawer
+				itemData={fetchData}
+				open={openMenu}
+				close={() => setOpenMenu(false)}
+			/>)}
+			
 		</div>
 	);
 }

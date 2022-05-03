@@ -72,6 +72,7 @@ export default function Basket() {
   return (
 		<React.Fragment>
 			<NavBar
+				showDrawer={false}
 				basketQty={cart.reduce((cur, elem) => cur + elem[1].quantity, 0)}
 			/>
 			<main>

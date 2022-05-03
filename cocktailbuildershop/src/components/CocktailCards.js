@@ -198,6 +198,7 @@ setBasketQty(
 		<>
 			<main>
 				<NavBar
+		  			fetchData={data}
 					popularIngsSwitch={popularIngsSwitch}
 					popularCocktailsSwitch={popularCocktailsSwitch}
 					basketQty={basketQty}

@@ -140,7 +140,7 @@ export default function ComplexGrid({ data }) {
 							</Grid>
 						</Grid>
 						<Grid item>
-							<Typography variant="subtitle1">$19.00</Typography>
+							<Typography variant="subtitle1">${data.price}.00</Typography>
 							{data.strVideo ? (
 								<YouTubeIcon
 									onClick={() => setDialog1Open(true)}
