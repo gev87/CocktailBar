@@ -10,6 +10,7 @@ import NavBar from "./NavBar";
 import NONALCOHOLIC from "../consts/NONALCOHOLIC";
 import ImgDialog from "./ImgDialog";
 import { CartContext } from "../context/CartContext";
+import { calcItemQty } from "../utils/Commonfuncs";
 import {
 	writeAsync,
 	readOnceGet,
@@ -27,13 +28,24 @@ export default function CocktailCards() {
 	const [header, setHeader] = useState("MOST POPULAR COCKTAILS");
 	const [popularIngs, setPopularIngs] = useState(true);
 	const [popularCocktails, setPopularCocktails] = useState(true);
-	const { filteredApi, setFilteredApi } = useContext(CartContext);
+	const { filteredApi } = useContext(CartContext);
 	const [selectItem, setSelectItem] = useState("");
 	const [openDlg1Dialog, setDialog1Open] = useState(false);
-	const [basketQty, setBasketQty] = useState(null);
+	const [cartQty, setCartQty] = useState(null);
+	const [cartChanged, setCartChanged] = useState(null);
 	const navigate = useNavigate();
-	const [cart,setCart] = useState([]);
-	const [cartChange, setCartChange] = useState([]);
+
+	useEffect(() => {
+		currentUser && setCartQty(calcItemQty(currentUser));
+	}, [currentUser, cartChanged]);
+
+	useEffect(() => {
+		if (filteredApi.length) {
+			setShow(filteredApi);
+		} else if (data.length) {
+			setShow(popularCocktails);
+		}
+	}, [data, popularCocktails, filteredApi]);
 
 	useEffect(() => {
 		let each = [];
@@ -104,34 +116,10 @@ export default function CocktailCards() {
 			});
 	}, []);
 
-	useEffect(() => {
-		if (filteredApi.length) {
-			setShow(filteredApi);
-		} else if (data.length) {
-			setShow(popularCocktails);
-		}
-	},[data,popularCocktails,filteredApi]);
-	
-	// async function addItemToCart(card, func) {
-	// 	const item = cart.find(
-	// 		(e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
-	// 	);
-	// 	!item
-	// 		? writeAsync(`users/${currentUser.uid}/orders`, {
-	// 				order: func ? func(card) : card,
-	// 				quantity: 1,
-	// 		  })
-	// 		: await updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
-	// 				quantity: ++item[1].quantity,
-	// 		  });
-	// 	setCart([...cart]);
-	// }
-
-	const addItemToCart =  (card,func) => {
-		
+	const addItemToCart = (card, func) => {
 		currentUser &&
 			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
-				 (value) => {
+				(value) => {
 					const item =
 						value &&
 						Object.entries(value).find(
@@ -144,25 +132,16 @@ export default function CocktailCards() {
 								order: func ? func(card) : card,
 								quantity: 1,
 						  })
-						:  updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+						: updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
 								quantity: ++item[1].quantity,
-						});
-					 setCartChange([]);
+						  });
 				}
 			);
+		setCartQty(cartQty + 1);
+		setCartChanged([]);
 	};
 
-	useEffect(() => {
-		currentUser &&
-			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
-				(res) => {
-					res && setCart(Object.entries(res));
-				}
-			);
-	}, [currentUser,cartChange]);
-
 	const onDouble = (item) => {
-		// setBasketQty(basketQty + 1);
 		return {
 			...item,
 			idDrink: item.idDrink + "double",
@@ -217,11 +196,11 @@ export default function CocktailCards() {
 		<>
 			<main>
 				<NavBar
-					mainPage = {true}
+					mainPage={true}
 					fetchData={data}
 					popularIngsSwitch={popularIngsSwitch}
 					popularCocktailsSwitch={popularCocktailsSwitch}
-					basketQty={cart.reduce((cur, elem) => cur + elem[1].quantity, 0)}
+					cartQty={cartQty}
 				/>
 				<div style={{ backgroundColor: "#4052b5" }}>
 					<img

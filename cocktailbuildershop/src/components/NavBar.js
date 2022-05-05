@@ -6,79 +6,45 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MenuDrawer from "./MenuDrawer";
 import HomeIcon from "@material-ui/icons/Home";
 import THEMES from "../consts/THEMES";
 
-export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, basketQty, fetchData, showDrawer = true,mainPage }) {
-	const classes = THEMES();
-	const [anchorEl, setAnchorEl] = useState(null);
-	const open = Boolean(anchorEl);
-	const [, setError] = useState("");
-	const { currentUser, logout } = useContext(MainContext);
-	const navigate = useNavigate();
-	const [openMenu, setOpenMenu] = useState(false);
-	// const [showDrawer, setShowDrawer] = useState(true)
+export default function MenuAppBar({
+  popularIngsSwitch,
+  popularCocktailsSwitch,
+  cartQty,
+  fetchData,
+  showDrawer = true,
+	mainPage
+}) {
+  const classes = THEMES();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const [, setError] = useState("");
+  const { currentUser, logout } = useContext(MainContext);
+  const navigate = useNavigate();
+  const [openMenu, setOpenMenu] = useState(false);
 
-	// useEffect(() => {
-	// 	const qty =
-	// 		currentUser &&
-	// 		readOnValue(
-	// 			`users/${currentUser.uid}/orders`,
-	// 			(value) =>
-	// 				value &&
-	// 				Object.entries(value).reduce(
-	// 					(prev, curr) => prev + curr[1].quantity,
-	// 					0
-	// 				)
-	// 		);
-	// 	setBasketQty(qty);
-	// },[currentUser]);
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
-		// useEffect(() => {
-		// 	currentUser &&
-		// 		readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
-		// 			(res) => {
-		// 				setCart(res);
-		// 			}
-		// 		);
-		// },[]);
-	
-	// useEffect(() => {
-	// 	const qty =
-	// 		currentUser &&
-	// 		readOnValue(
-	// 			`users/${currentUser.uid}/orders`,
-	// 			(value) =>
-	// 				value &&
-	// 				Object.entries(value).reduce(
-	// 					(prev, curr) => prev + curr[1].quantity,
-	// 					0
-	// 				)
-	// 		);
-	// 	setBasketQty(qty);
-	// }, [currentUser]);
-	
-	const handleMenu = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
+  async function handleLogout() {
+    setError("");
 
-	const handleClose = () => {
-		setAnchorEl(null);
-	};
-
-	async function handleLogout() {
-		setError("");
-
-		try {
-			await logout();
-			navigate("/");
-		} catch {
-			setError("Failed to Log out");
-		}
-	}
+    try {
+      await logout();
+      navigate("/");
+    } catch {
+      setError("Failed to Log out");
+    }
+  }
 
 	return (
 		<div className={classes.rootnav}>
@@ -143,134 +109,130 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 						Cocktail Builder
 					</IconButton>
 
-					<div className={classes.search}>
-						<div className={classes.searchIcon}>
-							<SearchIcon />
-						</div>
-						<InputBase
-							placeholder="Search…"
-							classes={{
-								root: classes.inputRoot,
-								input: classes.inputInput,
-							}}
-							inputProps={{ "aria-label": "search" }}
-						/>
-					</div>
-					<div>
-						<Typography variant="h6" className={classes.title}>
-							{`Hello : ${currentUser ? currentUser.displayName : "Guest"}`}
-						</Typography>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ "aria-label": "search" }}
+            />
+          </div>
+          <div>
+            <Typography variant="h6" className={classes.title}>
+              {`Hello : ${currentUser ? currentUser.displayName : "Guest"}`}
+            </Typography>
 
-						{currentUser ? (
-							<Typography variant="h6" className={classes.title}>
-								{" "}
-								{"Email : " + currentUser.email}
-							</Typography>
-						) : null}
-					</div>
-					<div>
-						{!currentUser ? (
-							<>
-								<Button
-									className={classes.title}
-									color="inherit"
-									onClick={() => {
-										navigate("/login");
-									}}
-								>
-									Login
-								</Button>
-								<Button
-									className={classes.title}
-									color="inherit"
-									onClick={() => {
-										navigate("/signup");
-									}}
-								>
-									Sign up
-								</Button>
-							</>
-						) : (
-							<>
-								<IconButton
-									className={classes.title}
-									aria-label="account of current user"
-									aria-controls="menu-appbar"
-									aria-haspopup="true"
-									onClick={handleMenu}
-									color="inherit"
-								>
-									<AccountCircle />
-								</IconButton>
-								<Menu
-									id="menu-appbar"
-									anchorEl={anchorEl}
-									anchorOrigin={{
-										vertical: "top",
-										horizontal: "right",
-									}}
-									keepMounted
-									transformOrigin={{
-										vertical: "top",
-										horizontal: "right",
-									}}
-									open={open}
-									onClose={handleClose}
-								>
-									<MenuItem onClick={handleClose}>
-										<ReactLink
-											style={{ color: "#4052b5" }}
-											to="/update-profile"
-										>
-											Update Profile
-										</ReactLink>
-									</MenuItem>
-									<MenuItem onClick={handleClose}>
-										<ReactLink
-											style={{ color: "#4052b5" }}
-											onClick={handleLogout}
-											to="/"
-										>
-											Log Out
-										</ReactLink>
-									</MenuItem>
-								</Menu>
-							</>
-						)}
-					</div>
-					<div>
-						{currentUser ? (
-							<IconButton
-								className={classes.title}
-								onClick={() => {
-									navigate("/shoping-card");
-								}}
-							>
-								<Badge
-									overlap="rectangular"
-									// badgeContent={cart?Object.values(cart).reduce(
-									// 	(curr, elem) => curr + elem.quantity,
-									// 	0
-									// ):null}
-									badgeContent={basketQty}
-									color="secondary"
-								>
-									<ShoppingCartIcon />
-								</Badge>
-							</IconButton>
-						) : (
-							""
-						)}
-					</div>
-				</Toolbar>
-			</AppBar>
-			{showDrawer && (
-				<MenuDrawer
-					itemData={fetchData}
-					open={openMenu}
-					close={() => setOpenMenu(false)}
-				/>
-			)}
-		</div>
-	);
+            {currentUser ? (
+              <Typography variant="h6" className={classes.title}>
+                {" "}
+                {"Email : " + currentUser.email}
+              </Typography>
+            ) : null}
+          </div>
+          <div>
+            {!currentUser ? (
+              <>
+                <Button
+                  className={classes.title}
+                  color="inherit"
+                  onClick={() => {
+                    navigate("/login");
+                  }}
+                >
+                  Login
+                </Button>
+                <Button
+                  className={classes.title}
+                  color="inherit"
+                  onClick={() => {
+                    navigate("/signup");
+                  }}
+                >
+                  Sign up
+                </Button>
+              </>
+            ) : (
+              <>
+                <IconButton
+                  className={classes.title}
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  open={open}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <ReactLink
+                      style={{ color: "#4052b5" }}
+                      to="/update-profile"
+                    >
+                      Update Profile
+                    </ReactLink>
+                  </MenuItem>
+                  <MenuItem onClick={handleClose}>
+                    <ReactLink
+                      style={{ color: "#4052b5" }}
+                      onClick={handleLogout}
+                      to="/"
+                    >
+                      Log Out
+                    </ReactLink>
+                  </MenuItem>
+                </Menu>
+              </>
+            )}
+          </div>
+          <div>
+            {currentUser ? (
+              <IconButton
+                className={classes.title}
+                onClick={() => {
+                  navigate("/shoping-card");
+                }}
+              >
+                <Badge
+                  overlap="rectangular"
+                  badgeContent={cartQty > 0 ? cartQty : null}
+                  color="secondary"
+                >
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
+            ) : (
+              ""
+            )}
+          </div>
+        </Toolbar>
+      </AppBar>
+      {showDrawer && (
+        <MenuDrawer
+          itemData={fetchData}
+          open={openMenu}
+          close={() => setOpenMenu(false)}
+        />
+      )}
+    </div>
+  );
 }

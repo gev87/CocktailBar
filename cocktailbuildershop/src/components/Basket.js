@@ -5,9 +5,9 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import THEMES from "../consts/THEMES";
+import { calcItemQty } from "../utils/Commonfuncs";
 import {
-	readOnValue,
-	readOnceGet,
+  readOnceGet,
   writeAsync,
   updateAsync,
   removeAsync,
@@ -21,78 +21,58 @@ import { CartContext } from "../context/CartContext";
 export default function Basket() {
   const classes = THEMES();
   const { currentUser } = useContext(MainContext);
-  const [cart,setCart] = useState([]);
-	const navigate = useNavigate();
-	const [cartChange, setCartChange] = useState([]);
-	
+  const [cart, setCart] = useState({});
+  const [cartQty, setCartQty] = useState(null);
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (currentUser) {
-  //     readOnValue(`users/${currentUser.uid}/orders`,(item) => item).then(
-  //       (value) => {
-  //         setCart(Object.entries(value));
-  //       }
-  //     )
-  //   };
-	// }, [currentUser]);
-//    useEffect(() => {
-// 			const value =
-// 				currentUser &&
-// 				readOnValue(`users/${currentUser.uid}/orders`, (item) => item);
-// 			setCart(Object.entries(value));
-//    },[currentUser]);
-	
-	useEffect(() => {
-	currentUser &&
-		readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
-			 (res) => {
-				res &&   setCart(Object.entries(res))
-				
-			}
-		);
-}, [currentUser,cartChange]);
+  useEffect(() => {
+    currentUser &&
+      readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+        (value) => setCart(value ? value : {})
+      );
+  }, []);
+  useEffect(() => {
+    currentUser && setCartQty(calcItemQty(currentUser));
+  }, [currentUser, setCartQty]);
 
-	 function addItemToCart(card,func) {
-    const item = cart.find(
-       (e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
-    );
-    !item
-      ? writeAsync(`users/${currentUser.uid}/orders`,{
-        order: func ? func(card) : card,
-        quantity: 1,
-      })
-      :  updateAsync(`users/${currentUser.uid}/orders/${item[0]}`,{
-        quantity: ++item[1].quantity,
-      });
-    // setCart([...cart])
-		setCartChange([])
-  };
-
-  async function removeItemFromCart(card,func){
-    const item = cart.find(
+  const addItemToCart = (card, func) => {
+    const item = Object.entries(cart).find(
       (e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
     );
-    if (item[1].quantity <= 1) {
-    	 removeAsync(`users/${currentUser.uid}/orders/${item[0]}`);
-      setCart([...cart].filter(elem => elem !== item));
-		// setCartChange([]);
-		
-    } else {
-       updateAsync(`users/${currentUser.uid}/orders/${item[0]}`,{
-        quantity: --item[1].quantity,
-      });
-    //   setCart([...cart]);
-			setCartChange([]);
-  }
-  }
+    !item
+      ? writeAsync(`users/${currentUser.uid}/orders`, {
+          order: func ? func(card) : card,
+          quantity: 1,
+        })
+      : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+          quantity: ++item[1].quantity,
+        });
+
+    readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+      (value) => setCart(value ? value : {})
+    );
+    setCartQty(cartQty + 1);
+  };
+
+  const removeItemFromCart = (card, func) => {
+    const item = Object.entries(cart).find(
+      (e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
+    );
+    item[1].quantity <= 1
+      ? removeAsync(`users/${currentUser.uid}/orders/${item[0]}`)
+      : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+          quantity: --item[1].quantity,
+        });
+
+    readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+      (value) => setCart(value ? value : {})
+    );
+    setCartQty(cartQty - 1);
+  };
 
   return (
 		<React.Fragment>
-			<NavBar
-				mainPage ={false}
-				showDrawer={false}
-				basketQty={cart.reduce((cur, elem) => cur + elem[1].quantity, 0)}
-			/>
+			<NavBar cartQty={cartQty} mainPage={false} showDrawer={false} />
 			<main>
 				<div className={classes.heroContent}>
 					<Container maxWidth="sm">
@@ -111,11 +91,10 @@ export default function Basket() {
 							color="textSecondary"
 							paragraph
 						>
-							{" "}
 							What is the difference between a blonde and a shopping cart?
 							Sometimes, the shopping cart has a mind of its own.
 						</Typography>
-						{cart.length === 0 ? (
+						{!Object.keys(cart).length ? (
 							<img
 								alt="cart"
 								src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg"
@@ -147,10 +126,10 @@ export default function Basket() {
 										fontSize="small"
 									/>
 									Order All for $
-									{cart.reduce(
-										(cur, elem) => cur + elem[1].quantity * elem[1].order.price,
-										0
-									)}
+									{Object.entries(cart).reduce((cur, elem) => {
+										console.log(elem[1], cur);
+										return cur + elem[1].quantity * elem[1].order.price;
+									}, 0)}
 									.00
 								</Button>{" "}
 							</div>
@@ -160,9 +139,9 @@ export default function Basket() {
 
 				<Container className={classes.cardGrid} maxWidth="md">
 					<Grid container spacing={4}>
-						{cart.map((it) => {
+						{Object.entries(cart).map((it) => {
 							let card = it[1].order;
-							let itemQty = it[1].quantity;
+							let qty = it[1].quantity;
 
 							return (
 								<Grid item key={it[0]} xs={12} sm={6} md={4}>
@@ -215,7 +194,7 @@ export default function Basket() {
 												</Icon>
 											</Button>
 											<Typography style={{ color: "green" }}>
-												{" " + itemQty + " "}
+												{" " + qty + " "}
 											</Typography>
 											<Button
 												onClick={() => addItemToCart(card)}
@@ -232,7 +211,7 @@ export default function Basket() {
 											</Button>
 											<Grid item>
 												<Typography variant="button">
-													${(itemQty * card.price).toFixed(2)}
+													${(qty * card.price).toFixed(2)}
 												</Typography>
 											</Grid>
 											.
