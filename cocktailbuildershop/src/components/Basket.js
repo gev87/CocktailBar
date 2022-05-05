@@ -125,10 +125,10 @@ export default function Basket() {
                     fontSize="small"
                   />
                   Order All for $
-                  {cart.reduce(
-                    (cur, elem) => cur + elem[1].quantity * elem[1].order.price,
-                    0
-                  )}
+                  {Object.entries(cart).reduce((cur, elem) => {
+                    console.log(elem[1], cur);
+                    return cur + elem[1].quantity * elem[1].order.price;
+                  }, 0)}
                   .00
                 </Button>{" "}
               </div>

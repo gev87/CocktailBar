@@ -27,14 +27,16 @@ export default function CocktailCards() {
   const [header, setHeader] = useState("MOST POPULAR COCKTAILS");
   const [popularIngs, setPopularIngs] = useState(true);
   const [popularCocktails, setPopularCocktails] = useState(true);
-  const { filteredApi, setFilteredApi } = useContext(CartContext);
+  const { filteredApi } = useContext(CartContext);
   const [selectItem, setSelectItem] = useState("");
   const [openDlg1Dialog, setDialog1Open] = useState(false);
   const [cartQty, setCartQty] = useState(null);
+  const [cartChanged, setCartChanged] = useState(null);
   const navigate = useNavigate();
+
   useEffect(() => {
     currentUser && setCartQty(calcItemQty(currentUser));
-  }, [currentUser, setCartQty]);
+  }, [currentUser, cartChanged]);
 
   useEffect(() => {
     if (filteredApi.length) {
@@ -135,6 +137,7 @@ export default function CocktailCards() {
         }
       );
     setCartQty(cartQty + 1);
+    setCartChanged([]);
   };
 
   const onDouble = (item) => {

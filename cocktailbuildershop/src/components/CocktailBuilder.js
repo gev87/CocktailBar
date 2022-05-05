@@ -26,6 +26,7 @@ function CustomCocktail() {
   const [ingridient4, setIngridient4] = useState("");
   const [cocktailName, setCocktailName] = useState("");
   const [cartQty, setCartQty] = useState(null);
+  const [cartChanged, setCartChanged] = useState(null);
   const [error, setError] = useState("");
   const { currentUser } = useContext(MainContext);
   const classes = THEMES();
@@ -33,7 +34,7 @@ function CustomCocktail() {
 
   useEffect(() => {
     currentUser && setCartQty(calcItemQty(currentUser));
-  }, [currentUser, setCartQty]);
+  }, [currentUser, cartChanged]);
 
   let obj = {
     idDrink:
@@ -75,6 +76,7 @@ function CustomCocktail() {
         }
       );
     setCartQty(cartQty + 1);
+    setCartChanged([]);
   };
 
   function handleSubmit() {
