@@ -10,80 +10,183 @@ import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { CartContext } from "../context/CartContext";
 
-const latter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'v', 'w', 'y', 'z']
+const latter = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "v", "w", "y", "z",];
 // const latter = "abc";
 
 const useStyles = makeStyles((theme) => ({
 	list: {
 		elevation: 105,
-		width: 250,
+		width: 210,
 	},
 	heading: {
 		fontSize: theme.typography.pxToRem(15),
 		fontWeight: theme.typography.fontWeightRegular,
 	},
-	padding: 0,
+	accord: {
+		margin: 0,
+		padding: 0,
+		backgroundColor: "#303f9f",
+		color: "#ffffff",
+		width: "100%",
+	},
 }));
 
-export default function MenuDrawer({ open, close }) {
+export default function MenuDrawer({ open, close, itemData}) {
 	const classes = useStyles();
-	const [itemData, setItemData] = useState([]);
 	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const objForMap = {
-		alcoholic: ['Alcoholic', "Non alcoholic", "Optional alcohol"],
-		category: ['Shot', 'Cocktail', "Ordinary Drink", 'Beer', "Other/Unknown", "Punch / Party Drink", "Coffee / Tea", "Soft Drink", "Homemade Liqueur", 'Cocoa', 'Shake'],
-		ingredient: ["Egg yolk", "Sugar", "Milk", "Light rum", "Bourbon", "Vanilla extract", "Salt", "Whipping cream", "Egg white", "Nutmeg"],
-		stateYoutube: ['YoutubeVideo']
-	}
-	const [checkedValue, setCheckedValue] = useState([])
+		alcoholic: ["Alcoholic", "Non alcoholic", "Optional alcohol"],
+		category: ["Shot", "Cocktail", "Ordinary Drink", "Beer", "Other/Unknown", "Punch / Party Drink", "Coffee / Tea", "Soft Drink", "Homemade Liqueur", "Cocoa", "Shake",],
+		stateYoutube: ["YoutubeVideo"],
+	};
+	const [checkedValue, setCheckedValue] = useState([]);
 	const transitionDuration = 1000;
 
 	useEffect(() => {
-		const temp = [];
-		for (let elem of latter) {
-			fetch(`https://thecocktaildb.com/api/json/v1/1/search.php?f=${elem}`)
-				.then((result) => result.json())
-				.then((data) => {
-					data.drinks
-						? temp.push(...data.drinks)
-						: temp.push(...data.drinks.drinks);
-					if (elem === "z") {
-						setItemData(temp);
-					}
-				});
-		}
-	}, []);
-
-	useEffect(() => {
 		const result = [];
+		let youtube = 'YoutubeVideo'
 		for (const objElem of itemData) {
-			if (checkedValue.includes('YoutubeVideo') && objElem.strVideo) {
-				result.push(objElem)
+			console.log(objElem)
+			if (checkedValue.includes('YoutubeVideo')) {
+				youtube = objElem.strVideo
 			}
-			for (const [key, value] of Object.entries(objElem)) {
-				if (checkedValue.includes(value)) {
-					if (!result.length) {
-						result.push(objElem)
+			for (let i = 0; i < checkedValue.length; i++) {
+
+				if ((checkedValue.includes('Alcoholic') || checkedValue.includes('Non alcoholic') || checkedValue.includes('Optional alcohol')) && checkedValue.length === 1) {
+					// console.log(-1)
+					if (Object.values(objElem).includes(checkedValue[i])) {
+						if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+							result.push(objElem);
+						}
 					}
-					if (!Boolean(result.find((element) => (element.idDrink === objElem.idDrink)))) {
-						result.push(objElem)
+
+				}
+				if (!checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol') && checkedValue.length) {
+					// console.log(0)
+					if (Object.values(objElem).includes(checkedValue[i])) {
+						if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+							result.push(objElem);
+						}
+					}
+
+				}
+				if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol') && youtube) {
+					// console.log(1)
+					if (youtube !== "YoutubeVideo") {
+						if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+							result.push(objElem);
+						}
+					}
+					if (checkedValue.length === 3) {
+						setFilteredApi(itemData)
+						return
+					}
+				}
+				if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') || checkedValue.includes('Alcoholic') && checkedValue.includes('Optional alcohol') || checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
+					// console.log(2)
+					if (checkedValue.length === 2) {
+						if (Object.values(objElem).includes(checkedValue[0]) || Object.values(objElem).includes(checkedValue[1])) {
+							// console.log('ok')
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					}
+				}
+
+				if (checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) {
+					// console.log(3)youtube
+					if (Object.values(objElem).includes('Alcoholic')) {
+						if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					}
+				}
+				if (!checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) {
+					// console.log(4)
+					if (Object.values(objElem).includes('Non alcoholic')) {
+						if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic') {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					}
+				}
+				if (!checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
+					// console.log(5)
+					if (Object.values(objElem).includes('Optional alcohol')) {
+						if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol') {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					}
+				}
+				if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) {
+					// console.log(6)
+					if (Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Non alcoholic')) {
+						if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') &&
+							(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic')) {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					}
+				}
+				if (checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
+					// console.log(7)
+					if (Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Optional alcohol')) {
+						if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') &&
+							(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol')) {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					}
+				}
+				if (!checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
+					// console.log(8)
+					if (Object.values(objElem).includes('Non alcoholic') || Object.values(objElem).includes('Optional alcohol')) {
+						if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic') &&
+							(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol')) {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					}
+				}
+				if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
+					// console.log(9)
+					if (Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Non alcoholic') || Object.values(objElem).includes('Optional alcohol')) {
+						if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') &&
+							(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic') &&
+							(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol')) {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
 					}
 				}
 			}
 		}
-		setFilteredApi(result)
-	}, [checkedValue])
+		setFilteredApi(result);
+	}, [checkedValue]);
+
 
 	const handleChange = (event) => {
 		if (!checkedValue.includes(event.target.name)) {
-			setCheckedValue(checkedValue.concat(event.target.name))
+			setCheckedValue(checkedValue.concat(event.target.name));
 		} else {
-			setCheckedValue(checkedValue.filter((elem) => (elem !== event.target.name)))
+			setCheckedValue(
+				checkedValue.filter((elem) => elem !== event.target.name)
+			);
 		}
 	};
 	const list = () => (
-		<div className={classes.list} role="presentation">
-			<Accordion style={{ margin: 0, padding: 0 }}>
+		<div className={classes.list}>
+			<Accordion className={classes.accord}>
 				<AccordionSummary
 					expandIcon={<ExpandMoreIcon />}
 					aria-controls="panel1a-content"
@@ -93,21 +196,26 @@ export default function MenuDrawer({ open, close }) {
 				</AccordionSummary>
 				{objForMap.alcoholic.map((elem) => (
 					<AccordionDetails style={{ margin: 3, padding: 1 }} key={elem}>
-						<Accordion style={{ backgroundColor: "#854587", width: "100%" }}>
+						<Accordion className={classes.accord}>
 							<FormControlLabel
-								control={<Checkbox
-									checked={checkedValue.includes(elem)}
-									onChange={handleChange}
-									name={elem} />}
+								control={
+									<Checkbox
+										checked={checkedValue.includes(elem)}
+										onChange={handleChange}
+										name={elem}
+										style={{ color: 'white' }}
+									/>
+								}
 								label={elem}
-								style={{ margin: 0, padding: 0 }} />
+								style={{ margin: 0, padding: 0 }}
+							/>
 						</Accordion>
 					</AccordionDetails>
 				))}
 			</Accordion>
-			<Accordion style={{ margin: 0, padding: 0 }}>
+			<Accordion className={classes.accord}>
 				<AccordionSummary
-					expandIcon={<ExpandMoreIcon />}
+					expandIcon={<ExpandMoreIcon style={{}} />}
 					aria-controls="panel1a-content"
 					id="panel1a-header"
 				>
@@ -115,55 +223,35 @@ export default function MenuDrawer({ open, close }) {
 				</AccordionSummary>
 				{objForMap.category.map((elem) => (
 					<AccordionDetails style={{ margin: 3, padding: 1 }} key={elem}>
-						<Accordion style={{ backgroundColor: "#854587", width: "100%" }}>
+						<Accordion className={classes.accord}>
 							<FormControlLabel
 								aria-label="Acknowledge"
 								onClick={(event) => event.stopPropagation()}
 								onFocus={(event) => event.stopPropagation()}
-								control={<Checkbox
-									checked={checkedValue.includes(elem)}
-									onChange={handleChange}
-									name={elem} />}
+								control={
+									<Checkbox
+										checked={checkedValue.includes(elem)}
+										onChange={handleChange}
+										name={elem}
+										style={{ color: 'white' }}
+									/>
+								}
 								label={elem}
-								style={{ margin: 0, padding: 0 }} />
-						</Accordion>
-					</AccordionDetails>
-				))}
-			</Accordion>
-			<Accordion style={{ margin: 0, padding: 0 }}>
-				<AccordionSummary
-					expandIcon={<ExpandMoreIcon />}
-					aria-controls="panel1a-content"
-					id="panel1a-header"
-				>
-					<Typography className={classes.heading}>Ingredient</Typography>
-				</AccordionSummary>
-				{objForMap.ingredient.map((elem) => (
-					<AccordionDetails style={{ margin: 3, padding: 1 }} key={elem}>
-						<Accordion style={{ backgroundColor: "#854587", width: "100%" }}>
-							<FormControlLabel
-								aria-label="Acknowledge"
-								onClick={(event) => event.stopPropagation()}
-								onFocus={(event) => event.stopPropagation()}
-								control={<Checkbox
-									checked={checkedValue.includes(elem)}
-									onChange={handleChange}
-									name={elem} />}
-								label={elem}
-								style={{ margin: 0, padding: 0 }} />
+								style={{ margin: 0, padding: 0 }}
+							/>
 						</Accordion>
 					</AccordionDetails>
 				))}
 			</Accordion>
 			<AccordionDetails style={{ margin: 3, padding: 1 }}>
-				<Accordion style={{ backgroundColor: "#854587", width: "100%" }}>
+				<Accordion className={classes.accord}>
 					<FormControlLabel
 						control={
 							<Checkbox
 								checked={checkedValue.includes("YoutubeVideo")}
 								onChange={handleChange}
 								name="YoutubeVideo"
-							// color="primary"
+								style={{ color: 'white' }}
 							/>
 						}
 						label={"YoutubeVideo"}
@@ -174,6 +262,34 @@ export default function MenuDrawer({ open, close }) {
 			</AccordionDetails>
 		</div>
 	);
+	const filterResult = () => (
+		<div className={classes.list} style={{ height: 20 }} >
+			<Accordion className={classes.accord} >
+				<Typography
+					className={classes.heading}
+					style={{
+						color: 'rgb(240, 150, 210)',
+						textAlign: 'right', paddingRight: 5
+					}}
+				>
+					Filtered {filteredApi.length === 1 ? 'item' : 'items'} {filteredApi.length} in {itemData.length}.
+				</Typography>
+			</Accordion>
+		</div>
+	);
+	const clearFilter = () => (
+		<div>
+			<AccordionSummary
+				style={{
+					padding: 0,
+					position: 'fixed',
+					left: '120px'
+				}}
+			>
+				<Typography className={classes.heading} onClick={() => setCheckedValue([])}>Clear Filter</Typography>
+			</AccordionSummary>
+		</div>
+	)
 
 	function f() {
 		let temp = []
@@ -236,7 +352,7 @@ export default function MenuDrawer({ open, close }) {
 		}
 		return temp
 	}
-	console.log(f())
+
 
 	return (
 		<div className={classes.root}>
@@ -249,9 +365,13 @@ export default function MenuDrawer({ open, close }) {
 						exit: transitionDuration,
 					}}
 					variant="temporary"
-					PaperProps={{ style: { marginTop: 64, backgroundColor: "#781187" } }}
+					PaperProps={{
+						style: { marginTop: 84.4, backgroundColor: "#303f9f" },
+					}}
 				>
+					{checkedValue.length ? filterResult() : ''}
 					{list()}
+					{checkedValue.length ? clearFilter() : ''}
 				</Drawer>
 			</React.Fragment>
 		</div>

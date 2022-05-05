@@ -16,6 +16,7 @@ import {
   readOnceGet,
   updateAsync,
 } from "../firebase/crudoperations";
+import { useNavigate } from "react-router-dom";
 
 export default function CocktailCards() {
   const classes = THEMES();
@@ -30,7 +31,7 @@ export default function CocktailCards() {
   const [selectItem, setSelectItem] = useState("");
   const [openDlg1Dialog, setDialog1Open] = useState(false);
   const [cartQty, setCartQty] = useState(null);
-
+  const navigate = useNavigate();
   useEffect(() => {
     currentUser && setCartQty(calcItemQty(currentUser));
   }, [currentUser, setCartQty]);
@@ -141,7 +142,21 @@ export default function CocktailCards() {
       ...item,
       idDrink: item.idDrink + "double",
       strDrink: item.strDrink + " DOUBLE",
-      price: item.price + PRICES[item.strIngredient1],
+      price:
+        item.price +
+        PRICES[
+          !NONALCOHOLIC.hasOwnProperty(item.strIngredient1)
+            ? item.strIngredient1
+            : !NONALCOHOLIC.hasOwnProperty(item.strIngredient2)
+            ? item.strIngredient2
+            : !NONALCOHOLIC.hasOwnProperty(item.strIngredient3)
+            ? item.strIngredient3
+            : !NONALCOHOLIC.hasOwnProperty(item.strIngredient4)
+            ? item.strIngredient4
+            : !NONALCOHOLIC.hasOwnProperty(item.strIngredient5)
+            ? item.strIngredient5
+            : item.strIngredient6
+        ],
     };
   };
 
@@ -177,9 +192,10 @@ export default function CocktailCards() {
     <>
       <main>
         <NavBar
-          cartQty={cartQty}
+          fetchData={data}
           popularIngsSwitch={popularIngsSwitch}
           popularCocktailsSwitch={popularCocktailsSwitch}
+          cartQty={cartQty}
         />
         <div style={{ backgroundColor: "#4052b5" }}>
           <img alt="background" src="/images/cocktailbackground.jpg" />
@@ -274,6 +290,7 @@ export default function CocktailCards() {
                             />
                           </Button>
                           <Button
+                            onClick={() => navigate("/payment")}
                             variant="outlined"
                             size="small"
                             color="primary"

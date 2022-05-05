@@ -1,14 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Badge,
-  makeStyles,
-  alpha,
-} from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Button, Badge } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
@@ -19,74 +11,14 @@ import MenuDrawer from "./MenuDrawer";
 import HomeIcon from "@material-ui/icons/Home";
 import THEMES from "../consts/THEMES";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    marginTop: 70,
-    color: "red",
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-    color: "white",
-    fontFamily: "Georgia, serif",
-    fontSize: "15px",
-  },
-  title2: {
-    flexGrow: 1,
-    color: "white",
-    fontSize: "15px",
-    fontFamily: "Georgia, serif",
-    marginRight: 10,
-  },
-  searchIcon: {
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  search: {
-    position: "relative",
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(3),
-      width: "auto",
-    },
-  },
-  inputRoot: {
-    color: "inherit",
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
-
 export default function MenuAppBar({
-  cartQty,
   popularIngsSwitch,
   popularCocktailsSwitch,
+  cartQty,
+  fetchData,
+  showDrawer = true,
 }) {
-  // const classes = THEMES();
-  const classes = useStyles();
+  const classes = THEMES();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const [, setError] = useState("");
@@ -275,17 +207,18 @@ export default function MenuAppBar({
           </div>
           <div>
             {currentUser ? (
-              <IconButton className={classes.title}>
+              <IconButton
+                className={classes.title}
+                onClick={() => {
+                  navigate("/shoping-card");
+                }}
+              >
                 <Badge
                   overlap="rectangular"
                   badgeContent={cartQty > 0 ? cartQty : null}
                   color="secondary"
                 >
-                  <ShoppingCartIcon
-                    onClick={() => {
-                      navigate("/shoping-card");
-                    }}
-                  />
+                  <ShoppingCartIcon />
                 </Badge>
               </IconButton>
             ) : (
@@ -294,7 +227,13 @@ export default function MenuAppBar({
           </div>
         </Toolbar>
       </AppBar>
-      <MenuDrawer open={openMenu} close={() => setOpenMenu(false)} />
+      {showDrawer && (
+        <MenuDrawer
+          itemData={fetchData}
+          open={openMenu}
+          close={() => setOpenMenu(false)}
+        />
+      )}
     </div>
   );
 }

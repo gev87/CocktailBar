@@ -13,12 +13,17 @@ import {
   removeAsync,
 } from "../firebase/crudoperations";
 import MainContext from "../context/MainContext";
+import ShopIcon from "@material-ui/icons/Shop";
+import RemoveShoppingCartOutlinedIcon from "@material-ui/icons/RemoveShoppingCartOutlined";
+import { useNavigate } from "react-router-dom";
 
 export default function Basket() {
   const classes = THEMES();
   const { currentUser } = useContext(MainContext);
   const [cart, setCart] = useState({});
   const [cartQty, setCartQty] = useState(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
     currentUser &&
       readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
@@ -66,7 +71,7 @@ export default function Basket() {
 
   return (
     <React.Fragment>
-      <NavBar cartQty={cartQty} />
+      <NavBar cartQty={cartQty} showDrawer={false} />
       <main>
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
@@ -93,14 +98,50 @@ export default function Basket() {
                 alt="cart"
                 src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg"
               />
-            ) : null}
+            ) : (
+              <div style={{ display: "flex" }}>
+                <Button
+                  onClick={() => setCart([])}
+                  fullWidth
+                  variant="contained"
+                  size="small"
+                  color="secondary"
+                >
+                  Clear Basket
+                  <RemoveShoppingCartOutlinedIcon
+                    size="small"
+                    style={{ paddingLeft: "10px" }}
+                  />
+                </Button>
+                <Button
+                  onClick={() => navigate("/payment")}
+                  fullWidth
+                  variant="contained"
+                  size="small"
+                  color="primary"
+                >
+                  <ShopIcon
+                    style={{ paddingRight: "10px", paddingBottom: "5px" }}
+                    fontSize="small"
+                  />
+                  Order All for $
+                  {cart.reduce(
+                    (cur, elem) => cur + elem[1].quantity * elem[1].order.price,
+                    0
+                  )}
+                  .00
+                </Button>{" "}
+              </div>
+            )}
           </Container>
         </div>
+
         <Container className={classes.cardGrid} maxWidth="md">
           <Grid container spacing={4}>
             {Object.entries(cart).map((it) => {
               let card = it[1].order;
               let qty = it[1].quantity;
+
               return (
                 <Grid item key={it[0]} xs={12} sm={6} md={4}>
                   <Card className={classes.card}>
@@ -131,6 +172,14 @@ export default function Basket() {
                       )}
                       <Typography>{card.strCategory}</Typography>
                     </CardContent>
+                    <Button
+                      onClick={() => navigate("/payment")}
+                      variant="outlined"
+                      size="small"
+                      color="primary"
+                    >
+                      Order Now
+                    </Button>
                     <CardActions>
                       <Button
                         onClick={() => removeItemFromCart(card)}

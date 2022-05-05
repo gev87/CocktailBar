@@ -17,6 +17,7 @@ import {
   readOnceGet,
   updateAsync,
 } from "../firebase/crudoperations";
+import { useNavigate } from "react-router-dom";
 
 function CustomCocktail() {
   const [ingridient1, setIngridient1] = useState("");
@@ -28,6 +29,7 @@ function CustomCocktail() {
   const [error, setError] = useState("");
   const { currentUser } = useContext(MainContext);
   const classes = THEMES();
+  const navigate = useNavigate();
 
   useEffect(() => {
     currentUser && setCartQty(calcItemQty(currentUser));
@@ -231,6 +233,7 @@ function CustomCocktail() {
             <HighlightOffIcon fontSize="large" />
           </Button>
           <Button
+            onClick={() => navigate("/payment")}
             color="primary"
             variant="contained"
             fullWidth
