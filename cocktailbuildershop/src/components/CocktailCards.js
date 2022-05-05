@@ -9,13 +9,14 @@ import MainContext from "../context/MainContext";
 import NavBar from "./NavBar";
 import NONALCOHOLIC from "../consts/NONALCOHOLIC";
 import ImgDialog from "./ImgDialog";
-import {CartContext} from '../context/CartContext'
+import { CartContext } from "../context/CartContext";
 import {
 	writeAsync,
 	readOnceGet,
 	updateAsync,
 } from "../firebase/crudoperations";
 import { useNavigate } from "react-router-dom";
+import CardActionArea from "@material-ui/core/CardActionArea";
 
 export default function CocktailCards() {
 	const classes = THEMES();
@@ -28,11 +29,11 @@ export default function CocktailCards() {
 	const [popularCocktails, setPopularCocktails] = useState(true);
 	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const [selectItem, setSelectItem] = useState("");
-	const [openDlg1Dialog,setDialog1Open] = useState(false);
-	const [basketQty,setBasketQty] = useState(null)
-		const navigate = useNavigate();
-	
-		
+	const [openDlg1Dialog, setDialog1Open] = useState(false);
+	const [basketQty, setBasketQty] = useState(null);
+	const navigate = useNavigate();
+	const [cart,setCart] = useState([]);
+	const [cartChange, setCartChange] = useState([]);
 
 	useEffect(() => {
 		let each = [];
@@ -101,22 +102,36 @@ export default function CocktailCards() {
 				]);
 				setData(each);
 			});
-	},[]);
-	
-	
+	}, []);
 
 	useEffect(() => {
 		if (filteredApi.length) {
-			setShow(filteredApi)
+			setShow(filteredApi);
 		} else if (data.length) {
 			setShow(popularCocktails);
 		}
 	},[data,popularCocktails,filteredApi]);
 	
-	const addItemToCart = (card, func) => {
+	// async function addItemToCart(card, func) {
+	// 	const item = cart.find(
+	// 		(e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
+	// 	);
+	// 	!item
+	// 		? writeAsync(`users/${currentUser.uid}/orders`, {
+	// 				order: func ? func(card) : card,
+	// 				quantity: 1,
+	// 		  })
+	// 		: await updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+	// 				quantity: ++item[1].quantity,
+	// 		  });
+	// 	setCart([...cart]);
+	// }
+
+	const addItemToCart =  (card,func) => {
+		
 		currentUser &&
 			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
-				(value) => {
+				 (value) => {
 					const item =
 						value &&
 						Object.entries(value).find(
@@ -129,21 +144,25 @@ export default function CocktailCards() {
 								order: func ? func(card) : card,
 								quantity: 1,
 						  })
-						: updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+						:  updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
 								quantity: ++item[1].quantity,
-						  });
-					setBasketQty(
-						Object.values(value).reduce((curr, elem) => curr + elem.quantity, 0)
-					);
+						});
+					 setCartChange([]);
 				}
 			);
 	};
 
+	useEffect(() => {
+		currentUser &&
+			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+				(res) => {
+					res && setCart(Object.entries(res));
+				}
+			);
+	}, [currentUser,cartChange]);
 
 	const onDouble = (item) => {
-setBasketQty(
-	basketQty+1
-);
+		// setBasketQty(basketQty + 1);
 		return {
 			...item,
 			idDrink: item.idDrink + "double",
@@ -185,26 +204,31 @@ setBasketQty(
 		setShow(filtereddata);
 	}
 
-  function popularIngsSwitch() {
-    popularIngs ? setPopularIngs(false) : setPopularIngs(true);
-  }
+	function popularIngsSwitch() {
+		popularIngs ? setPopularIngs(false) : setPopularIngs(true);
+	}
 
-  function popularCocktailsSwitch() {
-    setHeader("MOST POPULAR COCKTAILS");
-    setShow(popularCocktails);
-  }
+	function popularCocktailsSwitch() {
+		setHeader("MOST POPULAR COCKTAILS");
+		setShow(popularCocktails);
+	}
 
-  return (
+	return (
 		<>
 			<main>
 				<NavBar
-		  			fetchData={data}
+					mainPage = {true}
+					fetchData={data}
 					popularIngsSwitch={popularIngsSwitch}
 					popularCocktailsSwitch={popularCocktailsSwitch}
-					basketQty={basketQty}
+					basketQty={cart.reduce((cur, elem) => cur + elem[1].quantity, 0)}
 				/>
 				<div style={{ backgroundColor: "#4052b5" }}>
-					<img alt="background" src="/images/cocktailbackground.jpg" />
+					<img
+						width="100%"
+						alt="background"
+						src="/images/cocktailbackground.jpg"
+					/>
 				</div>
 				{popularIngs && (
 					<CustomSwiper filterByIngredient={(i) => filterByIngredient(i)} />
@@ -219,15 +243,17 @@ setBasketQty(
 							{show.map((card) => (
 								<Grid item key={card.idDrink} xs={12} sm={6} md={4}>
 									<Card className={classes.card}>
-										<CardMedia
-											className={classes.cardMedia}
-											image={card.strDrinkThumb}
-											title={card.strDrink}
-											onClick={() => {
-												setSelectItem(card);
-												setDialog1Open(true);
-											}}
-										/>
+										<CardActionArea>
+											<CardMedia
+												className={classes.cardMedia}
+												image={card.strDrinkThumb}
+												title={card.strDrink}
+												onClick={() => {
+													setSelectItem(card);
+													setDialog1Open(true);
+												}}
+											/>
+										</CardActionArea>
 										<CardContent className={classes.cardContent}>
 											<Typography gutterBottom variant="h5" component="h2">
 												{card.strDrink}

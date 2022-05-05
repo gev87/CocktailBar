@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext,useEffect } from "react";
 import { Container, Typography, Button, TextField } from "@material-ui/core";
 import NavBar from "./NavBar";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -18,7 +18,7 @@ import {
 } from "../firebase/crudoperations";
 import { useNavigate } from "react-router-dom";
 
-function CustomCocktail() {
+function CustomCocktail({addItemToCart}) {
   const [ingridient1, setIngridient1] = useState("");
   const [ingridient2, setIngridient2] = useState("");
   const [ingridient3, setIngridient3] = useState("");
@@ -27,7 +27,8 @@ function CustomCocktail() {
   const [error, setError] = useState("");
   const { currentUser } = useContext(MainContext);
   const classes = THEMES();
-  	const navigate = useNavigate();
+	const navigate = useNavigate();
+	
 
   let obj = {
     idDrink:
@@ -45,31 +46,9 @@ function CustomCocktail() {
     strIngredient2: ingridient2,
     strIngredient3: ingridient3,
     strIngredient4: ingridient4,
-  };
-
-  const addItemToCart = (card, func) => {
-    currentUser &&
-      readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
-        (value) => {
-          const item =
-            value &&
-            Object.entries(value).find(
-              (e) =>
-                e[1].order.idDrink ===
-                (func ? func(card).idDrink : card.idDrink)
-            );
-          !item
-            ? writeAsync(`users/${currentUser.uid}/orders`, {
-                order: func ? func(card) : card,
-                quantity: 1,
-              })
-            : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
-                quantity: ++item[1].quantity,
-              });
-        }
-      );
-  };
-
+	};
+	
+	
   function handleSubmit() {
     if (!currentUser) {
       return setError("Please Sign In");
@@ -239,40 +218,83 @@ function CustomCocktail() {
 	);
 }
 export default function CocktailBuilder() {
-  const classes = THEMES();
+	const classes = THEMES();
+	const [cartChange, setCartChange] = useState([]);
+	const [cart,setCart] = useState([]);
+	  const { currentUser } = useContext(MainContext);
+	
+	useEffect(() => {
+		currentUser &&
+			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+				(res) => {
+					res && setCart(Object.entries(res));
+				}
+			);
+	}, [currentUser, cartChange]);
+
+	const addItemToCart = (card, func) => {
+		currentUser &&
+			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+				(value) => {
+					const item =
+						value &&
+						Object.entries(value).find(
+							(e) =>
+								e[1].order.idDrink ===
+								(func ? func(card).idDrink : card.idDrink)
+						);
+					!item
+						? writeAsync(`users/${currentUser.uid}/orders`, {
+								order: func ? func(card) : card,
+								quantity: 1,
+						  })
+						: updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
+								quantity: ++item[1].quantity,
+						  });
+					setCartChange([]);
+				}
+			);
+	};
+
+	
+
 
   return (
-    <div>
-      <NavBar />
-      <div className={classes.heroContent}>
-        <Container maxWidth="sm">
-          <Typography
-            component="h1"
-            variant="h2"
-            align="center"
-            color="textPrimary"
-            gutterBottom
-            style={{ color: "#ac5b01" }}
-          >
-            Cocktail Builder
-          </Typography>
-        </Container>
-        <CustomCocktail />
-        <Container maxWidth="sm">
-          <Typography
-            variant="h5"
-            align="center"
-            color="textSecondary"
-            paragraph
-            style={{ color: "#ac5b01" }}
-          >
-            Here is the place where you can try yourself by making personal
-            cocktail. Add up to 4 ingridients you want in your cocktail and
-            enjoy it.
-          </Typography>
-          <Footer />
-        </Container>
-      </div>
-    </div>
-  );
+		<div>
+			<NavBar
+				mainPage={false}
+				basketQty={cart.reduce((cur, elem) => cur + elem[1].quantity, 0)}
+				showDrawer={false}
+			/>
+			<div className={classes.heroContent}>
+				<Container maxWidth="sm">
+					<Typography
+						component="h1"
+						variant="h2"
+						align="center"
+						color="textPrimary"
+						gutterBottom
+						style={{ color: "#ac5b01" }}
+					>
+						Cocktail Builder
+					</Typography>
+				</Container>
+				<CustomCocktail addItemToCart={addItemToCart} />
+				<Container maxWidth="sm">
+					<Typography
+						variant="h5"
+						align="center"
+						color="textSecondary"
+						paragraph
+						style={{ color: "#ac5b01" }}
+					>
+						Here is the place where you can try yourself by making personal
+						cocktail. Add up to 4 ingridients you want in your cocktail and
+						enjoy it.
+					</Typography>
+					<Footer />
+				</Container>
+			</div>
+		</div>
+	);
 }

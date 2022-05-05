@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Badge } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
@@ -10,9 +10,8 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import MenuDrawer from "./MenuDrawer";
 import HomeIcon from "@material-ui/icons/Home";
 import THEMES from "../consts/THEMES";
-import { readOnValue } from "../firebase/crudoperations";
 
-export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, basketQty, fetchData, showDrawer = true }) {
+export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, basketQty, fetchData, showDrawer = true,mainPage }) {
 	const classes = THEMES();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
@@ -20,23 +19,33 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 	const { currentUser, logout } = useContext(MainContext);
 	const navigate = useNavigate();
 	const [openMenu, setOpenMenu] = useState(false);
-	const [, setBasketQty] = useState();
 	// const [showDrawer, setShowDrawer] = useState(true)
 
-	useEffect(() => {
-		const qty =
-			currentUser &&
-			readOnValue(
-				`users/${currentUser.uid}/orders`,
-				(value) =>
-					value &&
-					Object.entries(value).reduce(
-						(prev, curr) => prev + curr[1].quantity,
-						0
-					)
-			);
-		setBasketQty(qty);
-	},[currentUser]);
+	// useEffect(() => {
+	// 	const qty =
+	// 		currentUser &&
+	// 		readOnValue(
+	// 			`users/${currentUser.uid}/orders`,
+	// 			(value) =>
+	// 				value &&
+	// 				Object.entries(value).reduce(
+	// 					(prev, curr) => prev + curr[1].quantity,
+	// 					0
+	// 				)
+	// 		);
+	// 	setBasketQty(qty);
+	// },[currentUser]);
+
+
+		// useEffect(() => {
+		// 	currentUser &&
+		// 		readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+		// 			(res) => {
+		// 				setCart(res);
+		// 			}
+		// 		);
+		// },[]);
+	
 	// useEffect(() => {
 	// 	const qty =
 	// 		currentUser &&
@@ -96,8 +105,7 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 					<IconButton
 						className={classes.title}
 						onClick={() => {
-							navigate("/");
-							popularCocktailsSwitch();
+							mainPage?popularCocktailsSwitch():navigate("/")
 						}}
 					>
 						<img
@@ -110,8 +118,7 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 					<IconButton
 						className={classes.title}
 						onClick={() => {
-							navigate("/");
-							popularIngsSwitch();
+							mainPage ? popularIngsSwitch() : navigate("/");
 						}}
 					>
 						<img
@@ -241,6 +248,10 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 							>
 								<Badge
 									overlap="rectangular"
+									// badgeContent={cart?Object.values(cart).reduce(
+									// 	(curr, elem) => curr + elem.quantity,
+									// 	0
+									// ):null}
 									badgeContent={basketQty}
 									color="secondary"
 								>
@@ -253,12 +264,13 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 					</div>
 				</Toolbar>
 			</AppBar>
-			{showDrawer && (<MenuDrawer
-				itemData={fetchData}
-				open={openMenu}
-				close={() => setOpenMenu(false)}
-			/>)}
-			
+			{showDrawer && (
+				<MenuDrawer
+					itemData={fetchData}
+					open={openMenu}
+					close={() => setOpenMenu(false)}
+				/>
+			)}
 		</div>
 	);
 }

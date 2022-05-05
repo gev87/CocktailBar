@@ -6,7 +6,8 @@ import NavBar from "./NavBar";
 import Footer from "./Footer";
 import THEMES from "../consts/THEMES";
 import {
-  readOnValue,
+	readOnValue,
+	readOnceGet,
   writeAsync,
   updateAsync,
   removeAsync,
@@ -15,12 +16,15 @@ import MainContext from "../context/MainContext";
 import ShopIcon from "@material-ui/icons/Shop";
 import RemoveShoppingCartOutlinedIcon from "@material-ui/icons/RemoveShoppingCartOutlined";
 import { useNavigate} from "react-router-dom";
+import { CartContext } from "../context/CartContext";
 
 export default function Basket() {
   const classes = THEMES();
   const { currentUser } = useContext(MainContext);
   const [cart,setCart] = useState([]);
-  	const navigate = useNavigate();
+	const navigate = useNavigate();
+	const [cartChange, setCartChange] = useState([]);
+	
 
   // useEffect(() => {
   //   if (currentUser) {
@@ -31,47 +35,61 @@ export default function Basket() {
   //     )
   //   };
 	// }, [currentUser]);
-   useEffect(() => {
-			const value =
-				currentUser &&
-				readOnValue(`users/${currentUser.uid}/orders`, (item) => item);
-			setCart(Object.entries(value));
-		}, [currentUser]);
+//    useEffect(() => {
+// 			const value =
+// 				currentUser &&
+// 				readOnValue(`users/${currentUser.uid}/orders`, (item) => item);
+// 			setCart(Object.entries(value));
+//    },[currentUser]);
+	
+	useEffect(() => {
+	currentUser &&
+		readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+			 (res) => {
+				res &&   setCart(Object.entries(res))
+				
+			}
+		);
+}, [currentUser,cartChange]);
 
-
-  function addItemToCart(card,func) {
+	 function addItemToCart(card,func) {
     const item = cart.find(
-      (e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
+       (e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
     );
     !item
       ? writeAsync(`users/${currentUser.uid}/orders`,{
         order: func ? func(card) : card,
         quantity: 1,
       })
-      : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`,{
+      :  updateAsync(`users/${currentUser.uid}/orders/${item[0]}`,{
         quantity: ++item[1].quantity,
       });
-    setCart([...cart])
+    // setCart([...cart])
+		setCartChange([])
   };
 
-  const removeItemFromCart = (card,func) => {
+  async function removeItemFromCart(card,func){
     const item = cart.find(
       (e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
     );
     if (item[1].quantity <= 1) {
-      removeAsync(`users/${currentUser.uid}/orders/${item[0]}`);
+    	 removeAsync(`users/${currentUser.uid}/orders/${item[0]}`);
       setCart([...cart].filter(elem => elem !== item));
+		// setCartChange([]);
+		
     } else {
-      updateAsync(`users/${currentUser.uid}/orders/${item[0]}`,{
+       updateAsync(`users/${currentUser.uid}/orders/${item[0]}`,{
         quantity: --item[1].quantity,
       });
-      setCart([...cart]);
+    //   setCart([...cart]);
+			setCartChange([]);
   }
   }
 
   return (
 		<React.Fragment>
 			<NavBar
+				mainPage ={false}
 				showDrawer={false}
 				basketQty={cart.reduce((cur, elem) => cur + elem[1].quantity, 0)}
 			/>
@@ -112,10 +130,13 @@ export default function Basket() {
 									color="secondary"
 								>
 									Clear Basket
-                    <RemoveShoppingCartOutlinedIcon size ="small" style={{paddingLeft:"10px"} }/>
+									<RemoveShoppingCartOutlinedIcon
+										size="small"
+										style={{ paddingLeft: "10px" }}
+									/>
 								</Button>
-                  <Button
-                    onClick={()=>navigate("/payment")}
+								<Button
+									onClick={() => navigate("/payment")}
 									fullWidth
 									variant="contained"
 									size="small"
