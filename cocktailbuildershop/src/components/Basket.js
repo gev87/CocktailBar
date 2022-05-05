@@ -5,8 +5,9 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import NavBar from "./NavBar";
 import Footer from "./Footer";
 import THEMES from "../consts/THEMES";
+import { calcItemQty } from "../utils/Commonfuncs";
 import {
-  readOnValue,
+  readOnceGet,
   writeAsync,
   updateAsync,
   removeAsync,
@@ -16,17 +17,20 @@ import MainContext from "../context/MainContext";
 export default function Basket() {
   const classes = THEMES();
   const { currentUser } = useContext(MainContext);
-  const [cart, setCart] = useState([]);
-
+  const [cart, setCart] = useState({});
+  const [cartQty, setCartQty] = useState(null);
   useEffect(() => {
-    const value =
-      currentUser &&
-      readOnValue(`users/${currentUser.uid}/orders`, (item) => item);
-    setCart(Object.entries(value));
-  });
+    currentUser &&
+      readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+        (value) => setCart(value ? value : {})
+      );
+  }, []);
+  useEffect(() => {
+    currentUser && setCartQty(calcItemQty(currentUser));
+  }, [currentUser, setCartQty]);
 
   const addItemToCart = (card, func) => {
-    const item = cart.find(
+    const item = Object.entries(cart).find(
       (e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
     );
     !item
@@ -37,10 +41,15 @@ export default function Basket() {
       : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
           quantity: ++item[1].quantity,
         });
+
+    readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+      (value) => setCart(value ? value : {})
+    );
+    setCartQty(cartQty + 1);
   };
 
   const removeItemFromCart = (card, func) => {
-    const item = cart.find(
+    const item = Object.entries(cart).find(
       (e) => e[1].order.idDrink === (func ? func(card).idDrink : card.idDrink)
     );
     item[1].quantity <= 1
@@ -48,11 +57,16 @@ export default function Basket() {
       : updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
           quantity: --item[1].quantity,
         });
+
+    readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+      (value) => setCart(value ? value : {})
+    );
+    setCartQty(cartQty - 1);
   };
 
   return (
     <React.Fragment>
-      <NavBar />
+      <NavBar cartQty={cartQty} />
       <main>
         <div className={classes.heroContent}>
           <Container maxWidth="sm">
@@ -74,7 +88,7 @@ export default function Basket() {
               What is the difference between a blonde and a shopping cart?
               Sometimes, the shopping cart has a mind of its own.
             </Typography>
-            {cart.length === 0 ? (
+            {!Object.keys(cart).length ? (
               <img
                 alt="cart"
                 src="https://www.vinsolutions.com/wp-content/uploads/sites/2/vinsolutions/media/Vin-Images/news-blog/Empty_Shopping_Cart_blog.jpg"
@@ -84,7 +98,7 @@ export default function Basket() {
         </div>
         <Container className={classes.cardGrid} maxWidth="md">
           <Grid container spacing={4}>
-            {cart.map((it) => {
+            {Object.entries(cart).map((it) => {
               let card = it[1].order;
               let qty = it[1].quantity;
               return (

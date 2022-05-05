@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Container, Typography, Button, TextField } from "@material-ui/core";
 import NavBar from "./NavBar";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -11,6 +11,7 @@ import ShopIcon from "@material-ui/icons/Shop";
 import HighlightOffIcon from "@material-ui/icons/HighlightOff";
 import Footer from "./Footer";
 import THEMES from "../consts/THEMES";
+import { calcItemQty } from "../utils/Commonfuncs";
 import {
   writeAsync,
   readOnceGet,
@@ -23,9 +24,14 @@ function CustomCocktail() {
   const [ingridient3, setIngridient3] = useState("");
   const [ingridient4, setIngridient4] = useState("");
   const [cocktailName, setCocktailName] = useState("");
+  const [cartQty, setCartQty] = useState(null);
   const [error, setError] = useState("");
   const { currentUser } = useContext(MainContext);
   const classes = THEMES();
+
+  useEffect(() => {
+    currentUser && setCartQty(calcItemQty(currentUser));
+  }, [currentUser, setCartQty]);
 
   let obj = {
     idDrink:
@@ -66,6 +72,7 @@ function CustomCocktail() {
               });
         }
       );
+    setCartQty(cartQty + 1);
   };
 
   function handleSubmit() {
@@ -96,6 +103,7 @@ function CustomCocktail() {
 
   return (
     <div>
+      <NavBar cartQty={cartQty} />
       <Container maxWidth="sm">
         {error[2] === "n" ? (
           <div>
@@ -240,7 +248,6 @@ export default function CocktailBuilder() {
 
   return (
     <div>
-      <NavBar />
       <div className={classes.heroContent}>
         <Container maxWidth="sm">
           <Typography
