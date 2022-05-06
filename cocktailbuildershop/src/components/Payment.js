@@ -1,23 +1,43 @@
-import React from "react"
+import React, { useEffect, useContext } from "react";
 import NavBar from "./NavBar";
 import Cards from "react-credit-cards";
 import { useState } from "react";
 import "react-credit-cards/es/styles-compiled.css";
 import THEMES from "../consts/THEMES";
-import { Button,Container,Input,TextField,Typography } from "@material-ui/core";
-
+import { Button, Container, TextField, Typography } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
+import MainContext from "../context/MainContext";
+import { readOnceGet } from "../firebase/crudoperations";
 
 export default function Payment() {
-	const [number, setNumber] = useState("")
-	const [name,setName] = useState("");
-	const [cvc,setCvc] = useState("");
+	const [number, setNumber] = useState("");
+	const [name, setName] = useState("");
+	const [cvc, setCvc] = useState("");
 	const [expiry, setExpiry] = useState("");
-	const [focus,setFocus] = useState("");
+	const [focus, setFocus] = useState("");
 	const classes = THEMES();
+	const [showAlert, setShowAlert] = useState(false);
+	const { currentUser } = useContext(MainContext);
+		const [cart, setCart] = useState({});
 
+	useEffect(() => {
+		currentUser &&
+			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+				(value) => {
+					setCart(value ? value : {});
+				}
+			);
+	}, []);
 	return (
 		<>
-			<NavBar />
+			<NavBar
+				cartQty={Object.values(cart).reduce(
+					(cur, elem) => cur + elem.quantity,
+					0
+				)}
+				showDrawer={false}
+				mainPage={false}
+			/>
 			<div
 				className={classes.heroContent}
 				style={{ color: "#171818", paddingTop: "10px" }}
@@ -43,6 +63,7 @@ export default function Payment() {
 						sun
 					</Typography>
 					<div style={{ paddingBottom: "10px" }} id="PaymentForm">
+						{showAlert && <Alert>Success</Alert>}
 						<Cards
 							cvc={cvc}
 							expiry={expiry}
@@ -51,20 +72,24 @@ export default function Payment() {
 							number={number}
 						/>
 					</div>
-					<div style={{ padding: "10px" }}>
+					<div style={{ display: "flex", padding: "10px" }}>
 						<TextField
 							variant="outlined"
 							type="tel"
 							name="number"
 							placeholder="Card Number"
 							value={number}
-							onChange={(e) => setNumber(e.target.value)}
+							onChange={(e) =>
+								setNumber(
+									e.target.value.length < 17
+										? e.target.value
+										: e.target.value.slice(0, 15)
+								)
+							}
 							onFocus={(e) => setFocus(e.target.name)}
 							fullWidth
-							style={{ maxLength: "4" }}
 						/>
-					</div>
-					<div style={{ padding: "10px" }}>
+
 						<TextField
 							variant="outlined"
 							fullWidth
@@ -84,7 +109,13 @@ export default function Payment() {
 							name="expiry"
 							placeholder="MM/YY Expiry"
 							value={expiry}
-							onChange={(e) => setExpiry(e.target.value)}
+							onChange={(e) =>
+								setExpiry(
+									e.target.value.length < 5
+										? e.target.value
+										: e.target.value.slice(0, 3)
+								)
+							}
 							onFocus={(e) => setFocus(e.target.name)}
 						/>
 						<TextField
@@ -94,17 +125,28 @@ export default function Payment() {
 							name="cvc"
 							placeholder="CVC"
 							value={cvc}
-							onChange={(e) => setCvc(e.target.value)}
+							onChange={(e) =>
+								setCvc(
+									e.target.value.length < 4
+										? e.target.value
+										: e.target.value.slice(0, 2)
+								)
+							}
 							onFocus={(e) => setFocus(e.target.name)}
 						/>
 					</div>
-					<Button fullWidth variant="contained" color="primary">
+					<Button
+						onClick={() => {
+							setShowAlert(true);
+						}}
+						fullWidth
+						variant="contained"
+						color="primary"
+					>
 						Pay Now
 					</Button>
 				</Container>
 			</div>
 		</>
 	);
-  }
-
-  
+}

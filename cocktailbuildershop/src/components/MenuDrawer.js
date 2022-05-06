@@ -1,38 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Checkbox from "@material-ui/core/Checkbox";
+import { Drawer,Accordion ,AccordionSummary} from "@material-ui/core";
+import { AccordionDetails, Checkbox, Typography } from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { CartContext } from "../context/CartContext";
+import THEMES from "../consts/THEMES";
 
-const latter = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "v", "w", "y", "z",];
+// const latter = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "v", "w", "y", "z",];
 // const latter = "abc";
 
-const useStyles = makeStyles((theme) => ({
-	list: {
-		elevation: 105,
-		width: 210,
-	},
-	heading: {
-		fontSize: theme.typography.pxToRem(15),
-		fontWeight: theme.typography.fontWeightRegular,
-	},
-	accord: {
-		margin: 0,
-		padding: 0,
-		backgroundColor: "#303f9f",
-		color: "#ffffff",
-		width: "100%",
-	},
-}));
+
 
 export default function MenuDrawer({ open, close, itemData}) {
-	const classes = useStyles();
+	const classes = THEMES();
 	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const objForMap = {
 		alcoholic: ["Alcoholic", "Non alcoholic", "Optional alcohol"],
@@ -46,7 +26,6 @@ export default function MenuDrawer({ open, close, itemData}) {
 		const result = [];
 		let youtube = 'YoutubeVideo'
 		for (const objElem of itemData) {
-			console.log(objElem)
 			if (checkedValue.includes('YoutubeVideo')) {
 				youtube = objElem.strVideo
 			}
@@ -82,7 +61,7 @@ export default function MenuDrawer({ open, close, itemData}) {
 						return
 					}
 				}
-				if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') || checkedValue.includes('Alcoholic') && checkedValue.includes('Optional alcohol') || checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
+				if ((checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic')) || (checkedValue.includes('Alcoholic') && checkedValue.includes('Optional alcohol')) || (checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol'))) {
 					// console.log(2)
 					if (checkedValue.length === 2) {
 						if (Object.values(objElem).includes(checkedValue[0]) || Object.values(objElem).includes(checkedValue[1])) {
@@ -172,7 +151,7 @@ export default function MenuDrawer({ open, close, itemData}) {
 			}
 		}
 		setFilteredApi(result);
-	}, [checkedValue]);
+	}, [checkedValue,itemData,setFilteredApi]);
 
 
 	const handleChange = (event) => {

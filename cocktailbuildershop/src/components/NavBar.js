@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Badge } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
@@ -17,6 +17,7 @@ export default function MenuAppBar({
   cartQty,
   fetchData,
   showDrawer = true,
+	mainPage
 }) {
   const classes = THEMES();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -45,70 +46,68 @@ export default function MenuAppBar({
     }
   }
 
-  return (
-    <div className={classes.rootnav}>
-      <AppBar style={{ backgroundColor: "#4052b5", color: "white" }}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="menu"
-            onClick={() => setOpenMenu(true)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <IconButton
-            className={classes.title}
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            <HomeIcon />
-            Home
-          </IconButton>
-          <IconButton
-            className={classes.title}
-            onClick={() => {
-              navigate("/");
-              popularCocktailsSwitch();
-            }}
-          >
-            <img
-              alt="icon"
-              style={{ width: "45px", borderRadius: "30%" }}
-              src="/images/icon.png"
-            />{" "}
-            Popular Cocktails
-          </IconButton>
-          <IconButton
-            className={classes.title}
-            onClick={() => {
-              navigate("/");
-              popularIngsSwitch();
-            }}
-          >
-            <img
-              alt="icon"
-              style={{ width: "60px", borderRadius: "30%" }}
-              src="https://thecocktaildb.com/images/ingredients/Baileys irish cream.png"
-            />{" "}
-            Popular Ingredients
-          </IconButton>
-          <IconButton
-            style={{ background: "#4052b5" }}
-            className={classes.title}
-            onClick={() => {
-              navigate("/cocktail-builder");
-            }}
-          >
-            <img
-              alt="icon"
-              style={{ width: "60px", borderRadius: "30%" }}
-              src="/images/icon2.jpg"
-            />{" "}
-            Cocktail Builder
-          </IconButton>
+	return (
+		<div className={classes.rootnav}>
+			<AppBar style={{ backgroundColor: "#4052b5", color: "white" }}>
+				<Toolbar>
+					<IconButton
+						edge="start"
+						className={classes.menuButton}
+						color="inherit"
+						aria-label="menu"
+						onClick={() => setOpenMenu(true)}
+					>
+						<MenuIcon />
+					</IconButton>
+					<IconButton
+						className={classes.title}
+						onClick={() => {
+							navigate("/");
+						}}
+					>
+						<HomeIcon />
+						Home
+					</IconButton>
+					<IconButton
+						className={classes.title}
+						onClick={() => {
+							mainPage?popularCocktailsSwitch():navigate("/")
+						}}
+					>
+						<img
+							alt="icon"
+							style={{ width: "45px", borderRadius: "30%" }}
+							src="/images/icon.png"
+						/>{" "}
+						Popular Cocktails
+					</IconButton>
+					<IconButton
+						className={classes.title}
+						onClick={() => {
+							mainPage ? popularIngsSwitch() : navigate("/");
+						}}
+					>
+						<img
+							alt="icon"
+							style={{ width: "60px", borderRadius: "30%" }}
+							src="https://thecocktaildb.com/images/ingredients/Baileys irish cream.png"
+						/>{" "}
+						Popular Ingredients
+					</IconButton>
+					<IconButton
+						style={{ background: "#4052b5" }}
+						className={classes.title}
+						onClick={() => {
+							navigate("/cocktail-builder");
+						}}
+					>
+						<img
+							alt="icon"
+							style={{ width: "60px", borderRadius: "30%" }}
+							src="/images/icon2.jpg"
+						/>{" "}
+						Cocktail Builder
+					</IconButton>
 
           <div className={classes.search}>
             <div className={classes.searchIcon}>

@@ -107,7 +107,7 @@ function CustomCocktail() {
 
   return (
     <div>
-      <NavBar cartQty={cartQty} />
+      <NavBar  showDrawer={false} mainPage={false} cartQty={cartQty} />
       <Container maxWidth="sm">
         {error[2] === "n" ? (
           <div>
@@ -249,7 +249,7 @@ function CustomCocktail() {
   );
 }
 export default function CocktailBuilder() {
-  const classes = THEMES();
+	const classes = THEMES();
 
   return (
     <div>
