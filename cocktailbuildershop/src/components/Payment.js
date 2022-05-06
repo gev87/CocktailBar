@@ -27,7 +27,7 @@ export default function Payment() {
 					setCart(value ? value : {});
 				}
 			);
-	}, []);
+	}, [currentUser]);
 	return (
 		<>
 			<NavBar
