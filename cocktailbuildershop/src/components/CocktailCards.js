@@ -34,10 +34,25 @@ export default function CocktailCards() {
 	const [cartQty, setCartQty] = useState(null);
 	const [cartChanged, setCartChanged] = useState(null);
 	const navigate = useNavigate();
+	const [cart, setCart] = useState({});
 
 	useEffect(() => {
 		currentUser && setCartQty(calcItemQty(currentUser));
-	}, [currentUser, cartChanged]);
+	},[currentUser,cartChanged]);
+	
+	useEffect(() => {
+		currentUser &&
+			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+				(value) => {
+					setCart(value ? value : {});
+					setCartChanged([]);
+					console.log(
+						Object.values(cart).reduce((cur, elem) => cur + elem.quantity, 0)
+					);
+				}
+			);
+	}, []);
+
 
 	useEffect(() => {
 		if (filteredApi.length) {

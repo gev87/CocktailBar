@@ -23,17 +23,25 @@ export default function Basket() {
   const { currentUser } = useContext(MainContext);
   const [cart, setCart] = useState({});
   const [cartQty, setCartQty] = useState(null);
-  const navigate = useNavigate();
+	const navigate = useNavigate();
+	const [cartChanged, setCartChanged] = useState(null);
+	
 
-  useEffect(() => {
-    currentUser &&
-      readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
-        (value) => setCart(value ? value : {})
-      );
-  }, []);
-  useEffect(() => {
+  
+	useEffect(() => {
     currentUser && setCartQty(calcItemQty(currentUser));
-  }, [currentUser, setCartQty]);
+  },[currentUser,cartChanged]);
+	
+	useEffect(() => {
+		currentUser &&
+			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+				(value) => {
+					setCart(value ? value : {})
+					setCartChanged([]);
+				}
+			);
+			
+	}, []);
 
   const addItemToCart = (card, func) => {
     const item = Object.entries(cart).find(
@@ -127,7 +135,7 @@ export default function Basket() {
 									/>
 									Order All for $
 									{Object.entries(cart).reduce((cur, elem) => {
-										console.log(elem[1], cur);
+										
 										return cur + elem[1].quantity * elem[1].order.price;
 									}, 0)}
 									.00
