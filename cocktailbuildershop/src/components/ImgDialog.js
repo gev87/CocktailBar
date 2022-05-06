@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import Slide from '@material-ui/core/Slide';
 import { makeStyles } from '@material-ui/core';

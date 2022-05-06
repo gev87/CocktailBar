@@ -35,7 +35,7 @@ export default function CocktailCards() {
 	const [cartQty, setCartQty] = useState(null);
 	const [cartChanged, setCartChanged] = useState(null);
 	const navigate = useNavigate();
-	const [cart, setCart] = useState({});
+	const [, setCart] = useState({});
 
 	useEffect(() => {
 		currentUser && setCartQty(calcItemQty(currentUser));
@@ -49,7 +49,7 @@ export default function CocktailCards() {
 					setCartChanged([]);
 				}
 			);
-	}, []);
+	}, [currentUser]);
 
 
 	useEffect(() => {

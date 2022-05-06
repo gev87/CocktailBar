@@ -16,7 +16,6 @@ import MainContext from "../context/MainContext";
 import ShopIcon from "@material-ui/icons/Shop";
 import RemoveShoppingCartOutlinedIcon from "@material-ui/icons/RemoveShoppingCartOutlined";
 import { useNavigate } from "react-router-dom";
-import { CartContext } from "../context/CartContext";
 
 export default function Basket() {
   const classes = THEMES();

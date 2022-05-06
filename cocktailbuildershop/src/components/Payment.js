@@ -7,7 +7,7 @@ import THEMES from "../consts/THEMES";
 import { Button, Container, TextField, Typography } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import MainContext from "../context/MainContext";
-import { readOnceGet } from "../firebase/crudoperations";
+import { readOnceGet, removeAsync } from "../firebase/crudoperations";
 
 export default function Payment() {
 	const [number, setNumber] = useState("");
@@ -18,8 +18,10 @@ export default function Payment() {
 	const classes = THEMES();
 	const [showAlert, setShowAlert] = useState(false);
 	const { currentUser } = useContext(MainContext);
-		const [cart, setCart] = useState({});
-
+	const [cart,setCart] = useState({});
+	const [, setClearCart] = useState(false);
+	const [showErrorAlert,setErrorAlert] = useState(false);
+	
 	useEffect(() => {
 		currentUser &&
 			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
@@ -27,7 +29,20 @@ export default function Payment() {
 					setCart(value ? value : {});
 				}
 			);
-	}, [currentUser]);
+	},[currentUser]);
+	
+	const clearAll = (currentUser) => {
+		if (name.length < 3 || number.length < 16 || cvc.length < 3 || expiry.length<4) {
+			setErrorAlert(true);
+			return;
+		}
+		removeAsync(`users/${currentUser.uid}/orders`);
+		setClearCart(true);
+		setErrorAlert(false);
+		setShowAlert(true);
+		setCart([])
+	};
+
 	return (
 		<>
 			<NavBar
@@ -64,6 +79,9 @@ export default function Payment() {
 					</Typography>
 					<div style={{ paddingBottom: "10px" }} id="PaymentForm">
 						{showAlert && <Alert>Success</Alert>}
+						{showErrorAlert && (
+							<Alert severity="error">Check all the fields and try again</Alert>
+						)}
 						<Cards
 							cvc={cvc}
 							expiry={expiry}
@@ -136,9 +154,7 @@ export default function Payment() {
 						/>
 					</div>
 					<Button
-						onClick={() => {
-							setShowAlert(true);
-						}}
+						onClick={() => clearAll(currentUser)}
 						fullWidth
 						variant="contained"
 						color="primary"
