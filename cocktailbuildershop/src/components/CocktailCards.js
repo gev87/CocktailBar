@@ -19,6 +19,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import CardActionArea from "@material-ui/core/CardActionArea";
 
+
 export default function CocktailCards() {
 	const classes = THEMES();
 	const [data, setData] = useState([]);
@@ -34,7 +35,7 @@ export default function CocktailCards() {
 	const [cartQty, setCartQty] = useState(null);
 	const [cartChanged, setCartChanged] = useState(null);
 	const navigate = useNavigate();
-	const [cart, setCart] = useState({});
+	const [, setCart] = useState({});
 
 	useEffect(() => {
 		currentUser && setCartQty(calcItemQty(currentUser));
@@ -46,12 +47,9 @@ export default function CocktailCards() {
 				(value) => {
 					setCart(value ? value : {});
 					setCartChanged([]);
-					console.log(
-						Object.values(cart).reduce((cur, elem) => cur + elem.quantity, 0)
-					);
 				}
 			);
-	}, []);
+	}, [currentUser]);
 
 
 	useEffect(() => {
