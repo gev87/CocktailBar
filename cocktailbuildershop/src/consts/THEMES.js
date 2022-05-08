@@ -128,7 +128,7 @@ const THEMES = makeStyles((theme) => ({
 	},
 	heroContent: {
 		backgroundColor: theme.palette.background.paper,
-		padding: theme.spacing(8, 0, 6),
+		padding: theme.spacing(10,0,6),
 	},
 	cardGrid: {
 		paddingTop: theme.spacing(8),
