@@ -48,7 +48,7 @@ export default function MenuAppBar({
  
 	return (
 		<div className={classes.rootnav}>
-			<AppBar style={{ backgroundColor: "#4052b5", color: "white" }}>
+			<AppBar style={{ backgroundColor: "#4052b5", color: "white",height:"10%" }}>
 				<Toolbar>
 					<IconButton
 						edge="start"

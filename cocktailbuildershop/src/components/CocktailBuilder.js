@@ -20,10 +20,10 @@ import {
 import { useNavigate } from "react-router-dom";
 
 function CustomCocktail() {
-  const [ingridient1, setIngridient1] = useState("");
-  const [ingridient2, setIngridient2] = useState("");
-  const [ingridient3, setIngridient3] = useState("");
-  const [ingridient4, setIngridient4] = useState("");
+  const [ingredient1, setIngredient1] = useState("");
+  const [ingredient2, setIngredient2] = useState("");
+  const [ingredient3, setIngredient3] = useState("");
+  const [ingredient4, setIngredient4] = useState("");
   const [cocktailName, setCocktailName] = useState("");
   const [cartQty, setCartQty] = useState(null);
   const [cartChanged, setCartChanged] = useState(null);
@@ -38,20 +38,20 @@ function CustomCocktail() {
 
   let obj = {
     idDrink:
-      ingridient1 + ingridient2 + ingridient3 + ingridient4 + cocktailName,
+      ingredient1 + ingredient2 + ingredient3 + ingredient4 + cocktailName,
     price:
-      PRICES[ingridient1] +
-      PRICES[ingridient2] +
-      (PRICES[ingridient3] || 0) +
-      (PRICES[ingridient4] || 0) +
+      PRICES[ingredient1] +
+      PRICES[ingredient2] +
+      (PRICES[ingredient3] || 0) +
+      (PRICES[ingredient4] || 0) +
       3,
     strDrink: cocktailName,
     strCategory: currentUser?.displayName + "'s Creation",
     strDrinkThumb: "/images/cocktail1.jpg",
-    strIngredient1: ingridient1,
-    strIngredient2: ingridient2,
-    strIngredient3: ingridient3,
-    strIngredient4: ingridient4,
+    strIngredient1: ingredient1,
+    strIngredient2: ingredient2,
+    strIngredient3: ingredient3,
+    strIngredient4: ingredient4,
   };
 
   const addItemToCart = (card, func) => {
@@ -84,12 +84,12 @@ function CustomCocktail() {
       return setError("Please Sign In");
     }
     if (
-      ingridient1.length < 1 ||
-      ingridient2.length < 1 ||
+      ingredient1.length < 1 ||
+      ingredient2.length < 1 ||
       cocktailName.length < 1
     ) {
       return setError(
-        "COCkTAIL NAME , INGRIDIENT 1 AND INGRIDIENT 2 ARE REQUIRED"
+        "COCkTAIL NAME , INGREDIENT 1 AND INGREDIENT 2 ARE REQUIRED"
       );
     }
     addItemToCart(obj);
@@ -101,12 +101,12 @@ function CustomCocktail() {
 				return setError("Please Sign In");
 			}
 			if (
-				ingridient1.length < 1 ||
-				ingridient2.length < 1 ||
+				ingredient1.length < 1 ||
+				ingredient2.length < 1 ||
 				cocktailName.length < 1
 			) {
 				return setError(
-					"COCkTAIL NAME , INGRIDIENT 1 AND INGRIDIENT 2 ARE REQUIRED"
+					"COCkTAIL NAME , INGREDIENT 1 AND INGREDIENT 2 ARE REQUIRED"
 				);
 			}
 			navigate("/payment");
@@ -114,10 +114,10 @@ function CustomCocktail() {
 
 
   function onClean() {
-    setIngridient1("");
-    setIngridient2("");
-    setIngridient3("");
-    setIngridient4("");
+    setIngredient1("");
+    setIngredient2("");
+    setIngredient3("");
+    setIngredient4("");
     setCocktailName("");
     setError("");
   }
@@ -161,17 +161,17 @@ function CustomCocktail() {
 					<Autocomplete
 						classes={{ inputRoot: classes.input }}
 						onInputChange={(event, newInputvalue) => {
-							setIngridient1(newInputvalue);
+							setIngredient1(newInputvalue);
 						}}
-						inputValue={ingridient1}
+						inputValue={ingredient1}
 						id="controllable-states-demo"
 						options={PRICESARR}
-						getOptionLabel={(option) => option.ingridient}
+						getOptionLabel={(option) => option.ingredient}
 						style={{ width: 250, padding: "15px 0px" }}
 						renderInput={(params) => (
 							<TextField
 								{...params}
-								label="INGRIDIENT 1"
+								label="INGREDIENT 1"
 								variant="outlined"
 								color="secondary"
 							/>
@@ -179,18 +179,18 @@ function CustomCocktail() {
 					/>
 					<Autocomplete
 						classes={{ inputRoot: classes.input }}
-						inputValue={ingridient2}
+						inputValue={ingredient2}
 						onInputChange={(event, newInputvalue) => {
-							setIngridient2(newInputvalue);
+							setIngredient2(newInputvalue);
 						}}
 						id="controllable-states-demo"
 						options={PRICESARR}
-						getOptionLabel={(option) => option.ingridient}
+						getOptionLabel={(option) => option.ingredient}
 						style={{ width: 250, padding: "15px 0px" }}
 						renderInput={(params) => (
 							<TextField
 								{...params}
-								label="INGRIDIENT 2"
+								label="INGREDIENT 2"
 								variant="outlined"
 								color="secondary"
 							/>
@@ -198,30 +198,30 @@ function CustomCocktail() {
 					/>
 					<Autocomplete
 						classes={{ inputRoot: classes.input }}
-						inputValue={ingridient3}
+						inputValue={ingredient3}
 						onInputChange={(event, newInputvalue) => {
-							setIngridient3(newInputvalue);
+							setIngredient3(newInputvalue);
 						}}
 						id="controllable-states-demo"
 						options={PRICESARR}
-						getOptionLabel={(option) => option.ingridient}
+						getOptionLabel={(option) => option.ingredient}
 						style={{ width: 250, padding: "15px 0px" }}
 						renderInput={(params) => (
-							<TextField {...params} label="INGRIDIENT 3" variant="outlined" />
+							<TextField {...params} label="INGREDIENT 3" variant="outlined" />
 						)}
 					/>
 					<Autocomplete
 						classes={{ inputRoot: classes.input }}
-						inputValue={ingridient4}
+						inputValue={ingredient4}
 						onInputChange={(event, newInputvalue) => {
-							setIngridient4(newInputvalue);
+							setIngredient4(newInputvalue);
 						}}
 						id="controllable-states-demo"
 						options={PRICESARR}
-						getOptionLabel={(option) => option.ingridient}
+						getOptionLabel={(option) => option.ingredient}
 						style={{ width: 250, padding: "15px 0px" }}
 						renderInput={(params) => (
-							<TextField {...params} label="INGRIDIENT 4" variant="outlined" />
+							<TextField {...params} label="INGREDIENT 4" variant="outlined" />
 						)}
 					/>
 				</div>
@@ -292,9 +292,9 @@ export default function CocktailBuilder() {
             paragraph
             style={{ color: "#ac5b01" }}
           >
-            Here is the place where you can try yourself by making personal
-            cocktail. Add up to 4 ingridients you want in your cocktail and
-            enjoy it.
+            Here you can challenge yourself by making your own
+            cocktails. Add up to 4 ingredients to your cocktail and
+            enjoy.
           </Typography>
           <Footer />
         </Container>
