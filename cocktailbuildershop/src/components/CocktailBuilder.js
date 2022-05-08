@@ -243,7 +243,9 @@ export default function CocktailBuilder() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar 
+			showDrawer={false}
+		/>
       <div className={classes.heroContent}>
         <Container maxWidth="sm">
           <Typography

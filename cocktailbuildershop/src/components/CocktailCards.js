@@ -9,13 +9,14 @@ import MainContext from "../context/MainContext";
 import NavBar from "./NavBar";
 import NONALCOHOLIC from "../consts/NONALCOHOLIC";
 import ImgDialog from "./ImgDialog";
-import {CartContext} from '../context/CartContext'
+import { CartContext } from '../context/CartContext'
 import {
 	writeAsync,
 	readOnceGet,
 	updateAsync,
 } from "../firebase/crudoperations";
 import { useNavigate } from "react-router-dom";
+import LoginSignUp from "./LoginSignUp";
 
 export default function CocktailCards() {
 	const classes = THEMES();
@@ -28,11 +29,26 @@ export default function CocktailCards() {
 	const [popularCocktails, setPopularCocktails] = useState(true);
 	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const [selectItem, setSelectItem] = useState("");
-	const [openDlg1Dialog,setDialog1Open] = useState(false);
-	const [basketQty,setBasketQty] = useState(null)
-		const navigate = useNavigate();
-	
-		
+	const [openDlg1Dialog, setDialog1Open] = useState(false);
+	const [basketQty, setBasketQty] = useState(null)
+	const navigate = useNavigate();
+	const [searchCocktail, setSearchCocktil] = useState('')
+	const [resultSearchCocktail, setResultSearchCocktail] = useState([])
+
+	// console.log(resultSearchCocktail)
+
+	useEffect(() => {
+		if (!searchCocktail.length) {
+			setResultSearchCocktail([])
+			setFilteredApi([])
+		} else {
+			setResultSearchCocktail(
+				data.filter(
+					(item) => item.strDrink.trim().toLowerCase().includes(searchCocktail.trim().toLowerCase()))
+			)
+		}
+
+	}, [searchCocktail])
 
 	useEffect(() => {
 		let each = [];
@@ -60,23 +76,23 @@ export default function CocktailCards() {
 					let ingPrice3 = PRICES.hasOwnProperty(cocktail.strIngredient3)
 						? PRICES[cocktail.strIngredient3]
 						: cocktail.strIngredient3 === null
-						? 0
-						: 3;
+							? 0
+							: 3;
 					let ingPrice4 = PRICES.hasOwnProperty(cocktail.strIngredient4)
 						? PRICES[cocktail.strIngredient4]
 						: cocktail.strIngredient4 === null
-						? 0
-						: 3;
+							? 0
+							: 3;
 					let ingPrice5 = PRICES.hasOwnProperty(cocktail.strIngredient5)
 						? PRICES[cocktail.strIngredient5]
 						: cocktail.strIngredient5 === null
-						? 0
-						: 3;
+							? 0
+							: 3;
 					let ingPrice6 = PRICES.hasOwnProperty(cocktail.strIngredient6)
 						? PRICES[cocktail.strIngredient6]
 						: cocktail.strIngredient6 === null
-						? 0
-						: 3;
+							? 0
+							: 3;
 					cocktail.price =
 						ingPrice1 +
 						ingPrice2 +
@@ -101,18 +117,22 @@ export default function CocktailCards() {
 				]);
 				setData(each);
 			});
-	},[]);
-	
-	
+	}, []);
+
 
 	useEffect(() => {
-		if (filteredApi.length) {
+		if (filteredApi.length && !resultSearchCocktail.length) {
 			setShow(filteredApi)
-		} else if (data.length) {
+			setHeader(`Filtered ${filteredApi.length < 2 ? 'Cocktail' : 'Cocktails'} ${filteredApi.length}`)
+		} else if (resultSearchCocktail.length || (!resultSearchCocktail.length && searchCocktail.length)) {
+			setShow(resultSearchCocktail)
+			setHeader(`Search result ${resultSearchCocktail.length}`)
+		} else if (data.length && !searchCocktail.length) {
 			setShow(popularCocktails);
+			setHeader("MOST POPULAR COCKTAILS")
 		}
-	},[data,popularCocktails,filteredApi]);
-	
+	}, [data, popularCocktails, filteredApi, resultSearchCocktail]);
+
 	const addItemToCart = (card, func) => {
 		currentUser &&
 			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
@@ -126,12 +146,12 @@ export default function CocktailCards() {
 						);
 					!item
 						? writeAsync(`users/${currentUser.uid}/orders`, {
-								order: func ? func(card) : card,
-								quantity: 1,
-						  })
+							order: func ? func(card) : card,
+							quantity: 1,
+						})
 						: updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
-								quantity: ++item[1].quantity,
-						  });
+							quantity: ++item[1].quantity,
+						});
 					setBasketQty(
 						Object.values(value).reduce((curr, elem) => curr + elem.quantity, 0)
 					);
@@ -141,9 +161,9 @@ export default function CocktailCards() {
 
 
 	const onDouble = (item) => {
-setBasketQty(
-	basketQty+1
-);
+		setBasketQty(
+			basketQty + 1
+		);
 		return {
 			...item,
 			idDrink: item.idDrink + "double",
@@ -151,17 +171,17 @@ setBasketQty(
 			price:
 				item.price +
 				PRICES[
-					!NONALCOHOLIC.hasOwnProperty(item.strIngredient1)
-						? item.strIngredient1
-						: !NONALCOHOLIC.hasOwnProperty(item.strIngredient2)
+				!NONALCOHOLIC.hasOwnProperty(item.strIngredient1)
+					? item.strIngredient1
+					: !NONALCOHOLIC.hasOwnProperty(item.strIngredient2)
 						? item.strIngredient2
 						: !NONALCOHOLIC.hasOwnProperty(item.strIngredient3)
-						? item.strIngredient3
-						: !NONALCOHOLIC.hasOwnProperty(item.strIngredient4)
-						? item.strIngredient4
-						: !NONALCOHOLIC.hasOwnProperty(item.strIngredient5)
-						? item.strIngredient5
-						: item.strIngredient6
+							? item.strIngredient3
+							: !NONALCOHOLIC.hasOwnProperty(item.strIngredient4)
+								? item.strIngredient4
+								: !NONALCOHOLIC.hasOwnProperty(item.strIngredient5)
+									? item.strIngredient5
+									: item.strIngredient6
 				],
 		};
 	};
@@ -185,20 +205,21 @@ setBasketQty(
 		setShow(filtereddata);
 	}
 
-  function popularIngsSwitch() {
-    popularIngs ? setPopularIngs(false) : setPopularIngs(true);
-  }
+	function popularIngsSwitch() {
+		popularIngs ? setPopularIngs(false) : setPopularIngs(true);
+	}
 
-  function popularCocktailsSwitch() {
-    setHeader("MOST POPULAR COCKTAILS");
-    setShow(popularCocktails);
-  }
-
-  return (
+	function popularCocktailsSwitch() {
+		setHeader("MOST POPULAR COCKTAILS");
+		setShow(popularCocktails);
+	}
+	return (
 		<>
 			<main>
 				<NavBar
-		  			fetchData={data}
+					searchCocktail={searchCocktail}
+					setSearchCocktil={setSearchCocktil}
+					fetchData={data}
 					popularIngsSwitch={popularIngsSwitch}
 					popularCocktailsSwitch={popularCocktailsSwitch}
 					basketQty={basketQty}
@@ -220,6 +241,7 @@ setBasketQty(
 								<Grid item key={card.idDrink} xs={12} sm={6} md={4}>
 									<Card className={classes.card}>
 										<CardMedia
+											style={{ cursor: 'pointer' }}
 											className={classes.cardMedia}
 											image={card.strDrinkThumb}
 											title={card.strDrink}
@@ -245,44 +267,44 @@ setBasketQty(
 												{ing
 													? "Double <<" + ing + ">>  /+$" + PRICES[ing] + ".00"
 													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient1)
-													? "Double <<" +
-													  card.strIngredient1 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient1] +
-													  ".00"
-													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient2)
-													? "Double <<" +
-													  card.strIngredient2 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient2] +
-													  ".00"
-													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient3)
-													? "Double <<" +
-													  card.strIngredient3 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient3] +
-													  ".00"
-													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient4)
-													? "Double <<" +
-													  card.strIngredient4 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient4] +
-													  ".00"
-													: !NONALCOHOLIC.hasOwnProperty(card.strIngredient5)
-													? "Double <<" +
-													  card.strIngredient5 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient5] +
-													  ".00"
-													: "Double <<" +
-													  card.strIngredient6 +
-													  ">>  /+$" +
-													  PRICES[card.strIngredient6] +
-													  ".00"}
+														? "Double <<" +
+														card.strIngredient1 +
+														">>  /+$" +
+														PRICES[card.strIngredient1] +
+														".00"
+														: !NONALCOHOLIC.hasOwnProperty(card.strIngredient2)
+															? "Double <<" +
+															card.strIngredient2 +
+															">>  /+$" +
+															PRICES[card.strIngredient2] +
+															".00"
+															: !NONALCOHOLIC.hasOwnProperty(card.strIngredient3)
+																? "Double <<" +
+																card.strIngredient3 +
+																">>  /+$" +
+																PRICES[card.strIngredient3] +
+																".00"
+																: !NONALCOHOLIC.hasOwnProperty(card.strIngredient4)
+																	? "Double <<" +
+																	card.strIngredient4 +
+																	">>  /+$" +
+																	PRICES[card.strIngredient4] +
+																	".00"
+																	: !NONALCOHOLIC.hasOwnProperty(card.strIngredient5)
+																		? "Double <<" +
+																		card.strIngredient5 +
+																		">>  /+$" +
+																		PRICES[card.strIngredient5] +
+																		".00"
+																		: "Double <<" +
+																		card.strIngredient6 +
+																		">>  /+$" +
+																		PRICES[card.strIngredient6] +
+																		".00"}
 											</Button>
 										)}
 										<CardActions>
-											{currentUser && (
+											{currentUser ? (
 												<>
 													<Button
 														onClick={() => addItemToCart(card)}
@@ -304,6 +326,8 @@ setBasketQty(
 														Order Now
 													</Button>
 												</>
+											) : (
+													<LoginSignUp/>
 											)}
 											<Grid item>
 												<Typography variant="button">

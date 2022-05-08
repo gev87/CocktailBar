@@ -2,17 +2,21 @@ import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Badge } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
+// import TextField from '@material-ui/core/TextField';
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ClearIcon from '@material-ui/icons/Clear';
 import MenuDrawer from "./MenuDrawer";
 import HomeIcon from "@material-ui/icons/Home";
 import THEMES from "../consts/THEMES";
 import { readOnValue } from "../firebase/crudoperations";
 
-export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, basketQty, fetchData, showDrawer = true }) {
+
+
+export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, basketQty, fetchData, showDrawer = true, searchCocktail, setSearchCocktil }) {
 	const classes = THEMES();
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
@@ -21,7 +25,6 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 	const navigate = useNavigate();
 	const [openMenu, setOpenMenu] = useState(false);
 	const [, setBasketQty] = useState();
-	// const [showDrawer, setShowDrawer] = useState(true)
 
 	useEffect(() => {
 		const qty =
@@ -36,7 +39,7 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 					)
 			);
 		setBasketQty(qty);
-	},[currentUser]);
+	}, [currentUser]);
 	// useEffect(() => {
 	// 	const qty =
 	// 		currentUser &&
@@ -51,7 +54,7 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 	// 		);
 	// 	setBasketQty(qty);
 	// }, [currentUser]);
-	
+
 	const handleMenu = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -70,7 +73,13 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 			setError("Failed to Log out");
 		}
 	}
+	const onInputValue = (e) => {
+		setSearchCocktil(e.target.value)
+	}
 
+	const onClear = () => {
+		setSearchCocktil('')
+	}
 	return (
 		<div className={classes.rootnav}>
 			<AppBar style={{ backgroundColor: "#4052b5", color: "white" }}>
@@ -98,6 +107,7 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 						onClick={() => {
 							navigate("/");
 							popularCocktailsSwitch();
+							setSearchCocktil('')
 						}}
 					>
 						<img
@@ -135,19 +145,21 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 						/>{" "}
 						Cocktail Builder
 					</IconButton>
-
 					<div className={classes.search}>
-						<div className={classes.searchIcon}>
-							<SearchIcon />
-						</div>
 						<InputBase
-							placeholder="Search…"
-							classes={{
-								root: classes.inputRoot,
-								input: classes.inputInput,
-							}}
-							inputProps={{ "aria-label": "search" }}
+						style={{paddingLeft: 10}}
+							onChange={onInputValue}
+							placeholder='Search...'
+							value={searchCocktail}
 						/>
+						<div className={classes.searchIcon}
+						 onClick={onClear}
+						 style={{
+							 cursor:'pointer',
+							 paddingRight: 5
+							 }}>
+							{searchCocktail.length ? <ClearIcon/> : <SearchIcon />}
+						</div>
 					</div>
 					<div>
 						<Typography variant="h6" className={classes.title}>
@@ -254,11 +266,12 @@ export default function MenuAppBar({ popularIngsSwitch, popularCocktailsSwitch, 
 				</Toolbar>
 			</AppBar>
 			{showDrawer && (<MenuDrawer
+				clearfilterProp={searchCocktail.length}
 				itemData={fetchData}
 				open={openMenu}
 				close={() => setOpenMenu(false)}
 			/>)}
-			
+
 		</div>
 	);
 }

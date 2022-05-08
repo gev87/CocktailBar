@@ -10,12 +10,11 @@ import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { CartContext } from "../context/CartContext";
 
-const latter = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "v", "w", "y", "z",];
-// const latter = "abc";
+
 
 const useStyles = makeStyles((theme) => ({
 	list: {
-		elevation: 105,
+		elevation: 80,
 		width: 210,
 	},
 	heading: {
@@ -31,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function MenuDrawer({ open, close, itemData}) {
+export default function MenuDrawer({ open, close, itemData, clearfilterProp }) {
 	const classes = useStyles();
 	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const objForMap = {
@@ -42,124 +41,178 @@ export default function MenuDrawer({ open, close, itemData}) {
 	const [checkedValue, setCheckedValue] = useState([]);
 	const transitionDuration = 1000;
 
+	console.log('useEffect')
 	useEffect(() => {
 		const result = [];
 		let youtube = 'YoutubeVideo'
 		for (const objElem of itemData) {
-			console.log(objElem)
 			if (checkedValue.includes('YoutubeVideo')) {
 				youtube = objElem.strVideo
 			}
 			for (let i = 0; i < checkedValue.length; i++) {
-
-				if ((checkedValue.includes('Alcoholic') || checkedValue.includes('Non alcoholic') || checkedValue.includes('Optional alcohol')) && checkedValue.length === 1) {
-					// console.log(-1)
-					if (Object.values(objElem).includes(checkedValue[i])) {
+				if ((checkedValue.includes('Alcoholic') || checkedValue.includes('Non alcoholic') || checkedValue.includes('Optional alcohol')) && ((youtube === 'YoutubeVideo' && checkedValue.length === 1) || (Boolean(objElem.strVideo) && checkedValue.length === 2 && youtube !== 'YoutubeVideo'))) {
+					if ((Object.values(objElem).includes(checkedValue[i]) && youtube === 'YoutubeVideo') || (Object.values(objElem).includes(checkedValue[i]) && youtube !== 'YoutubeVideo' && youtube)) {
 						if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
 							result.push(objElem);
 						}
 					}
-
 				}
 				if (!checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol') && checkedValue.length) {
-					// console.log(0)
-					if (Object.values(objElem).includes(checkedValue[i])) {
+					if (youtube !== 'YoutubeVideo') {
+						if ((Object.values(objElem).includes(checkedValue[i]) && objElem.strVideo) || (objElem.strVideo && checkedValue.length === 1)) {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					} else if (Object.values(objElem).includes(checkedValue[i])) {
 						if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
 							result.push(objElem);
 						}
 					}
-
 				}
-				if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol') && youtube) {
-					// console.log(1)
+				if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol') && ((youtube === 'YoutubeVideo' && checkedValue.length === 3) || (Boolean(objElem.strVideo) && checkedValue.length === 4 && youtube !== 'YoutubeVideo'))) {
 					if (youtube !== "YoutubeVideo") {
-						if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
-							result.push(objElem);
-						}
+						if (Object.values(objElem).includes(checkedValue[i]) && objElem.strVideo)
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
 					}
 					if (checkedValue.length === 3) {
 						setFilteredApi(itemData)
 						return
 					}
 				}
-				if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') || checkedValue.includes('Alcoholic') && checkedValue.includes('Optional alcohol') || checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
-					// console.log(2)
-					if (checkedValue.length === 2) {
-						if (Object.values(objElem).includes(checkedValue[0]) || Object.values(objElem).includes(checkedValue[1])) {
-							// console.log('ok')
+				if (((checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic')) || (checkedValue.includes('Alcoholic') && checkedValue.includes('Optional alcohol')) || (checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol'))) && ((youtube === 'YoutubeVideo' && checkedValue.length === 2) || (Boolean(objElem.strVideo) && checkedValue.length === 3 && youtube !== 'YoutubeVideo'))) {
+					if (youtube !== 'YoutubeVideo') {
+						if (Object.values(objElem).includes(checkedValue[i]) && objElem.strVideo) {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					} else {
+						if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== youtube) {
 							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
 								result.push(objElem);
 							}
 						}
 					}
+					// if (Object.values(objElem).includes(checkedValue[0]) || Object.values(objElem).includes(checkedValue[1])) {
+					// 	// console.log('ok')
+					// 	if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+					// 		result.push(objElem);
+					// 	}
+					// }
 				}
 
-				if (checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) {
-					// console.log(3)youtube
-					if (Object.values(objElem).includes('Alcoholic')) {
-						if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') {
+				if ((checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) || (!checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) || (!checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol'))) {
+					if (Object.values(objElem).includes('Alcoholic') && checkedValue.includes('Alcoholic')) {
+						if (youtube !== 'YoutubeVideo') {
+							if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic' && objElem.strVideo) {
+								if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+									result.push(objElem);
+								}
+							}
+						} else if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic' && youtube === 'YoutubeVideo') {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					}
+
+					if (Object.values(objElem).includes('Non alcoholic') && checkedValue.includes('Non alcoholic')) {
+						if (youtube !== 'YoutubeVideo') {
+							if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic' && objElem.strVideo) {
+								if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+									result.push(objElem);
+								}
+							}
+						} else if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic') {
+							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+								result.push(objElem);
+							}
+						}
+					}
+
+					if (Object.values(objElem).includes('Optional alcohol') && checkedValue.includes('Optional alcohol')) {
+						if (youtube !== 'YoutubeVideo') {
+							if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol' && objElem.strVideo) {
+								if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+									result.push(objElem);
+								}
+							}
+						} else if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol') {
 							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
 								result.push(objElem);
 							}
 						}
 					}
 				}
-				if (!checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) {
-					// console.log(4)
-					if (Object.values(objElem).includes('Non alcoholic')) {
-						if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic') {
-							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
-								result.push(objElem);
+				if (((checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) || (checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) || (!checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol'))) && ((youtube === 'YoutubeVideo' && checkedValue.length > 2) || (Boolean(objElem.strVideo) && checkedValue.length > 3 && youtube !== 'YoutubeVideo'))) {
+					if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic')) {
+						if (youtube !== 'YoutubeVideo') {
+							if ((Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Non alcoholic')) && objElem.strVideo) {
+								if (((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') && (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic')) && objElem.strVideo) {
+									if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+										result.push(objElem);
+									}
+								}
+							}
+						} else if (Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Non alcoholic')) {
+							if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') && (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic')) {
+								if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+									result.push(objElem);
+								}
+							}
+						}
+					}
+					if (checkedValue.includes('Alcoholic') && checkedValue.includes('Optional alcohol')) {
+						if (youtube !== 'YoutubeVideo') {
+							if ((Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Optional alcohol')) && objElem.strVideo) {
+								if (((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') && (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol')) && objElem.strVideo) {
+									if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+										result.push(objElem);
+									}
+								}
+							}
+						} else if (Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Optional alcohol')) {
+							if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') && (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol')) {
+								if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+									result.push(objElem);
+								}
+							}
+						}
+					}
+					if (checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
+						if (youtube !== 'YoutubeVideo') {
+							if ((Object.values(objElem).includes('Non alcoholic') || Object.values(objElem).includes('Optional alcohol')) && objElem.strVideo) {
+								if (((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic') && (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol')) && objElem.strVideo) {
+									if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+										result.push(objElem);
+									}
+								}
+							}
+						} else if (Object.values(objElem).includes('Non alcoholic') || Object.values(objElem).includes('Optional alcohol')) {
+							console.log(objElem)
+							if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic') && (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol')) {
+								if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+									result.push(objElem);
+								}
 							}
 						}
 					}
 				}
-				if (!checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
-					// console.log(5)
-					if (Object.values(objElem).includes('Optional alcohol')) {
-						if (Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol') {
-							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
-								result.push(objElem);
+				if ((checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) && ((youtube === 'YoutubeVideo' && checkedValue.length > 3) || (Boolean(objElem.strVideo) && checkedValue.length > 4 && youtube !== 'YoutubeVideo'))) {
+					if (youtube !== 'YoutubeVideo') {
+						if ((Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Non alcoholic') || Object.values(objElem).includes('Optional alcohol')) && objElem.strVideo) {
+							if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') &&
+								(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic') &&
+								(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol') && objElem.strVideo) {
+								if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
+									result.push(objElem);
+								}
 							}
 						}
-					}
-				}
-				if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) {
-					// console.log(6)
-					if (Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Non alcoholic')) {
-						if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') &&
-							(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic')) {
-							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
-								result.push(objElem);
-							}
-						}
-					}
-				}
-				if (checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
-					// console.log(7)
-					if (Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Optional alcohol')) {
-						if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') &&
-							(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol')) {
-							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
-								result.push(objElem);
-							}
-						}
-					}
-				}
-				if (!checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
-					// console.log(8)
-					if (Object.values(objElem).includes('Non alcoholic') || Object.values(objElem).includes('Optional alcohol')) {
-						if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic') &&
-							(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol')) {
-							if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
-								result.push(objElem);
-							}
-						}
-					}
-				}
-				if (checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol')) {
-					// console.log(9)
-					if (Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Non alcoholic') || Object.values(objElem).includes('Optional alcohol')) {
+					} else if (Object.values(objElem).includes('Alcoholic') || Object.values(objElem).includes('Non alcoholic') || Object.values(objElem).includes('Optional alcohol')) {
 						if ((Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Alcoholic') &&
 							(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Non alcoholic') &&
 							(Object.values(objElem).includes(checkedValue[i]) && checkedValue[i] !== 'Optional alcohol')) {
@@ -172,8 +225,11 @@ export default function MenuDrawer({ open, close, itemData}) {
 			}
 		}
 		setFilteredApi(result);
-	}, [checkedValue]);
+	}, [checkedValue, itemData, setFilteredApi]);
 
+	useEffect(() => {
+		setCheckedValue([])
+	}, [clearfilterProp])
 
 	const handleChange = (event) => {
 		if (!checkedValue.includes(event.target.name)) {
@@ -184,6 +240,34 @@ export default function MenuDrawer({ open, close, itemData}) {
 			);
 		}
 	};
+	const filterResult = () => (
+		<div className={classes.list} style={{ height: 20 }} >
+			<Accordion className={classes.accord} >
+				<Typography
+					className={classes.heading}
+					style={{
+						color: 'rgb(240, 150, 210)',
+						textAlign: 'right', paddingRight: 5
+					}}
+				>
+					Filtered {filteredApi.length === 1 || filteredApi.length === 0 ? 'item' : 'items'} {filteredApi.length} in {itemData.length}.
+				</Typography>
+			</Accordion>
+		</div>
+	);
+	const clearFilter = () => (
+		<div>
+			<AccordionSummary
+				style={{
+					padding: 0,
+					position: 'fixed',
+					left: '120px'
+				}}
+			>
+				<Typography className={classes.heading} onClick={() => setCheckedValue([])}>Clear Filter</Typography>
+			</AccordionSummary>
+		</div>
+	)
 	const list = () => (
 		<div className={classes.list}>
 			<Accordion className={classes.accord}>
@@ -256,102 +340,74 @@ export default function MenuDrawer({ open, close, itemData}) {
 						}
 						label={"YoutubeVideo"}
 						style={{ margin: 0, padding: 0 }}
-					// cursor={"pointer"}
 					/>
 				</Accordion>
 			</AccordionDetails>
 		</div>
 	);
-	const filterResult = () => (
-		<div className={classes.list} style={{ height: 20 }} >
-			<Accordion className={classes.accord} >
-				<Typography
-					className={classes.heading}
-					style={{
-						color: 'rgb(240, 150, 210)',
-						textAlign: 'right', paddingRight: 5
-					}}
-				>
-					Filtered {filteredApi.length === 1 ? 'item' : 'items'} {filteredApi.length} in {itemData.length}.
-				</Typography>
-			</Accordion>
-		</div>
-	);
-	const clearFilter = () => (
-		<div>
-			<AccordionSummary
-				style={{
-					padding: 0,
-					position: 'fixed',
-					left: '120px'
-				}}
-			>
-				<Typography className={classes.heading} onClick={() => setCheckedValue([])}>Clear Filter</Typography>
-			</AccordionSummary>
-		</div>
-	)
 
-	function f() {
-		let temp = []
-		for (let item of itemData) {
-			if (item.strIngredient1) {
-				if (!temp.includes(item.strIngredient1)) {
-					temp.push(item.strIngredient1)
-				}
-			}
-			if (item.strIngredient2) {
-				if (!temp.includes(item.strIngredient2)) {
-					temp.push(item.strIngredient2)
-				}
-			}
-			if (item.strIngredient3) {
-				if (!temp.includes(item.strIngredient3)) {
-					temp.push(item.strIngredient3)
-				}
-			}
-			if (item.strIngredient4) {
-				if (!temp.includes(item.strIngredient4)) {
-					temp.push(item.strIngredient4)
-				}
-			}
-			if (item.strIngredient5) {
-				if (!temp.includes(item.strIngredient5)) {
-					temp.push(item.strIngredient5)
-				}
-			}
-			if (item.strIngredient6) {
-				if (!temp.includes(item.strIngredient6)) {
-					temp.push(item.strIngredient6)
-				}
-			}
-			if (item.strIngredient7) {
-				if (!temp.includes(item.strIngredient7)) {
-					temp.push(item.strIngredient7)
-				}
-			}
-			if (item.strIngredient8) {
-				if (!temp.includes(item.strIngredient8)) {
-					temp.push(item.strIngredient8)
-				}
-			}
-			if (item.strIngredient9) {
-				if (!temp.includes(item.strIngredient9)) {
-					temp.push(item.strIngredient9)
-				}
-			}
-			if (item.strIngredient10) {
-				if (!!temp.includes(item.strIngredient10)) {
-					temp.push(item.strIngredient10)
-				}
-			}
-			if (item.strIngredient11 ) {
-				if (!temp.includes(item.strIngredient11 )) {
-					temp.push(item.strIngredient11 )
-				}
-			}
-		}
-		return temp
-	}
+
+	// function f() {
+	// 	let temp = []
+	// 	for (let item of itemData) {
+	// 		if (item.strIngredient1) {
+	// 			if (!temp.includes(item.strIngredient1)) {
+	// 				temp.push(item.strIngredient1)
+	// 			}
+	// 		}
+	// 		if (item.strIngredient2) {
+	// 			if (!temp.includes(item.strIngredient2)) {
+	// 				temp.push(item.strIngredient2)
+	// 			}
+	// 		}
+	// 		if (item.strIngredient3) {
+	// 			if (!temp.includes(item.strIngredient3)) {
+	// 				temp.push(item.strIngredient3)
+	// 			}
+	// 		}
+	// 		if (item.strIngredient4) {
+	// 			if (!temp.includes(item.strIngredient4)) {
+	// 				temp.push(item.strIngredient4)
+	// 			}
+	// 		}
+	// 		if (item.strIngredient5) {
+	// 			if (!temp.includes(item.strIngredient5)) {
+	// 				temp.push(item.strIngredient5)
+	// 			}
+	// 		}
+	// 		if (item.strIngredient6) {
+	// 			if (!temp.includes(item.strIngredient6)) {
+	// 				temp.push(item.strIngredient6)
+	// 			}
+	// 		}
+	// 		if (item.strIngredient7) {
+	// 			if (!temp.includes(item.strIngredient7)) {
+	// 				temp.push(item.strIngredient7)
+	// 			}
+	// 		}
+	// 		if (item.strIngredient8) {
+	// 			if (!temp.includes(item.strIngredient8)) {
+	// 				temp.push(item.strIngredient8)
+	// 			}
+	// 		}
+	// 		if (item.strIngredient9) {
+	// 			if (!temp.includes(item.strIngredient9)) {
+	// 				temp.push(item.strIngredient9)
+	// 			}
+	// 		}
+	// 		if (item.strIngredient10) {
+	// 			if (!!temp.includes(item.strIngredient10)) {
+	// 				temp.push(item.strIngredient10)
+	// 			}
+	// 		}
+	// 		if (item.strIngredient11 ) {
+	// 			if (!temp.includes(item.strIngredient11 )) {
+	// 				temp.push(item.strIngredient11 )
+	// 			}
+	// 		}
+	// 	}
+	// 	return temp
+	// }
 
 
 	return (
@@ -366,7 +422,7 @@ export default function MenuDrawer({ open, close, itemData}) {
 					}}
 					variant="temporary"
 					PaperProps={{
-						style: { marginTop: 84.4, backgroundColor: "#303f9f" },
+						style: { marginTop: 84.4, backgroundColor: "#303f9f",},
 					}}
 				>
 					{checkedValue.length ? filterResult() : ''}
