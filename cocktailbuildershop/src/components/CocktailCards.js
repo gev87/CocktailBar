@@ -9,7 +9,8 @@ import MainContext from "../context/MainContext";
 import NavBar from "./NavBar";
 import NONALCOHOLIC from "../consts/NONALCOHOLIC";
 import ImgDialog from "./ImgDialog";
-import { CartContext } from '../context/CartContext'
+import { CartContext } from "../context/CartContext";
+import { calcItemQty } from "../utils/Commonfuncs";
 import {
 	writeAsync,
 	readOnceGet,
@@ -17,6 +18,8 @@ import {
 } from "../firebase/crudoperations";
 import { useNavigate } from "react-router-dom";
 import LoginSignUp from "./LoginSignUp";
+import CardActionArea from "@material-ui/core/CardActionArea";
+
 
 export default function CocktailCards() {
 	const classes = THEMES();
@@ -27,13 +30,16 @@ export default function CocktailCards() {
 	const [header, setHeader] = useState("MOST POPULAR COCKTAILS");
 	const [popularIngs, setPopularIngs] = useState(true);
 	const [popularCocktails, setPopularCocktails] = useState(true);
-	const { filteredApi, setFilteredApi } = useContext(CartContext);
+	const { filteredApi } = useContext(CartContext);
 	const [selectItem, setSelectItem] = useState("");
 	const [openDlg1Dialog, setDialog1Open] = useState(false);
 	const [basketQty, setBasketQty] = useState(null)
-	const navigate = useNavigate();
 	const [searchCocktail, setSearchCocktil] = useState('')
 	const [resultSearchCocktail, setResultSearchCocktail] = useState([])
+	const [cartQty, setCartQty] = useState(null);
+	const [cartChanged, setCartChanged] = useState(null);
+	const navigate = useNavigate();
+	const [, setCart] = useState({});
 
 	// console.log(resultSearchCocktail)
 
@@ -49,6 +55,29 @@ export default function CocktailCards() {
 		}
 
 	}, [searchCocktail])
+
+	useEffect(() => {
+		currentUser && setCartQty(calcItemQty(currentUser));
+	},[currentUser,cartChanged]);
+	
+	useEffect(() => {
+		currentUser &&
+			readOnceGet(`users/${currentUser.uid}/orders`, (items) => items).then(
+				(value) => {
+					setCart(value ? value : {});
+					setCartChanged([]);
+				}
+			);
+	}, [currentUser]);
+
+
+	useEffect(() => {
+		if (filteredApi.length) {
+			setShow(filteredApi);
+		} else if (data.length) {
+			setShow(popularCocktails);
+		}
+	}, [data, popularCocktails, filteredApi]);
 
 	useEffect(() => {
 		let each = [];
@@ -150,20 +179,15 @@ export default function CocktailCards() {
 							quantity: 1,
 						})
 						: updateAsync(`users/${currentUser.uid}/orders/${item[0]}`, {
-							quantity: ++item[1].quantity,
-						});
-					setBasketQty(
-						Object.values(value).reduce((curr, elem) => curr + elem.quantity, 0)
-					);
+								quantity: ++item[1].quantity,
+						  });
 				}
 			);
+		setCartQty(cartQty + 1);
+		setCartChanged([]);
 	};
 
-
 	const onDouble = (item) => {
-		setBasketQty(
-			basketQty + 1
-		);
 		return {
 			...item,
 			idDrink: item.idDrink + "double",
@@ -219,13 +243,18 @@ export default function CocktailCards() {
 				<NavBar
 					searchCocktail={searchCocktail}
 					setSearchCocktil={setSearchCocktil}
+					mainPage={true}
 					fetchData={data}
 					popularIngsSwitch={popularIngsSwitch}
 					popularCocktailsSwitch={popularCocktailsSwitch}
-					basketQty={basketQty}
+					cartQty={cartQty}
 				/>
 				<div style={{ backgroundColor: "#4052b5" }}>
-					<img alt="background" src="/images/cocktailbackground.jpg" />
+					<img
+						width="100%"
+						alt="background"
+						src="/images/cocktailbackground.jpg"
+					/>
 				</div>
 				{popularIngs && (
 					<CustomSwiper filterByIngredient={(i) => filterByIngredient(i)} />
@@ -240,16 +269,17 @@ export default function CocktailCards() {
 							{show.map((card) => (
 								<Grid item key={card.idDrink} xs={12} sm={6} md={4}>
 									<Card className={classes.card}>
-										<CardMedia
-											style={{ cursor: 'pointer' }}
-											className={classes.cardMedia}
-											image={card.strDrinkThumb}
-											title={card.strDrink}
-											onClick={() => {
-												setSelectItem(card);
-												setDialog1Open(true);
-											}}
-										/>
+										<CardActionArea>
+											<CardMedia
+												className={classes.cardMedia}
+												image={card.strDrinkThumb}
+												title={card.strDrink}
+												onClick={() => {
+													setSelectItem(card);
+													setDialog1Open(true);
+												}}
+											/>
+										</CardActionArea>
 										<CardContent className={classes.cardContent}>
 											<Typography gutterBottom variant="h5" component="h2">
 												{card.strDrink}

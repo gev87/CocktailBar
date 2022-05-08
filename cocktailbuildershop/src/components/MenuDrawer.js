@@ -1,37 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Checkbox from "@material-ui/core/Checkbox";
+import { Drawer,Accordion ,AccordionSummary} from "@material-ui/core";
+import { AccordionDetails, Checkbox, Typography } from "@material-ui/core";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import { CartContext } from "../context/CartContext";
+import THEMES from "../consts/THEMES";
 
 
-
-const useStyles = makeStyles((theme) => ({
-	list: {
-		elevation: 80,
-		width: 210,
-	},
-	heading: {
-		fontSize: theme.typography.pxToRem(15),
-		fontWeight: theme.typography.fontWeightRegular,
-	},
-	accord: {
-		margin: 0,
-		padding: 0,
-		backgroundColor: "#303f9f",
-		color: "#ffffff",
-		width: "100%",
-	},
-}));
-
-export default function MenuDrawer({ open, close, itemData, clearfilterProp }) {
-	const classes = useStyles();
+export default function MenuDrawer({ open, close, itemData}) {
+	const classes = THEMES();
 	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const objForMap = {
 		alcoholic: ["Alcoholic", "Non alcoholic", "Optional alcohol"],
@@ -96,12 +73,6 @@ export default function MenuDrawer({ open, close, itemData, clearfilterProp }) {
 							}
 						}
 					}
-					// if (Object.values(objElem).includes(checkedValue[0]) || Object.values(objElem).includes(checkedValue[1])) {
-					// 	// console.log('ok')
-					// 	if (!Boolean(result.find((element) => element.idDrink === objElem.idDrink))) {
-					// 		result.push(objElem);
-					// 	}
-					// }
 				}
 
 				if ((checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) || (!checkedValue.includes('Alcoholic') && checkedValue.includes('Non alcoholic') && !checkedValue.includes('Optional alcohol')) || (!checkedValue.includes('Alcoholic') && !checkedValue.includes('Non alcoholic') && checkedValue.includes('Optional alcohol'))) {

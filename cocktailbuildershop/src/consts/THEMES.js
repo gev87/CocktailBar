@@ -130,7 +130,7 @@ const THEMES = makeStyles((theme) => ({
 	},
 	heroContent: {
 		backgroundColor: theme.palette.background.paper,
-		padding: theme.spacing(8, 0, 6),
+		padding: theme.spacing(10,0,6),
 	},
 	cardGrid: {
 		paddingTop: theme.spacing(8),
@@ -152,6 +152,27 @@ const THEMES = makeStyles((theme) => ({
 	},
 	input: {
 		color: "#ac5b01",
+	},
+	list: {
+		elevation: 105,
+		width: 210,
+	},
+	heading: {
+		fontSize: theme.typography.pxToRem(15),
+		fontWeight: theme.typography.fontWeightRegular,
+	},
+	accord: {
+		margin: 0,
+		padding: 0,
+		backgroundColor: "#303f9f",
+		color: "#ffffff",
+		width: "100%",
+	},
+	listDrower: {
+		width: 250,
+	},
+	fullListDrower: {
+		width: "auto",
 	},
 }));
 
