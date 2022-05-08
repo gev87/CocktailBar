@@ -18,7 +18,7 @@ export default function MenuDrawer({ open, close, itemData, clearfilterProp}) {
 	const [checkedValue, setCheckedValue] = useState([]);
 	const transitionDuration = 1000;
 
-	console.log('useEffect')
+	
 	useEffect(() => {
 		const result = [];
 		let youtube = 'YoutubeVideo'
