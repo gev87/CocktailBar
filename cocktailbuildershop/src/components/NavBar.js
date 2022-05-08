@@ -59,7 +59,7 @@ const onClear = () => {
  
 	return (
 		<div className={classes.rootnav}>
-			<AppBar style={{ backgroundColor: "#4052b5", color: "white",height:"10%" }}>
+			<AppBar style={{ backgroundColor: "#4052b5", color: "white",}}>
 				<Toolbar>
 					<IconButton
 						edge="start"

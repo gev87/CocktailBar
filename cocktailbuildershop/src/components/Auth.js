@@ -29,7 +29,6 @@ export default function Auth({ children }) {
   }
 
   function logout() {
-	  console.log(auth.signOut())
     return auth.signOut();
   }
 
