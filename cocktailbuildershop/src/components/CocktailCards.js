@@ -30,7 +30,7 @@ export default function CocktailCards() {
 	const [header, setHeader] = useState("MOST POPULAR COCKTAILS");
 	const [popularIngs, setPopularIngs] = useState(true);
 	const [popularCocktails, setPopularCocktails] = useState(true);
-	const { filteredApi } = useContext(CartContext);
+	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const [selectItem, setSelectItem] = useState("");
 	const [openDlg1Dialog, setDialog1Open] = useState(false);
 	const [basketQty, setBasketQty] = useState(null)
@@ -40,7 +40,6 @@ export default function CocktailCards() {
 	const [cartChanged, setCartChanged] = useState(null);
 	const navigate = useNavigate();
 	const [, setCart] = useState({});
-
 	// console.log(resultSearchCocktail)
 
 	useEffect(() => {

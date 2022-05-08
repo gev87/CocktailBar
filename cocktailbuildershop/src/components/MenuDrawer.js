@@ -7,7 +7,7 @@ import { CartContext } from "../context/CartContext";
 import THEMES from "../consts/THEMES";
 
 
-export default function MenuDrawer({ open, close, itemData}) {
+export default function MenuDrawer({ open, close, itemData, clearfilterProp}) {
 	const classes = THEMES();
 	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const objForMap = {

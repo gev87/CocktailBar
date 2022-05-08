@@ -124,7 +124,7 @@ function CustomCocktail() {
 
   return (
 		<div>
-			<NavBar showDrawer={false} mainPage={false} cartQty={cartQty} />
+			<NavBar showDrawer={false} mainPage={false} cartQty={cartQty} searchCocktil={0}/>
 			<Container maxWidth="sm">
 				{error[2] === "n" ? (
 					<div>
