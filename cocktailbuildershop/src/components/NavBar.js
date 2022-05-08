@@ -2,11 +2,13 @@ import React, { useState, useContext } from "react";
 import { useNavigate, Link as ReactLink } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Badge } from "@material-ui/core";
 import { IconButton, MenuItem, Menu, InputBase } from "@material-ui/core";
+// import TextField from '@material-ui/core/TextField';
 import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SearchIcon from "@material-ui/icons/Search";
 import MainContext from "../context/MainContext";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ClearIcon from '@material-ui/icons/Clear';
 import MenuDrawer from "./MenuDrawer";
 import HomeIcon from "@material-ui/icons/Home";
 import THEMES from "../consts/THEMES";
@@ -17,7 +19,9 @@ export default function MenuAppBar({
   cartQty,
   fetchData,
   showDrawer = true,
-	mainPage
+	mainPage,
+	searchCocktail,
+	setSearchCocktil
 }) {
   const classes = THEMES();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -45,6 +49,13 @@ export default function MenuAppBar({
       setError("Failed to Log out");
     }
   }
+  const onInputValue = (e) => {
+	setSearchCocktil(e.target.value)
+}
+
+const onClear = () => {
+	setSearchCocktil('')
+}
  
 	return (
 		<div className={classes.rootnav}>
@@ -71,6 +82,8 @@ export default function MenuAppBar({
 					<IconButton
 						className={classes.title}
 						onClick={() => {
+							popularCocktailsSwitch();
+							setSearchCocktil('')
 							mainPage ? popularCocktailsSwitch() : navigate("/");
 						}}
 					>
@@ -108,20 +121,22 @@ export default function MenuAppBar({
 						/>{" "}
 						Cocktail Builder
 					</IconButton>
-
-					<div className={classes.search}>
-						<div className={classes.searchIcon}>
-							<SearchIcon />
-						</div>
+					{showDrawer && <div className={classes.search}>
 						<InputBase
-							placeholder="Search…"
-							classes={{
-								root: classes.inputRoot,
-								input: classes.inputInput,
-							}}
-							inputProps={{ "aria-label": "search" }}
+						style={{paddingLeft: 10}}
+							onChange={onInputValue}
+							placeholder='Search...'
+							value={searchCocktail}
 						/>
-					</div>
+						<div className={classes.searchIcon}
+						 onClick={onClear}
+						 style={{
+							 cursor:'pointer',
+							 paddingRight: 5
+							 }}>
+							{searchCocktail.length ? <ClearIcon/> : <SearchIcon />}
+						</div>
+					</div>}
 					<div className={classes.title}>
 						<Typography variant="h6" className={classes.title}>
 							{currentUser ? (
@@ -232,13 +247,13 @@ export default function MenuAppBar({
 					</div>
 				</Toolbar>
 			</AppBar>
-			{showDrawer && (
-				<MenuDrawer
-					itemData={fetchData}
-					open={openMenu}
-					close={() => setOpenMenu(false)}
-				/>
-			)}
+			{showDrawer && (<MenuDrawer
+				// clearfilterProp={searchCocktail.length}
+				itemData={fetchData}
+				open={openMenu}
+				close={() => setOpenMenu(false)}
+			/>)}
+
 		</div>
 	);
 }

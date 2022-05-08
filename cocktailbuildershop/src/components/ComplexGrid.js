@@ -51,6 +51,7 @@ export default function ComplexGrid({ data }) {
 					<Grid item>
 						<ButtonBase className={classes.image}>
 							<img
+								style={{ cursor: 'initial' }}
 								className={classes.img}
 								alt={data.strDrink}
 								src={data.strDrinkThumb}

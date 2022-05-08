@@ -124,7 +124,7 @@ function CustomCocktail() {
 
   return (
 		<div>
-			<NavBar showDrawer={false} mainPage={false} cartQty={cartQty} />
+			<NavBar showDrawer={false} mainPage={false} cartQty={cartQty} searchCocktil={0}/>
 			<Container maxWidth="sm">
 				{error[2] === "n" ? (
 					<div>
@@ -270,6 +270,9 @@ export default function CocktailBuilder() {
 
   return (
     <div>
+      <NavBar 
+			showDrawer={false}
+		/>
       <div className={classes.heroContent}>
         <Container maxWidth="sm">
           <Typography
