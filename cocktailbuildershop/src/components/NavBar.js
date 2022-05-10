@@ -56,7 +56,13 @@ export default function MenuAppBar({
 const onClear = () => {
 	setSearchCocktil('')
 }
- 
+	function mainpageCheck() {
+		if (mainPage) {
+			setSearchCocktil('');
+			popularCocktailsSwitch();
+		} else navigate("/");
+				
+ }
 	return (
 		<div className={classes.rootnav}>
 			<AppBar style={{ backgroundColor: "#4052b5", color: "white"}}>
@@ -81,11 +87,8 @@ const onClear = () => {
 					</IconButton>
 					<IconButton
 						className={classes.title}
-						onClick={() => {
-							popularCocktailsSwitch();
-							setSearchCocktil('')
-							mainPage ? popularCocktailsSwitch() : navigate("/");
-						}}
+						onClick={mainpageCheck}
+						
 					>
 						<img
 							alt="icon"

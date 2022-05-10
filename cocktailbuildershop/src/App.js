@@ -18,7 +18,7 @@ function App() {
 				<CartProvider>
 					<Routes>
 						<Route exact path="/" element={<Demo />} />
-						<Route path="/!" element={<Demo />} />
+						{/* <Route path="/!" element={<Demo />} /> */}
 						<Route path="/update-profile" element={<UpdateProfile />} />
 						<Route path="/signup" element={<Signup />} />
 						<Route path="/login" element={<Login />} />

@@ -33,7 +33,6 @@ export default function CocktailCards() {
 	const { filteredApi, setFilteredApi } = useContext(CartContext);
 	const [selectItem, setSelectItem] = useState("");
 	const [openDlg1Dialog, setDialog1Open] = useState(false);
-	const [basketQty, setBasketQty] = useState(null)
 	const [searchCocktail, setSearchCocktil] = useState('')
 	const [resultSearchCocktail, setResultSearchCocktail] = useState([])
 	const [cartQty, setCartQty] = useState(null);
@@ -53,7 +52,7 @@ export default function CocktailCards() {
 			)
 		}
 
-	}, [searchCocktail])
+	}, [searchCocktail,data,setFilteredApi])
 
 	useEffect(() => {
 		currentUser && setCartQty(calcItemQty(currentUser));
@@ -150,16 +149,29 @@ export default function CocktailCards() {
 
 	useEffect(() => {
 		if (filteredApi.length && !resultSearchCocktail.length) {
-			setShow(filteredApi)
-			setHeader(`Filtered ${filteredApi.length < 2 ? 'Cocktail' : 'Cocktails'} ${filteredApi.length}`)
-		} else if (resultSearchCocktail.length || (!resultSearchCocktail.length && searchCocktail.length)) {
-			setShow(resultSearchCocktail)
-			setHeader(`Search result ${resultSearchCocktail.length}`)
+			setShow(filteredApi);
+			setHeader(
+				`Filtered ${filteredApi.length < 2 ? "Cocktail" : "Cocktails"} ${
+					filteredApi.length
+				}`
+			);
+		} else if (
+			resultSearchCocktail.length ||
+			(!resultSearchCocktail.length && searchCocktail.length)
+		) {
+			setShow(resultSearchCocktail);
+			setHeader(`Search result ${resultSearchCocktail.length}`);
 		} else if (data.length && !searchCocktail.length) {
 			setShow(popularCocktails);
-			setHeader("MOST POPULAR COCKTAILS")
+			setHeader("MOST POPULAR COCKTAILS");
 		}
-	}, [data, popularCocktails, filteredApi, resultSearchCocktail]);
+	}, [
+		data,
+		popularCocktails,
+		filteredApi,
+		resultSearchCocktail,
+		searchCocktail.length,
+	]);
 
 	const addItemToCart = (card, func) => {
 		currentUser &&

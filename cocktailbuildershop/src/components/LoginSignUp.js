@@ -94,10 +94,10 @@ export default function LoginSignUp() {
 	const [openLD, setOpenLD] = useState(false);
 	const [openSD, setOpenSD] = useState(false);
 	const classes = useStyles();
-	const { login, signup, currentUser } = useContext(MainContext);
+	const { login, signup } = useContext(MainContext);
 	const emailRef = useRef();
 	const [error, setError] = useState("");
-	const [, setLoading] = useState(false);
+	const [, setLoading] = useState(true);
 	const navigate = useNavigate();
 	const passwordRef = useRef();
 	const [show, setShow] = useState("password");
@@ -106,23 +106,22 @@ export default function LoginSignUp() {
 
 
 
+
 	async function handleSubmit(e) {
-		setOpenLD(false);
+		// setOpenLD(false);
 		e.preventDefault();
 		try {
-			console.log('try')
 			setError("");
-			setLoading(true);
-			await login(emailRef.current.value, passwordRef.current.value);
+			 await login(emailRef.current.value,passwordRef.current.value);
 			// navigate("/");
 		} catch {
-			console.log('catch')
 			setError("Failed to sign in");
+		return
 		}
-		setLoading(false);
+		setOpenLD(false);
 	}
 	async function handleSubmitSignUp(e) {
-		setOpenSD(false);
+	setLoading(false);
 		e.preventDefault();
 		if (passwordRef.current.value !== passwordConfirmRef.current.value) {
 			return setError("Passwords do NOT match");
@@ -130,19 +129,27 @@ export default function LoginSignUp() {
 		if (passwordRef.current.value.length < 6) {
 			return setError("Password must have at least 6 characters");
 		}
+
+		if (!emailRef.current.value.includes("@" || ".")) {
+			return setError("Invalid Email Format");
+		}
 		try {
 			setError("");
-			// setLoading(true);
+			setLoading(true);
 			await signup(
 				emailRef.current.value,
 				passwordRef.current.value,
 				nameRef.current.value
-			);
-			navigate("/");
+			).catch(() => {});;
+			// navigate("/");
 		} catch {
+		
 			setError("Failed to create an account");
+		
+			return
 		}
-		// setLoading(false);
+			setOpenSD(false);
+		setLoading(false);
 	}
 
 	const handleClick = (event) => {
@@ -200,7 +207,7 @@ export default function LoginSignUp() {
 									id="password"
 									autoComplete="current-password"
 								/>
-								<FormControlLabel
+								{/* <FormControlLabel
 									control={
 										<Checkbox
 											onClick={() =>
@@ -209,7 +216,7 @@ export default function LoginSignUp() {
 											color="primary"
 										/>}
 									label="Show password"
-								/>
+								/> */}
 								<Button
 									type="submit"
 									fullWidth
@@ -320,7 +327,7 @@ export default function LoginSignUp() {
 											autoComplete="current-password"
 										/>
 									</Grid>
-									<Grid item xs={12}>
+									{/* <Grid item xs={12}>
 										<FormControlLabel
 											control={
 												<Checkbox
@@ -331,7 +338,7 @@ export default function LoginSignUp() {
 												/>}
 											label="Show password"
 										/>
-									</Grid>
+									</Grid> */}
 								</Grid>
 								<Button
 									type="submit"

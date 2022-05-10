@@ -16,9 +16,10 @@ export default function Signup() {
 	const passwordConfirmRef = useRef();
 	const { signup, currentUser } = useContext(MainContext);
 	const [error, setError] = useState("");
-	 const [show, setShow] = useState("password");
+	const [show, setShow] = useState("password");
 	const navigate = useNavigate();
 	const nameRef = useRef();
+	const [loading, setLoading] = useState(true);
 
 	async function handleSubmit(e) {
 		e.preventDefault();
@@ -28,22 +29,28 @@ export default function Signup() {
 		if (passwordRef.current.value.length < 6) {
 			return setError("Password must have at least 6 characters");
 		}
+		if (!emailRef.current.value.includes("@" || ".")) {
+			return setError("Invalid Email Format");
+		}
 		try {
 			setError("");
-			// setLoading(true);
+			setLoading(true);
 			await signup(
 				emailRef.current.value,
 				passwordRef.current.value,
 				nameRef.current.value
-			);
+			).catch(() => {
+			});
 			navigate("/");
 		} catch {
 			setError("Failed to create an account");
 		}
-		// setLoading(false);
+		setLoading(false);
 	}
 
-	return (currentUser ?<Navigate to="/" />:
+	return currentUser ? (
+		<Navigate to="/" />
+	) : (
 		<Container onSubmit={handleSubmit} component="main" maxWidth="xs">
 			<CssBaseline />
 			<div className={classes.paper}>
