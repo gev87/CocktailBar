@@ -108,7 +108,6 @@ export default function LoginSignUp() {
 
 
 	async function handleSubmit(e) {
-		// setOpenLD(false);
 		e.preventDefault();
 		try {
 			setError("");

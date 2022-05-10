@@ -30,6 +30,7 @@ export default function AlertDialogSlide({ open, close, data }) {
 				aria-describedby="alert-dialog-slide-description"
 			>
 				<ComplexGrid
+					close={close}
 					data={data}
 				/>
 			</Dialog>
