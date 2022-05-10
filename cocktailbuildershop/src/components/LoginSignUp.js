@@ -107,22 +107,23 @@ export default function LoginSignUp() {
 
 
 	async function handleSubmit(e) {
-		setOpenLD(false);
 		e.preventDefault();
 		try {
 			console.log('try')
 			setError("");
-			setLoading(true);
+			// setLoading(true);
+			// setOpenLD(false);
 			await login(emailRef.current.value, passwordRef.current.value);
 			// navigate("/");
 		} catch {
 			console.log('catch')
 			setError("Failed to sign in");
 		}
-		setLoading(false);
+		// setLoading(false);
+		setOpenLD(false);
 	}
 	async function handleSubmitSignUp(e) {
-		setOpenSD(false);
+		// setOpenSD(false);
 		e.preventDefault();
 		if (passwordRef.current.value !== passwordConfirmRef.current.value) {
 			return setError("Passwords do NOT match");
@@ -142,7 +143,7 @@ export default function LoginSignUp() {
 		} catch {
 			setError("Failed to create an account");
 		}
-		// setLoading(false);
+		setLoading(false);
 	}
 
 	const handleClick = (event) => {

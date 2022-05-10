@@ -59,7 +59,7 @@ const onClear = () => {
  
 	return (
 		<div className={classes.rootnav}>
-			<AppBar style={{ backgroundColor: "#4052b5", color: "white"}}>
+			<AppBar style={{ backgroundColor: "#4052b5", color: "white",}}>
 				<Toolbar>
 					<IconButton
 						edge="start"
@@ -82,9 +82,7 @@ const onClear = () => {
 					<IconButton
 						className={classes.title}
 						onClick={() => {
-							popularCocktailsSwitch();
-							setSearchCocktil('')
-							mainPage ? popularCocktailsSwitch() : navigate("/");
+							mainPage ? popularCocktailsSwitch() && setSearchCocktil('') : navigate("/");
 						}}
 					>
 						<img
