@@ -7,7 +7,8 @@ import THEMES from "../consts/THEMES";
 import { Button, Container, TextField, Typography } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import MainContext from "../context/MainContext";
-import { readOnceGet, removeAsync } from "../firebase/crudoperations";
+import { readOnceGet,removeAsync } from "../firebase/crudoperations";
+import { Navigate } from "react-router-dom";
 
 export default function Payment() {
 	const [number, setNumber] = useState("");
@@ -43,8 +44,8 @@ export default function Payment() {
 		setCart([])
 	};
 
-	return (
-		<>
+	return (!currentUser ? <Navigate to="/" /> :
+		(<>
 			<NavBar
 				cartQty={Object.values(cart).reduce(
 					(cur, elem) => cur + elem.quantity,
@@ -169,6 +170,6 @@ export default function Payment() {
 				</div>
 			
 		
-		</>
+		</>)
 	);
 }
