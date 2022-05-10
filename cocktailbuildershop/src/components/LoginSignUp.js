@@ -1,28 +1,14 @@
 import React, { useContext, useRef, useState } from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import { withStyles,Button,Menu,MenuItem } from '@material-ui/core';
+import { ListItemIcon, ListItemText, TextField } from "@material-ui/core";
 import LockIcon from '@material-ui/icons/Lock';
 import InputIcon from '@material-ui/icons/Input';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import Avatar from '@material-ui/core/Avatar';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
+import { Dialog, Avatar,CssBaseline,Link, Grid } from "@material-ui/core";
+import { Box, Typography, makeStyles, Container } from "@material-ui/core";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import MainContext from "../context/MainContext";
-import { useNavigate } from 'react-router-dom';
 import { Alert } from "@material-ui/lab";
+import Footer from './Footer';
 
 const StyledMenu = withStyles({
 	paper: {
@@ -53,19 +39,6 @@ const StyledMenuItem = withStyles((theme) => ({
 	},
 }))(MenuItem);
 
-
-function Copyright() {
-	return (
-		<Typography variant="body2" color="textSecondary" align="center">
-			{'Copyright © '}
-			<Link color="inherit" href="https://mui.com/">
-				Your Website
-			</Link>{' '}
-			{new Date().getFullYear()}
-			{'.'}
-		</Typography>
-	);
-}
 
 const useStyles = makeStyles((theme) => ({
 	paper: {
@@ -98,9 +71,7 @@ export default function LoginSignUp() {
 	const emailRef = useRef();
 	const [error, setError] = useState("");
 	const [, setLoading] = useState(true);
-	const navigate = useNavigate();
 	const passwordRef = useRef();
-	const [show, setShow] = useState("password");
 	const passwordConfirmRef = useRef();
 	const nameRef = useRef();
 
@@ -164,8 +135,13 @@ export default function LoginSignUp() {
 		};
 		return (
 			<div>
-				<Dialog open={openLD} onClose={handleClose} aria-labelledby="form-dialog-title" onSubmit={handleSubmit}>
-					<Container component="main" maxWidth="xs" >
+				<Dialog
+					open={openLD}
+					onClose={handleClose}
+					aria-labelledby="form-dialog-title"
+					onSubmit={handleSubmit}
+				>
+					<Container component="main" maxWidth="xs">
 						<CssBaseline />
 						<div className={classes.paper}>
 							<Avatar className={classes.avatar}>
@@ -202,20 +178,10 @@ export default function LoginSignUp() {
 									fullWidth
 									name="password"
 									label="Password"
-									type={show}
+									type="password"
 									id="password"
 									autoComplete="current-password"
 								/>
-								{/* <FormControlLabel
-									control={
-										<Checkbox
-											onClick={() =>
-												setShow(show === "password" ? "text" : "password")
-											}
-											color="primary"
-										/>}
-									label="Show password"
-								/> */}
 								<Button
 									type="submit"
 									fullWidth
@@ -226,12 +192,14 @@ export default function LoginSignUp() {
 									Login
 								</Button>
 								<Grid container>
-									<Grid item xs>
-									</Grid>
+									<Grid item xs></Grid>
+									<Grid item></Grid>
 									<Grid item>
-									</Grid>
-									<Grid item>
-										<Link variant="body2" onClick={handleClose} style={{ cursor: 'pointer' }}>
+										<Link
+											variant="body2"
+											onClick={handleClose}
+											style={{ cursor: "pointer" }}
+										>
 											{"Cancel"}
 										</Link>
 									</Grid>
@@ -239,7 +207,7 @@ export default function LoginSignUp() {
 							</form>
 						</div>
 						<Box mt={8}>
-							<Copyright />
+							<Footer />
 						</Box>
 					</Container>
 				</Dialog>
@@ -255,7 +223,12 @@ export default function LoginSignUp() {
 
 		return (
 			<div>
-				<Dialog open={openSD} onClose={handleClose} aria-labelledby="form-dialog-title" onSubmit={handleSubmitSignUp}>
+				<Dialog
+					open={openSD}
+					onClose={handleClose}
+					aria-labelledby="form-dialog-title"
+					onSubmit={handleSubmitSignUp}
+				>
 					<Container component="main" maxWidth="xs">
 						<CssBaseline />
 						<div className={classes.paper}>
@@ -308,7 +281,7 @@ export default function LoginSignUp() {
 											fullWidth
 											name="password"
 											label="Password"
-											type={show}
+											type="password"
 											id="password"
 											autoComplete="current-password"
 										/>
@@ -321,23 +294,11 @@ export default function LoginSignUp() {
 											fullWidth
 											name="password"
 											label="Password Confirmation"
-											type={show}
+											type="password"
 											id="password-confirm"
 											autoComplete="current-password"
 										/>
 									</Grid>
-									{/* <Grid item xs={12}>
-										<FormControlLabel
-											control={
-												<Checkbox
-													onClick={() =>
-														setShow(show === "password" ? "text" : "password")
-													}
-													color="primary"
-												/>}
-											label="Show password"
-										/>
-									</Grid> */}
 								</Grid>
 								<Button
 									type="submit"
@@ -350,7 +311,11 @@ export default function LoginSignUp() {
 								</Button>
 								<Grid container justifyContent="flex-end">
 									<Grid item>
-										<Link variant="body2" onClick={handleClose} style={{ cursor: 'pointer' }}>
+										<Link
+											variant="body2"
+											onClick={handleClose}
+											style={{ cursor: "pointer" }}
+										>
 											{"Cancel"}
 										</Link>
 									</Grid>
@@ -358,7 +323,7 @@ export default function LoginSignUp() {
 							</form>
 						</div>
 						<Box mt={5}>
-							<Copyright />
+							<Footer />
 						</Box>
 					</Container>
 				</Dialog>

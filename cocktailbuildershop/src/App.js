@@ -5,10 +5,10 @@ import Login from "./components/Login";
 import ForgotPassWord from "./components/ForgotPassword";
 import UpdateProfile from "./components/UpdateProfile";
 import { CartProvider } from "./context/CartContext";
-import Demo from "./components/Demo";
 import Basket from "./components/Basket";
 import CocktailBuilder from "./components/CocktailBuilder";
 import Payment from "./components/Payment";
+import Home from "./components/Home";
 
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
 			<Auth>
 				<CartProvider>
 					<Routes>
-						<Route exact path="/" element={<Demo />} />
+						<Route exact path="/" element={<Home />} />
 						{/* <Route path="/!" element={<Demo />} /> */}
 						<Route path="/update-profile" element={<UpdateProfile />} />
 						<Route path="/signup" element={<Signup />} />

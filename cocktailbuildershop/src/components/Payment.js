@@ -8,7 +8,7 @@ import { Button, Container, TextField, Typography } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import MainContext from "../context/MainContext";
 import { readOnceGet,removeAsync } from "../firebase/crudoperations";
-import { useNavigate, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 export default function Payment() {
 	const [number, setNumber] = useState("");
@@ -22,7 +22,6 @@ export default function Payment() {
 	const [cart,setCart] = useState({});
 	const [, setClearCart] = useState(false);
 	const [showErrorAlert,setErrorAlert] = useState(false);
-	const navigate = useNavigate();
 	
 	useEffect(() => {
 		currentUser &&
