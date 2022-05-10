@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import YouTubeIcon from "@material-ui/icons/YouTube";
 import PlayerDialog from './PlayerDialog'
+import { Button } from "@mui/material";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function ComplexGrid({ data }) {
+export default function ComplexGrid({ data, close }) {
 	const classes = useStyles();
 	const [openDlg1Dialog, setDialog1Open] = useState(false);
 	return (
@@ -181,9 +182,16 @@ export default function ComplexGrid({ data }) {
 					</h3>
 				</Grid>
 				<Grid item container>
-					<Typography variant="body2" style={{ cursor: "pointer" }}>
-						Remove
-					</Typography>
+					<Button color='secondary'
+						style={{
+							// cursor: "pointer",
+							marginLeft: '90%',
+							padding: 0
+							// BorderStyle: 
+						}}
+						onClick={close}>
+						Close
+					</Button>
 				</Grid>
 			</Paper>
 		</div>

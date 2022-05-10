@@ -82,9 +82,7 @@ const onClear = () => {
 					<IconButton
 						className={classes.title}
 						onClick={() => {
-							popularCocktailsSwitch();
-							setSearchCocktil('')
-							mainPage ? popularCocktailsSwitch() : navigate("/");
+							mainPage ? popularCocktailsSwitch() && setSearchCocktil('') : navigate("/");
 						}}
 					>
 						<img
