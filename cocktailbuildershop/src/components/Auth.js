@@ -10,19 +10,18 @@ export default function Auth({ children }) {
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState();
 
-  function signup(email, password, displayName) {
+  async function signup(email, password, displayName) {
     if (displayName.length > 0) setName(displayName);
     auth
-			.createUserWithEmailAndPassword(email, password, displayName)
-			.then((userCredential) => {
-				const userId = userCredential.user.uid;
-				const payload = {
-					name: userCredential.user.displayName,
-					orders: {},
-				};
-				write(`users/${userId}`, payload);
-			})
-    ;
+      .createUserWithEmailAndPassword(email, password, displayName)
+      .then((userCredential) => {
+        const userId = userCredential.user.uid;
+        const payload = {
+          name: userCredential.user.displayName,
+          orders: {},
+        };
+        write(`users/${userId}`, payload);
+      });
   }
 
   function login(email, password) {
